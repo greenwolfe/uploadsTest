@@ -1,0 +1,160 @@
+<Template name='activityPage'>
+  <div class='row'>
+    <p>Basic upload-bootstrap</p>
+    {{> upload_bootstrap formData=userInfo}}
+  </div>
+  <div class='row'>
+    <!--<p>Drop Zone</p>
+    {{> dropzone multiple=false}}-->
+  </div>
+  <div id='teacherArea' class='row'>
+    <div class='navbar navbar-default navbar-sharearea'>
+      <a class="navbar-brand" href="#">Teacher Area (probably uses very top header and has neutral background so looks like part of the page rather than an area.)</a>
+    </div>
+    <div class='col-md-4'>
+      <span>  </span>
+    </div>
+  </div>
+
+  <div id='studentArea' class="panel panel-default row">
+    <div class="panel-heading text-center">
+      <div class="dropdown pull-left">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <span>with column: 1</span>
+          <span class="glyphicon glyphicon-triangle-bottom"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="#">1</a></li>
+          <li><a href="#">2</a></li>
+          <li><a href="#">3</a></li>
+        </ul>
+      </div>
+      <div class="dropdown pull-left">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <span>action</span>
+          <span class="glyphicon glyphicon-triangle-bottom"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="#">grow</a></li>
+          <li><a href="#">shrink</a></li>
+          <li><a href="#">delete</a></li>
+          <li><a href="#">add column before</a></li>
+          <li><a href="#">add column after</a></li>
+        </ul>
+      </div>
+      <span>Student Area</span>
+      <div class="dropdown pull-right">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <span>Add Block</span>
+          <span class="glyphicon glyphicon-triangle-bottom"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="#">image</a></li>
+          <li><a href="#">text</a></li>
+          <li><a href="#">files</a></li>
+          <li><a href="#">embed</a></li>
+          <li><a href="#">to-do</a></li>
+          <li><a href="#">Post Game Analysis</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class='col-md-4'>
+        <div class='activityPageColumn'>
+          {{#each files}}
+            {{> activityBlock}}
+          {{/each}}
+        </div>
+      </div>
+      <div class='col-md-4'>
+        <div class='activityPageColumn'>
+          {{#each files}}
+            {{> activityBlock}}
+          {{/each}}
+        </div>
+      </div>
+      <div class='col-md-4'>
+        <div class='activityPageColumn'>
+          {{#each files}}
+            {{> activityBlock}}
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id='groupArea' class="panel panel-default row">
+    <div class="panel-heading">
+      Group Area: List Names
+      <div class="dropdown pull-right">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <span class="glyphicon glyphicon-cog"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="#">edit layout</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class='panel-body'>
+      <div class='col-md-4'>
+        <span>  </span>
+      </div>
+    </div>
+  </div>
+
+  <div id='sectionArea' class="panel panel-default row">
+    <div class="panel-heading">
+      Section Area: Z block
+      <div class="dropdown pull-right">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <span class="glyphicon glyphicon-cog"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="#">add column</a></li>
+          <li><a href="#">grow column (submenu)</a></li>
+          <li><a href="#">shrink column (submenu)</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class='col-md-4'>
+        <span>  </span>
+      </div>
+    </div>
+  </div>
+</template>
+
+<Template name='activityBlock'>
+  <div class="activityBlock panel panel-default row">
+    <div class="panel-heading">
+      {{name}}
+      <div class="dropdown pull-right">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <span class="glyphicon glyphicon-cog"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="#">replace image</a></li>
+          {{#if _id}}
+            <li><a href="#" class='deleteFile'>delete</a></li>
+          {{/if}}
+          <li><a href="#">send to group</a></li>
+          <li><a href="#">send to section</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel-body">
+      <a href="/upload/{{path}}"><img src="{{src}}"></a><br/>
+      {{size}} B 
+
+      <!--<div class="embed-responsive embed-responsive-4by3">
+        <iframe class="embed-responsive-item" src="https://mix.office.com/embed/18pki09swrl97" allowfullscreen></iframe>
+      </div>-->
+
+      <!--<div class="embed-responsive embed-responsive-4by3 ">
+        <iframe class="embed-responsive-item" src="https://player.vimeo.com/video/106220616" allowfullscreen></iframe> 
+        <p><a href="https://vimeo.com/106220616">VectorAddGUI</a> from <a href="https://vimeo.com/user13311273">greenwolfe</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+      </div>-->
+
+    </div>
+  </div>
+</Template>
