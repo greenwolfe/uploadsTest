@@ -15,7 +15,7 @@ only owner (original poster, individual student) can delete, edit or move.  Othe
 Meteor.startup(function() {
   Uploader.finished = function(index, file, tmpl) {
     _.extend(file,tmpl.data.formData);
-    Files.insert(file);
+    Meteor.call('insertFile',file);
   }
 });
 
@@ -30,6 +30,9 @@ Template.activityPage.helpers({
       group: [],
       section: null
     }
+  },
+  walls: function() {
+    return Walls.find({activityID:'abc'});
   }
 });
 

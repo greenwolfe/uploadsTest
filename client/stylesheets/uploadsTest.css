@@ -31,12 +31,50 @@ body div.container {
     opacity: 1;
 }
 
+.wall div.panel-body {
+    min-height: 125px;
+}
+.wall .dropdown {
+    margin-left: 20px;
+}
+.wall.wall-student div.panel-heading {
+    background-color: #FFE376;
+}
+.wall.wall-student div.panel-body {
+    background-color: cornsilk;
+}
+.wall.wall-group div.panel-heading {
+    background-color: #76FFE3;
+}
+.wall.wall-group div.panel-body {
+    background-color: #DCFFF8;
+}
+.wall.wall-section div.panel-heading {
+    background-color: #E376FF;
+}
+.wall.wall-section div.panel-body {
+    background-color: #F8DCFF;
+}
+.block {
+    margin-right: auto;
+    margin-left: auto;
+}
+.block div.panel-heading {
+    background-color: #F8F8F8 !important;
+}
+.block div.panel-body {
+    overflow: hidden;
+    background-color: #FFF !important;
+}
+.block div.panel-body img {
+    max-width: 100%;
+}
+
 #studentArea div.panel-heading {
     background-color: #FFE376;
 }
 #studentArea div.panel-body {
     background-color: cornsilk;
-    min-height: 125px;
 }
 #studentArea .dropdown {
     margin-left: 20px;

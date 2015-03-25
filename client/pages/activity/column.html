@@ -1,0 +1,10 @@
+<Template name='column'>
+  <div class='col-md-{{width}}'>
+    <div class='column'>
+      {{#each blocks}}
+        {{> block}}
+      {{/each}}
+      <span>&nbsp;</span> <!-- ensures column is rendered -->
+    </div>
+  </div>
+</Template>

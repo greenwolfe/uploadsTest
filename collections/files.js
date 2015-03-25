@@ -1,6 +1,6 @@
 Files = new Meteor.Collection('files');
 /*
-{ 
+Files.insert({ 
   _id: "Su9iW3Rw4bzarrX5j", 
   name: "MotionDetector.jpeg", 
   size: 4720, 
@@ -12,7 +12,7 @@ Files = new Meteor.Collection('files');
   userID: 2, 
   group: Array[0]
   section: null
-}
+});
 Must also have: 
   share: teacher, student, group, section
   position: {x:0, y:3} /* x: column number 0,1,2, ...
@@ -36,6 +36,9 @@ activityPageLayout
 */
 
 Meteor.methods({
+  'insertFile': function(file) {
+    Files.insert(file);
+  },
   'deleteFile': function(_id) {
     if (!_.isString(_id))
       throw new Meteor.Error(000,'cannot delete file, no valid id.');

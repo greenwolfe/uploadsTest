@@ -1,0 +1,34 @@
+<Template name='block'>
+  <div class="block block-{{type}} panel panel-default row">
+    <div class="panel-heading">
+      {{title}}
+      <div class="dropdown pull-right">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <span class="glyphicon glyphicon-cog"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="#">replace image</a></li>
+          {{#if _id}}
+            <li><a href="#" class='deleteBlock'>delete</a></li>
+          {{/if}}
+          <li><a href="#">send to group</a></li>
+          <li><a href="#">send to section</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel-body">
+      <!--<a href="/upload/{{path}}"><img src="{{src}}"></a><br/>
+      {{size}} B -->
+
+      <div class="embed-responsive embed-responsive-4by3">
+        <iframe class="embed-responsive-item" src="https://mix.office.com/embed/18pki09swrl97" allowfullscreen></iframe>
+      </div>
+
+      <!--<div class="embed-responsive embed-responsive-4by3 ">
+        <iframe class="embed-responsive-item" src="https://player.vimeo.com/video/106220616" allowfullscreen></iframe> 
+        <p><a href="https://vimeo.com/106220616">VectorAddGUI</a> from <a href="https://vimeo.com/user13311273">greenwolfe</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+      </div>-->
+
+    </div>
+  </div>
+</Template>
