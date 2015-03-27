@@ -35,19 +35,3 @@ Template.activityPage.helpers({
     return Walls.find({activityID:'abc'});
   }
 });
-
-Template.activityBlock.helpers({
-  src: function() {
-    if (this.type.indexOf('image') >= 0) {
-      return 'upload/' + this.path;
-    } else return 'file_icon.png';
-  }
-});
-
-Template.activityBlock.events({
-  'click .deleteFile':function() {
-    if (confirm('Are you sure you want to delete this file?')) {
-      Meteor.call('deleteFile', this._id);
-    }
-  }
-});

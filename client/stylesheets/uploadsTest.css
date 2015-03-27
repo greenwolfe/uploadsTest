@@ -40,8 +40,18 @@ body div.container {
 .wall.wall-student div.panel-heading {
     background-color: #FFE376;
 }
-.wall.wall-student div.panel-body {
+.wall.wall-student div.panel-heading button {
     background-color: cornsilk;
+    vertical-align: center;
+}
+.wall.wall-student div.panel-body {
+    background-color: cornsilk; /* #FFF8DC */
+}
+.wall.wall-student .column.empty {
+    background-color: #FFE376;
+    border-style: solid;
+    border-width: 3%;
+    border-color: cornsilk; /* #FFF8DC */
 }
 .wall.wall-group div.panel-heading {
     background-color: #76FFE3;
@@ -49,26 +59,43 @@ body div.container {
 .wall.wall-group div.panel-body {
     background-color: #DCFFF8;
 }
+.wall.wall-group .column.empty {
+    background-color: #76FFE3;
+    border-style: solid;
+    border-width: 3%;
+    border-color: #DCFFF8;
+}
 .wall.wall-section div.panel-heading {
     background-color: #E376FF;
 }
 .wall.wall-section div.panel-body {
     background-color: #F8DCFF;
 }
-.block {
+.wall.wall-section .column.empty {
+    background-color: #E376FF;
+    border-style: solid;
+    border-width: 3%;
+    border-color: #F8DCFF;
+}
+.wall .column {
+    min-height: 100px;
+}
+.wall .column .block {
     margin-right: auto;
     margin-left: auto;
 }
-.block div.panel-heading {
+.wall .column .block div.panel-heading {
     background-color: #F8F8F8 !important;
 }
-.block div.panel-body {
+.wall .column .block div.panel-body {
     overflow: hidden;
     background-color: #FFF !important;
 }
-.block div.panel-body img {
+.wall .column .block div.panel-body img {
     max-width: 100%;
 }
+
+/*   eventually delete below here */
 
 #studentArea div.panel-heading {
     background-color: #FFE376;
@@ -84,6 +111,7 @@ body div.container {
     text-align: center;*/
     margin-left: 20px;
 }
+
 
 #groupArea div.panel-heading {
     background-color: #76FFE3;

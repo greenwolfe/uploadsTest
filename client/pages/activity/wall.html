@@ -1,45 +1,11 @@
 <Template name='wall'>
+  <!-- simplify header to just edit columns 
+  have an editWall session variable whose value is a single
+  wallID -->
   <div class="wall wall-{{type}} panel panel-default row">
-    <div class="panel-heading text-center">
-      <div class="dropdown pull-left">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-          <span>with column: 1</span>
-          <span class="glyphicon glyphicon-triangle-bottom"></span>
-        </a>
-        <ul class="dropdown-menu">
-          <li><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-        </ul>
-      </div>
-      <div class="dropdown pull-left">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-          <span>action</span>
-          <span class="glyphicon glyphicon-triangle-bottom"></span>
-        </a>
-        <ul class="dropdown-menu">
-          <li><a href="#">grow</a></li>
-          <li><a href="#">shrink</a></li>
-          <li><a href="#">delete</a></li>
-          <li><a href="#">add column before</a></li>
-          <li><a href="#">add column after</a></li>
-        </ul>
-      </div>
-      <span>{{title}}</span>
-      <div class="dropdown pull-right">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-          <span>Add Block</span>
-          <span class="glyphicon glyphicon-triangle-bottom"></span>
-        </a>
-        <ul class="dropdown-menu">
-          <li><a href="#" class='addImageBlock'>image</a></li>
-          <li><a href="#">text</a></li>
-          <li><a href="#">files</a></li>
-          <li><a href="#">embed</a></li>
-          <li><a href="#">to-do</a></li>
-          <li><a href="#">Post Game Analysis</a></li>
-        </ul>
-      </div>
+    <div class="panel-heading text-center clearfix">
+      {{title}}
+      <button class="btn btn-default editColumns pull-right">{{editColumns}}</button>
     </div>
     <div class="panel-body">
       {{#each columns}}
