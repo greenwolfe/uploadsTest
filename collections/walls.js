@@ -14,16 +14,9 @@ Meteor.methods({
     Walls.insert(wall , function( error, _id) { 
       if ( error ) console.log ( error ); //info about what went wrong
       if ( _id ) {
-        var column = {
-          wallID: _id,
-          width: 4,
-          rank: 0
-        }
-        Meteor.call('insertColumn',column);
-        column.rank = 1;
-        Meteor.call('insertColumn',column);
-        column.rank = 2;
-        Meteor.call('insertColumn',column);
+        Meteor.call('insertColumn',_id,0,null);
+        Meteor.call('insertColumn',_id,0,'right');
+        Meteor.call('insertColumn',_id,1,'right');
       }
     });
   }

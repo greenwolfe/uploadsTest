@@ -1,16 +1,17 @@
 
 /*
-make the header a handle for moving the block.
 
 text block, image block, files block, embed block,
 to-do list block (drag copy from teacher to student?),
 PGA block - conversation with teacher (or just use text
-block?)
+block?) or discussion block?  homework block?
 
 group block:  stays with originally assigned group by default.
 option in dropdown to change to current group IF only difference is someone was added to the group
 option to copy instead of move, so that something could be shared with more than one group
 only owner (original poster, individual student) can delete, edit or move.  Others can copy.
+or just offer (share with another group and make a copy?)  See checklist of all
+groups (that you are in) and check them off.
 */
 Meteor.startup(function() {
   Uploader.finished = function(index, file, tmpl) {
@@ -32,6 +33,9 @@ Template.activityPage.helpers({
     }
   },
   walls: function() {
-    return Walls.find({activityID:'abc'});
+    var walls = Walls.find({activityID:'abc'}).fetch();
+    return _.sortBy(walls,function(wall) {
+      return _.indexOf(['teacher','student','group','section'],wall.type);
+    });
   }
 });

@@ -7,7 +7,7 @@ Template.wall.helpers({
     return '';
   },
   columns: function() {
-    return Columns.find({wallID:this._id},{$sort: {rank:1}});
+    return Columns.find({wallID:this._id},{sort: {order:1}});
   },
   editColumns: function() {
     return (Session.get('editedWall') == this._id) ? 'Done' : 'Edit Wall';

@@ -24,7 +24,7 @@ Meteor.methods({
     if (!('type' in block) || !_.contains(validTypes,block.type))
       throw new Meteor.Error(203,"Cannot add block, invalid type.")
 
-    ids = _.pluck(Blocks.find({columnID:block.columnID},{fields: {_id: 1}}).fetch(), '_id');
+    var ids = _.pluck(Blocks.find({columnID:block.columnID},{fields: {_id: 1}}).fetch(), '_id');
     Blocks.update({_id: {$in: ids}}, {$inc: {order:1}}, {multi: true});
     block.order = 0;
     Blocks.insert(block);
@@ -34,7 +34,7 @@ Meteor.methods({
     if (!block)
       throw new Meteor.Error(203,"Cannot delete block, block not found.")
     
-    ids = _.pluck(Blocks.find({columnID:block.columnID,order:{$gt: block.order}},{fields: {_id: 1}}).fetch(), '_id');
+    var ids = _.pluck(Blocks.find({columnID:block.columnID,order:{$gt: block.order}},{fields: {_id: 1}}).fetch(), '_id');
     Blocks.remove(blockID); 
     Blocks.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});
   },
@@ -81,7 +81,7 @@ Meteor.methods({
     if (!column)
       throw new Meteor.Error(231,"Cannot move block, invalid column.")
 
-    //move blocks below removed block up
+    //move blocks up if below removed block
     var ids = _.pluck(Blocks.find({columnID:block.columnID,order:{$gt: block.order}},{fields: {_id: 1}}).fetch(), '_id'); 
     Blocks.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});
 

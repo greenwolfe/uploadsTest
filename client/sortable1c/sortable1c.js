@@ -26,7 +26,6 @@ Template.sortable1c.onRendered(function() {
       var sibling = item.nextElementSibling;
       var orderNextItem = null;
       if (sibling) orderNextItem = Blaze.getData(sibling).order;
-      console.log(orderNextItem);
       Meteor.call('moveBlockToNewColumn',block._id,columnID,orderNextItem);
     }
   });

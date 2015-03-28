@@ -9,33 +9,31 @@ Template.column.helpers({
   inEditedWall: function() {
     return (Session.get('editedWall') == this.wallID);
   },
+  disableShrink: function() {
+    return (this.width > 2) ? '':'disabled';
+  },
+  disableExpand: function() {
+    var widths = _.pluck(Columns.find({wallID:this.wallID},{fields:{width:1}}).fetch(),'width');
+    var totalWidth = widths.reduce(function(a, b){return a+b;})
+    return (totalWidth < 12) ? '':'disabled';
+  },
+  disableAdd: function() {
+    var widths = _.pluck(Columns.find({wallID:this.wallID},{fields:{width:1}}).fetch(),'width');
+    var totalWidth = widths.reduce(function(a, b){return a+b;})
+    return (totalWidth < 11) ? '':'disabled';
+  },
+  disableDelete: function() {
+    var numBlocks = Blocks.find({columnID:this._id}).count();
+    var numColumns = Columns.find({wallID:this.wallID}).count();
+    return ((numColumns >1) && (numBlocks == 0)) ? '':'disabled';
+  },
   sortableOpts: function() {
     return {
       draggable:'.block',
       handle: '.panel-heading',
       group: 'column',
       columnID: this._id,
-      onRemove: function() {
-
-      },
-      onAdd: function() {
-
-      }
-      /*onEnd: function(evt) {
-        console.log('on end of dragging');
-        console.log(evt);
-        var block = Blaze.getData(evt.item)
-        console.log('item - ')
-        console.log(block);
-        var column = Blaze.getData(evt.from)
-        console.log('column -')
-        console.log(column);
-        if (item.columnID != from._id) Meteor.call('updateBlock',{
-          _id:block._id,
-          columnID:from._id
-        });
-      }*/
-    };
+    }
   }
 });
 
@@ -47,35 +45,20 @@ Template.column.events({
       title: 'title'
     }
     Meteor.call('insertBlock',block);
+  },
+  'click .shrinkColumn': function(event,tmpl) {
+    Meteor.call('shrinkColumn',tmpl.data._id);
+  },
+  'click .expandColumn': function(event,tmpl) {
+    Meteor.call('expandColumn',tmpl.data._id);
+  },
+  'click .addLeft': function(event,tmpl) {
+    Meteor.call('insertColumn',tmpl.data.wallID,tmpl.data.order,'left');
+  },
+  'click .addRight': function(event,tmpl) {
+    Meteor.call('insertColumn',tmpl.data.wallID,tmpl.data.order,'right');
+  },
+  'click .deleteColumn': function(event,tmpl) {
+    Meteor.call('deleteColumn',tmpl.data._id);
   }
 });
-
-/*Template.column.onRendered(function() {
-  var el = this.find('.column');
-  if (!el) return;
-  Sortable.create(el,{
-    draggable:'.block',
-    handle: '.panel-heading',
-    group: 'column',
-    onEnd: function(evt) {
-      console.log('on end of dragging');
-      console.log(evt);
-      var block = Blaze.getData(evt.item)
-      console.log('item - ')
-      console.log(block);
-      var column = Blaze.getData(evt.from)
-      console.log('column -')
-      console.log(column);
-      var next = $(evt.item).next().get(0);
-      console.log('next - ');
-      console.log(next)
-      if (next) next = Blaze.getData(next);
-      console.log(next); 
-      console.log('previous - ');
-      var previous = $(evt.item).prev().get(0);
-      console.log(previous);
-      if (previous) previous = Blaze.getData(previous);
-      console.log(previous);     
-    }
-  });
-});*/
