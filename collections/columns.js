@@ -48,7 +48,9 @@ Meteor.methods({
     var numBlocks = Blocks.find({columnID:column._id}).count();
     var numColumns = Columns.find({wallID:column.wallID}).count();
     if ((numBlocks > 0) || (numColumns == 1)) return;
+    var ids = _.pluck(Columns.find({wallID:column.wallID,order:{$gt: column.order}},{fields: {_id: 1}}).fetch(), '_id');
     Columns.remove(_id);
+    Columns.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});    
   },
   expandColumn: function(_id) {
     var column = Columns.findOne(_id);

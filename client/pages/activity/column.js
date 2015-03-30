@@ -38,11 +38,31 @@ Template.column.helpers({
 });
 
 Template.column.events({
+  'click .addTextBlock': function(event,tmpl) {
+    var block = {
+      columnID: tmpl.data._id,
+      type: 'text',
+      title: '',
+      text: ''
+    }
+    Meteor.call('insertBlock',block);
+  },
   'click .addImageBlock': function(event,tmpl) {
     var block = {
       columnID: tmpl.data._id,
       type: 'image',
-      title: 'title'
+      title: 'image block',
+      image: 'Ltg3uEFSXnzZ7sy2L'
+    }
+    Meteor.call('insertBlock',block);
+  },
+  'click .addEmbedBlock': function(event,tmpl) {
+    var block = {
+      columnID: tmpl.data._id,
+      type: 'embed',
+      title: 'embed block',
+      embedCode: '<iframe class="embed-responsive-item" src="https://mix.office.com/embed/18pki09swrl97" allowfullscreen></iframe>'
+      //embedCode: '<iframe class="embed-responsive-item" src="https://player.vimeo.com/video/106220616" allowfullscreen></iframe><p><a href="https://vimeo.com/106220616">VectorAddGUI</a> from <a href="https://vimeo.com/user13311273">greenwolfe</a> on <a href="https://vimeo.com">Vimeo</a>.</p>'
     }
     Meteor.call('insertBlock',block);
   },

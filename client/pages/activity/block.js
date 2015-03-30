@@ -1,13 +1,11 @@
+//make the corner button just a delete button now
+//add footer with owner/creater and date
 Template.block.helpers({
-  src: function() {
-    var file = Files.find(this.image);
-    if (file.type.indexOf('image') >= 0) {
-      return 'upload/' + file.path;
-    } else return 'file_icon.png';
+  blockType: function() {
+    return Template[this.type + 'Block'];
   },
-  size: function() {
-    var file = Files.find(this.image);
-    return file.size; 
+  notInEditedWall: function() {
+    return (Session.get('editedWall') != Template.parentData().wallID);
   }
 });
 
@@ -16,5 +14,17 @@ Template.block.events({
     if (confirm('Are you sure you want to delete this block?')) {
       Meteor.call('deleteBlock', this._id);
     }
+  }
+});
+
+Template.textBlock.helpers({
+  notInEditedWall: function() {
+    return (Session.get('editedWall') != Template.parentData().wallID);
+  }
+});
+
+Template.imageBlock.helpers({
+  imageFile: function() {
+    return Files.findOne(this.image);
   }
 });
