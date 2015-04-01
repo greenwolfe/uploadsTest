@@ -13,25 +13,14 @@ only owner (original poster, individual student) can delete, edit or move.  Othe
 or just offer (share with another group and make a copy?)  See checklist of all
 groups (that you are in) and check them off.
 */
-Meteor.startup(function() {
+/*Meteor.startup(function() {
   Uploader.finished = function(index, file, tmpl) {
     _.extend(file,tmpl.data.formData);
     Meteor.call('insertFile',file);
   }
-});
+});*/
 
 Template.activityPage.helpers({
-  files: function() {
-    return Files.find();
-  },
-  userInfo: function() {
-    return {
-      activityID: 1,
-      userID: 2,
-      group: [],
-      section: null
-    }
-  },
   walls: function() {
     var walls = Walls.find({activityID:'abc'}).fetch();
     return _.sortBy(walls,function(wall) {

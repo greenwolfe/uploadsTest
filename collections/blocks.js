@@ -53,6 +53,24 @@ Meteor.methods({
     if (_.contains(fields,'order'))
       throw new Meteor.Error(232,"Use moveBlockWithinList instead of updateBlock to move a block to a new position in the list.");
   },
+  blockAddFile: function(blockID,fileID) {
+    var block = Blocks.findOne(blockID);
+    if (!block)
+      throw new Meteor.Error(252,"Cannot add file.  Invalid block.");
+    var file = Files.findOne(fileID,{fields:{_id:1}});
+    if (!file) 
+      throw new Meteor.Error(253,"Cannot add file.  Invalid file.");
+    Blocks.update(blockID,{$addToSet: {files:file}});
+  },
+  blockRemoveFile: function(blockID,fileID) {
+    var block = Blocks.findOne(blockID);
+    if (!block)
+      throw new Meteor.Error(252,"Cannot remove file.  Invalid block.");
+    var file = Files.findOne(fileID,{fields:{_id:1}});
+    if (!file) 
+      throw new Meteor.Error(253,"Cannot remove file.  Invalid file.");
+    Blocks.update(blockID,{ $pull: { files: { _id: fileID } } });
+  },
   moveBlockWithinList: function(blockID,orderPrevItem,orderNextItem) {
     var block = Blocks.findOne(blockID);
     if (!block)
@@ -85,7 +103,7 @@ Meteor.methods({
     var ids = _.pluck(Blocks.find({columnID:block.columnID,order:{$gt: block.order}},{fields: {_id: 1}}).fetch(), '_id'); 
     Blocks.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});
 
-    if (orderNextItem) {  // placed somewhere in middle
+    if (_.isFinite(orderNextItem) && orderNextItem >= 0) {  // placed somewhere in middle
       ids = _.pluck(Blocks.find({columnID:columnID,order:{$gte: orderNextItem}},{fields: {_id: 1}}).fetch(), '_id');
       Blocks.update({_id: {$in: ids}}, {$inc: {order:1}}, {multi: true});
     } else { // place at end or place as first block in empty column

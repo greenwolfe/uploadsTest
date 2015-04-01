@@ -37,7 +37,7 @@ activityPageLayout
 
 Meteor.methods({
   'insertFile': function(file) {
-    Files.insert(file);
+    return Files.insert(file);
   },
   'deleteFile': function(_id) {
     if (!_.isString(_id))

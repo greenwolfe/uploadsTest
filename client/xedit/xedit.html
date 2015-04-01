@@ -1,4 +1,12 @@
 <template name="xedit">
-  <span class='editable' data-disabled={{disabled}}>{{{content}}}</span>
+  {{#if isEmbedCode}}
+    <textarea class='editable embedCode' data-disabled={{disabled}}>
+        {{{content}}}
+    </textarea>
+  {{else}}
+    <span class='editable' data-disabled={{disabled}}>
+        {{{content}}}
+    </span>
+  {{/if}}
 </template>
 <!-- pass collection, id and field in so can fill with content-->

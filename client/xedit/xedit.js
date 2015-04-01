@@ -6,6 +6,14 @@
   method:    (optional) name of update method to be called
              for collection Blocks, defaults to updateBlock if
              no method explicitly passed
+
+And may pass in:
+  enabledEmptyText:   text that appears when editor is enabled and content is empty
+  enabledState: 'enabled' or 'disabled' reactive variable causing editor to be enabled or disabled
+
+The following two standard parameters are often passed in
+  type:        'text' is default, also wysihtml, textarea
+  mode:        'inline' is default, also 'popup'
 */
 
 Template.xedit.helpers({
@@ -17,8 +25,16 @@ Template.xedit.helpers({
     var fields = {};
     fields[field] = 1;
     var _id = this._id || this.options._id;
-    var emptytext = this.emptytext || this.options.emptytext || 'Empty';
+    var emptytext = '&nbsp;';
+    var enabledState = this.enabledState || this.options.enabledState || 'enabled';
+    if (enabledState == 'enabled')
+      emptytext = this.enabledEmptyText || this.options.enabledEmptyText || 'Click to edit.';
     return Collection.findOne(_id,{field:fields})[field] || emptytext;
+  },
+  isEmbedCode: function() {
+    if (_.isEmpty(this)) return false;
+    var field = this.field || this.options.field;
+    return (field == 'embedCode');
   }
 });
 
@@ -56,15 +72,20 @@ Template.xedit.onRendered(function() {
   } else   if (options.type == 'textarea') {
     _.extend(options,{
       tpl: "<textarea></textarea>",
-      rows: options.rows || 1,
+      rows: options.rows || 5,
       mode: options.mode || 'inline',
-      showbuttons: options.showbuttons || 'right',
+      showbuttons: options.showbuttons || 'top',
       placement: options.placement || 'bottom'
     });
   };
-  //options.disabled = false; //later set to true and use autorun below to toggle
+  options.disabled = (options.enabledState == 'disabled') || false;
   options.unsavedclass = null; //don't make text bold, etc. after editing
   options.display = false; //xedit does not display any values, leaves it to meteor helper
+  var Collection = Mongo.Collection.get(options.collection);
+  var field = options.field;
+  var fields = {};
+  fields[field] = 1;
+  options.value = Collection.findOne(options._id,{field:fields})[field] || ''; //xedit does not display initial value, leaves it to meteor helper
   options.success = function(response,newValue) {
       var method = 'update' + _.rtrim(options.collection,'s');
       var item = {
@@ -80,22 +101,26 @@ Template.xedit.onRendered(function() {
 
   //make sure this helper does not run until the template
   //is rendered ... avoids error
+  //couldn't figure out how to get to options from simple autorun
+  //so using this dummy helper where I knew how to get access and it
+  //is already reactive.  Value passed is not used
   Template.xedit.helpers({
     disabled: function() { 
       if (_.isEmpty(this)) return 'true';
-      var disabled = true;
-      if (('disabled' in this) && !this.disabled) disabled = false
-      if (('options' in this) && ('disabled' in this.options) && !this.options.disabled) disabled = false;
+      var enabledState = this.enabledState || this.options.enabledState || 'enabled';
       var template = Template.instance();
-      var container = $(template.find('.editable')) || null;
+      var container = null;
+      if (template) 
+        //non-fatal errror occurs on this line ... why?
+        var container = $(template.find('.editable')) || null;
       if (container) {
-        if (disabled) {
+        if (enabledState == 'disabled') {
           container.editable('disable');
         } else {
           container.editable('enable');
         }
       }
-      return (disabled) ? 'true' : 'false';
+      return (enabledState == 'enabled') ? 'false' : 'true';
     }
   });
 });

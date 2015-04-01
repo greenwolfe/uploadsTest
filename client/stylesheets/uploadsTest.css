@@ -4,6 +4,21 @@ body {
 body div.container {
     margin-bottom: 25px;
 }
+a.glyphicon.glyphicon-remove {
+    color: black;
+}
+a.glyphicon.glyphicon-remove:hover {
+    cursor: pointer;
+    cursor: hand;
+}
+.avoidwrap {
+    display: inline-block;
+}
+
+textarea.editable.embedCode {
+    display: block;
+    width: 100%;
+}
 
 .jqDropZone {
     background: lightgrey;
@@ -31,12 +46,14 @@ body div.container {
     opacity: 1;
 }
 
+/* walls */
 .wall div.panel-body {
     min-height: 125px;
 }
 .wall .dropdown {
     margin-left: 20px;
 }
+/* wall-student */
 .wall.wall-student div.panel-heading {
     background-color: #FFE376;
 }
@@ -53,6 +70,7 @@ body div.container {
     border-width: 3%;
     border-color: cornsilk; /* #FFF8DC */
 }
+/* wall-group */
 .wall.wall-group div.panel-heading {
     background-color: #76FFE3;
 }
@@ -65,6 +83,7 @@ body div.container {
     border-width: 3%;
     border-color: #DCFFF8;
 }
+/* wall-section */
 .wall.wall-section div.panel-heading {
     background-color: #E376FF;
 }
@@ -77,9 +96,13 @@ body div.container {
     border-width: 3%;
     border-color: #F8DCFF;
 }
+
+/* columns */
 .wall .column {
     min-height: 100px;
 }
+
+/* blocks */
 .wall .column .block {
     margin-right: auto;
     margin-left: auto;
@@ -93,6 +116,11 @@ body div.container {
 }
 .wall .column .block div.panel-body img {
     max-width: 100%;
+}
+.wall .column .block div.panel-footer {
+    background-color: #F8F8F8 !important;
+    font-size: small;
+    padding: 0;
 }
 
 /*   eventually delete below here */

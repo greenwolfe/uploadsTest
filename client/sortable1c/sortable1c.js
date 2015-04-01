@@ -1,5 +1,5 @@
 //todo:  Make this generic so the collection name, sort field, and key 
-//can be passed in ... i.e. use with bocks and with activities
+//can be passed in ... i.e. use with blocks and with activities
 Template.sortable1c.onRendered(function() {
   var templateInstance = this;
   var el = this.firstNode.parentElement;
