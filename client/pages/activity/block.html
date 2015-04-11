@@ -7,7 +7,7 @@
       {{/if}}{{/if}}
     </div>
     <div class="panel-body">
-    {{> blockType}}
+      {{> blockType}}
     </div>
     <div class="panel-footer">
       {{#if inEditedWall}}
@@ -23,14 +23,14 @@
 </Template>
 
 <Template name="embedBlock">
-  {{#unless inEditedWall}} {{#if embedCode}}
+  {{#unless inEditedWall}} {{#if embedCodeWithNoScript}}
     <div class="embed-responsive embed-responsive-4by3">
-      {{{embedCode}}}
+      {{{embedCodeWithNoScript}}}
     </div>
   {{/if}} {{else}}
     <p>
       Click below to edit or replace the embed code.
-      {{>xedit collection='Blocks' field='embedCode' _id=_id type='textarea' mode="popup" enabledEmptyText='Click here to paste embed code from another web site.' enabledState=enabledState}}
+      {{>xedit collection='Blocks' field='embedCode' _id=_id type='textarea' mode="inline" enabledEmptyText='Click here to paste embed code from another web site.' enabledState=enabledState}}
     </p>
   {{/unless}}
   <p>

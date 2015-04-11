@@ -17,7 +17,7 @@ var validateFiles = function(files) {
   /**********************/
  /******* BLOCK** ******/
 /**********************/
-/* Make the list sortable??? */
+
 Template.block.helpers({
   blockType: function() {
     return Template[this.type + 'Block'];
@@ -53,8 +53,27 @@ Template.textBlock.helpers({
 
 Template.embedBlock.helpers({
   enabledState: enabledState,
-  inEditedWall: inEditedWall
+  inEditedWall: inEditedWall,
+  embedCodeWithNoScript: function() {
+    if (!this.embedCode) return false;
+    if (_.str.include(this.embedCode,'<script')) {
+      return 'This embed code contains javascript and has been blocked because some embedded javascript makes the site hang up.  If you are trying to aggregate and poste rss, atom or twitter feeds, use the feed block.';
+    } else {
+      return this.embedCode;
+    }
+  }
 });
+
+/* to embed javascript ... currently disabled as
+some javascript seems to hang the site, even
+when loaded after rendering as below
+Template.embedBlock.onRendered(function() {
+  if (!this.data.embedCode) return;
+  if (_.str.include(this.data.embedCode,'<script')) {
+    var el = this.firstNode.parentElement;
+    //$(el).prepend(this.data.embedCode);
+  }
+});*/
 
   /**********************/
  /**** IMAGEBLOCK ******/
@@ -99,6 +118,7 @@ Template.imageBlock.events({
  /**** FILEBLOCK *******/
 /**********************/
 
+/* Make the list sortable??? */
 Template.fileBlock.helpers({
   inEditedWall: inEditedWall,
   enabledState: enabledState,
