@@ -3,8 +3,8 @@
   collection: collection to be updated
   field:      field of collection to update
   _id:        _id of item in collection
-  method:    (optional) name of update method to be called
-             for collection Blocks, defaults to updateBlock if
+  method:    (optional) name of update method to be called.
+             If the collection is named Blocks, the method defaults to updateBlock if
              no method explicitly passed
 
 And may pass in:
@@ -15,6 +15,10 @@ The following two standard parameters are often passed in
   type:        'text' is default, also wysihtml, textarea
   mode:        'inline' is default, also 'popup'
 */
+
+/* can I move the <textarea class='editable embedCode' ...
+to the calling template and leave tihs more generic?
+i.e. will span as child of textarea work? */
 
 Template.xedit.helpers({
   content: function() {

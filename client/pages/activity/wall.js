@@ -1,3 +1,4 @@
+//put button bar in wall header with option to hide 
 Template.wall.helpers({
   title: function() {
     if (this.type == 'teacher') return 'Teacher Wall';

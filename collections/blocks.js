@@ -70,47 +70,5 @@ Meteor.methods({
     if (!file) 
       throw new Meteor.Error(253,"Cannot remove file.  Invalid file.");
     Blocks.update(blockID,{ $pull: { files: { _id: fileID } } });
-  },
-  moveBlockWithinList: function(blockID,orderPrevItem,orderNextItem) {
-    var block = Blocks.findOne(blockID);
-    if (!block)
-      throw new Meteor.Error(230,"Cannot move block, invalid block.");
-    var column = Columns.findOne(block.columnID);
-    if (!column)
-      throw new Meteor.Error(231,"Cannot move block, invalid column.")
-    var ids = [];
-    var startOrder = block.order;
-
-    if (orderPrevItem != null) {  // Element moved down, so decrease intervening order fields and place moved block in cleared space.
-      ids = _.pluck(Blocks.find({columnID:block.columnID,order:{$lte: orderPrevItem, $gt: startOrder}},{fields: {_id: 1}}).fetch(), '_id');
-      Blocks.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});
-      Blocks.update({_id:block._id},{$set: {order:orderPrevItem}});
-    } else if (orderNextItem != null) {  // Element moved up, so increase intervening order fields and place moved block in cleared space.
-      ids = _.pluck(Blocks.find({columnID:block.columnID,order:{$gte: orderNextItem, $lt: startOrder}},{fields: {_id: 1}}).fetch(), '_id');
-      Blocks.update({_id: {$in: ids}}, {$inc: {order:1}}, {multi: true});
-      Blocks.update({_id:block._id},{$set: {order:orderNextItem}});
-    } 
-  },
-  moveBlockToNewColumn: function(blockID,columnID,orderNextItem) {
-    var block = Blocks.findOne(blockID);
-    if (!block)
-      throw new Meteor.Error(230,"Cannot move block, invalid block.");
-    var column = Columns.findOne(columnID);
-    if (!column)
-      throw new Meteor.Error(231,"Cannot move block, invalid column.")
-
-    //move blocks up if below removed block
-    var ids = _.pluck(Blocks.find({columnID:block.columnID,order:{$gt: block.order}},{fields: {_id: 1}}).fetch(), '_id'); 
-    Blocks.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});
-
-    if (_.isFinite(orderNextItem) && orderNextItem >= 0) {  // placed somewhere in middle
-      ids = _.pluck(Blocks.find({columnID:columnID,order:{$gte: orderNextItem}},{fields: {_id: 1}}).fetch(), '_id');
-      Blocks.update({_id: {$in: ids}}, {$inc: {order:1}}, {multi: true});
-    } else { // place at end or place as first block in empty column
-      last = Blocks.findOne({columnID:column._id},{sort:{order:-1}});
-      orderNextItem = (last) ? last.order + 1 : 0;
-    }
-    Blocks.update(block._id,{$set: {columnID:columnID}});      
-    Blocks.update({_id:block._id},{$set: {order:orderNextItem}});
   }
 });

@@ -1,5 +1,6 @@
 //make some blocks that are group or section editable?
-
+//add button bar with copy block ... add to an array so cold
+//copy several blocks and then paste them into another column
   /**********************/
  /******* HELPERS ******/
 /**********************/

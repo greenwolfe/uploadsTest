@@ -1,3 +1,4 @@
+//add a paste block(s) option to paste copied blocks into the column
 Template.column.helpers({
   blocks: function() {
     return Blocks.find({columnID:this._id},{sort: {order:1}});
@@ -32,7 +33,9 @@ Template.column.helpers({
       draggable:'.block',
       handle: '.panel-heading',
       group: 'column',
-      columnID: this._id,
+      collection: 'Blocks',
+      parentCollection: 'Columns',
+      parentID: this._id
     }
   }
 });
