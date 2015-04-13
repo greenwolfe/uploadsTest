@@ -3,22 +3,30 @@ Meteor.startup(function () {
     Meteor.call('insertWall',{
       activityID: 'abc',
       type: 'teacher',
-      owner: 'teacher'
+      owner: 'teacher',
+      visible: true,
+      order: 0
     });
     Meteor.call('insertWall',{
       activityID: 'abc',
       type: 'student',
-      owner: 'st1'
+      owner: 'st1',
+      visible: true,
+      order: 1
     });
     Meteor.call('insertWall',{
       activityID: 'abc',
       type: 'group',
       owner: ['st1','st2','st3'],
+      visible: true,
+      order: 2
     });
     Meteor.call('insertWall',{
       activityID: 'abc',
       type: 'section',
-      owner: 'Bblock'
+      owner: 'Bblock',
+      visible: true,
+      order: 3
     });
   }
 

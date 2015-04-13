@@ -1,4 +1,4 @@
-Files = new Meteor.Collection('files');
+Files = new Meteor.Collection('Files');
 /*
 Files.insert({ 
   _id: "Su9iW3Rw4bzarrX5j", 

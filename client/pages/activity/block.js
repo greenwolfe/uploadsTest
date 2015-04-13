@@ -120,6 +120,14 @@ Template.imageBlock.events({
 /**********************/
 
 /* Make the list sortable??? */
+/* to do that, change the organization
+instead of an array of fileIds in the block,
+have a blockID and order field with each file
+then use sortable1c with the list of files
+no need for add file and remove file methods in collections/blocks.js,
+but files will need an add and remove operation that adjusts the list
+same with images?
+*/
 Template.fileBlock.helpers({
   inEditedWall: inEditedWall,
   enabledState: enabledState,

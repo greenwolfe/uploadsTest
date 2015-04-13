@@ -5,12 +5,23 @@
   <div class="wall wall-{{type}} panel panel-default row">
     <div class="panel-heading text-center clearfix">
       {{title}}
-      <button class="btn btn-default editColumns pull-right">{{editColumns}}</button>
+      <div class="btn-group pull-right">
+        {{#if inEditedWall}}
+          <button class="btn btn-default {{wallVisible}}"> 
+            {{showHideWall}}
+          </button>
+        {{/if}}
+        <button class="btn btn-default editColumns"> 
+          {{editColumns}}
+        </button>
+      </div>
     </div>
-    <div class="panel-body">
-      {{#each columns}}
-        {{> column}}
-      {{/each}}
-    </div>
+    {{#if visible}}
+      <div class="panel-body">
+        {{#each columns}}
+          {{> column}}
+        {{/each}}
+      </div>
+    {{/if}}
   </div>
 </Template>

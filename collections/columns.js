@@ -1,11 +1,12 @@
 Columns = new Meteor.Collection('Columns');
 
 /*
-columns.insert({ 
+Columns.insert({ 
   _id: "Su9iW3Rw4bzarrX5j", 
   wallID: "abc", 
   width: 3,
-  rank: 0
+  order: 0,
+  visible:true
 });
 */
 
@@ -20,7 +21,8 @@ Meteor.methods({
       Columns.insert({
         wallID:wallID,
         width:4,
-        order: 0
+        order: 0,
+        visible: true
       });
       return;
     }
@@ -38,7 +40,8 @@ Meteor.methods({
     Columns.insert({
       wallID:wallID,
       width:width,
-      order: order
+      order: order,
+      visible: true
     });
   },
   deleteColumn: function(_id) {

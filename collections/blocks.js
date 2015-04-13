@@ -9,7 +9,8 @@ Blocks = new Meteor.Collection('Blocks');
   text: '  ',
   image: fileID,
   embedCode: '  ',
-  fileIDs: ['  ','  ']
+  fileIDs: ['  ','  '],
+  visible: true
 }); */
 
 Meteor.methods({
@@ -23,6 +24,8 @@ Meteor.methods({
     var validTypes = ['text','image','file','embed'];
     if (!('type' in block) || !_.contains(validTypes,block.type))
       throw new Meteor.Error(203,"Cannot add block, invalid type.")
+    if (!('visible' in block))
+      block.visible = true;
 
     var ids = _.pluck(Blocks.find({columnID:block.columnID},{fields: {_id: 1}}).fetch(), '_id');
     Blocks.update({_id: {$in: ids}}, {$inc: {order:1}}, {multi: true});

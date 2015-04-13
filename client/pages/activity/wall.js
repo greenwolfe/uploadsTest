@@ -12,6 +12,15 @@ Template.wall.helpers({
   },
   editColumns: function() {
     return (Session.get('editedWall') == this._id) ? 'Done' : 'Edit Wall';
+  },
+  inEditedWall: function() {
+    return (Session.get('editedWall') == this._id);
+  },
+  showHideWall: function() {
+    return (this.visible) ? 'Hide' : 'Show';
+  },
+  wallVisible: function() {
+    return (this.visible) ? 'wallVisible' : 'wallHidden';
   }
 })
 
@@ -23,5 +32,11 @@ Template.wall.events({
     } else {
       Session.set('editedWall',null);
     }
+  },
+  'click .wallVisible' : function(event,tmpl) {
+    Meteor.call('hideWall',tmpl.data._id);
+  },
+  'click .wallHidden' : function(event,tmpl) {
+    Meteor.call('showWall',tmpl.data._id);
   }
 })

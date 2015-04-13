@@ -22,9 +22,15 @@ groups (that you are in) and check them off.
 
 Template.activityPage.helpers({
   walls: function() {
-    var walls = Walls.find({activityID:'abc'}).fetch();
-    return _.sortBy(walls,function(wall) {
-      return _.indexOf(['teacher','student','group','section'],wall.type);
-    });
+    return walls = Walls.find({activityID:'abc'},{sort: {order:1}});
+  },
+  sortableOpts: function() {
+    return {
+      draggable:'.wall',
+      handle: '.panel-heading',
+      collection: 'Walls',
+      selectField: 'activityID',
+      selectValue: 'abc'
+    }
   }
 });

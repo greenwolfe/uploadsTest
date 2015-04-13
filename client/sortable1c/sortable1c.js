@@ -1,15 +1,11 @@
-//todo:  Make this generic so the collection name, sort field, and key 
-//can be passed in ... i.e. use with blocks and with activities
-//in addition to passing in draggable, handle, group, must pass
-//make generic handler ala how I did it in xedit
-//use generic name instead of block, collection?
-//pass in method name
-
 /* In addition to standard sortable parameters, must pass in:
 
-  collection: collection of items to be updated (example:  Blocks)
-  parentCollection:  collection of containers for the items (example: Columns)
-
+  collection: mongoDB name of the collection of items to be updated (example:  Blocks)
+            ****NOTE THIS IS THE MONGODB NAME, which may not be the same as the meteor variable
+            ****referencing that collection
+  sortField:  field used to select a subset of the collection
+  sortValue:  value that defines this particular subset
+  NOTE:  the items must the this particular subset of the collection
 
 And may pass in:
   sortField: (optional) field of collection to update, defaults to order
@@ -34,11 +30,11 @@ Template.sortable1c.onRendered(function() {
       var item = evt.item
       var itemData = Blaze.getData(item); 
       if (evt.newIndex < evt.oldIndex) { //moved up
-        var orderNextItem = Blaze.getData(item.nextElementSibling).order;
-        Meteor.call('sortItem',options.collection,itemData._id,options.sortField,options.parentCollection,null,orderNextItem);  
+        var orderNextItem = Blaze.getData(item.nextElementSibling)[options.sortField];
+        Meteor.call('sortItem',options.collection,itemData._id,options.sortField,options.selectField,null,orderNextItem);  
       } else if (evt.newIndex > evt.oldIndex) { //moved down
-        var orderPrevItem = Blaze.getData(item.previousElementSibling).order;
-        Meteor.call('sortItem',options.collection,itemData._id,options.sortField,options.parentCollection,orderPrevItem,null);
+        var orderPrevItem = Blaze.getData(item.previousElementSibling)[options.sortField];
+        Meteor.call('sortItem',options.collection,itemData._id,options.sortField,options.selectField,orderPrevItem,null);
       } else {
         //do nothing - drag and drop in same location
       }
@@ -49,7 +45,7 @@ Template.sortable1c.onRendered(function() {
       var sibling = item.nextElementSibling;
       var orderNextItem = null;
       if (sibling) orderNextItem = Blaze.getData(sibling)[options.sortField];
-      Meteor.call('moveItem',options.collection,itemData._id,options.sortField,options.parentCollection,options.parentID,orderNextItem);
+      Meteor.call('moveItem',options.collection,itemData._id,options.sortField,options.selectField,options.selectValue,orderNextItem);
     }
   });
   Sortable.create(el,options);

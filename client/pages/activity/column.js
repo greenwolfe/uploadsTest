@@ -3,6 +3,16 @@ Template.column.helpers({
   blocks: function() {
     return Blocks.find({columnID:this._id},{sort: {order:1}});
   },
+  sortableOpts: function() {
+    return {
+      draggable:'.block',
+      handle: '.panel-heading',
+      group: 'column',
+      collection: 'Blocks',
+      selectField: 'columnID',
+      selectValue: this._id
+    }
+  },
   empty: function() {
     var blocks = Blocks.find({columnID:this._id},{sort: {order:1}}).fetch();
     return (blocks.length > 0) ? '' : 'empty';
@@ -27,16 +37,6 @@ Template.column.helpers({
     var numBlocks = Blocks.find({columnID:this._id}).count();
     var numColumns = Columns.find({wallID:this.wallID}).count();
     return ((numColumns >1) && (numBlocks == 0)) ? '':'disabled';
-  },
-  sortableOpts: function() {
-    return {
-      draggable:'.block',
-      handle: '.panel-heading',
-      group: 'column',
-      collection: 'Blocks',
-      parentCollection: 'Columns',
-      parentID: this._id
-    }
   }
 });
 

@@ -1,11 +1,13 @@
-Walls = new Meteor.Collection('walls');
+Walls = new Meteor.Collection('Walls');
 
 /*
 Walls.insert({ 
   _id: "Su9iW3Rw4bzarrX5j", 
   activityID: "abc", 
   type: ['teacher','student','group','section']
-  owner: [studentID,[groupIDs],sectionID,'teacher']
+  owner: [studentID,[groupIDs],sectionID,'teacher'],
+  order: 0,
+  visible: true
 });
 */
 
@@ -19,5 +21,17 @@ Meteor.methods({
         Meteor.call('insertColumn',_id,1,'right');
       }
     });
+  },
+  hideWall: function(wallID) {
+    var wall = Walls.find(wallID);
+    if (!wall) 
+      throw new Meteor.Error(101,'Cannot hide wall, invalide wallID');
+    Walls.update(wallID,{$set: {visible:false}});
+  },
+  showWall: function(wallID) {
+    var wall = Walls.find(wallID);
+    if (!wall) 
+      throw new Meteor.Error(101,'Cannot hide wall, invalide wallID');
+    Walls.update(wallID,{$set: {visible:true}});
   }
 });
