@@ -5,7 +5,7 @@
       {{#if inEditedWall}} 
         <div class="pull-right">
           <a class="glyphicon glyphicon-copy" title="Copy Block to clipboard"></a>
-          <a class="glyphicon glyphicon-asterisk {{yellow}} {{blockVisible}}" title="Show or Hide block"></a>
+          {{>showHide collection='Blocks' itemName='block' item=this}}
           {{#if noFiles}}
             <a class="glyphicon glyphicon-remove deleteBlock" title="Delete Block"></a>
           {{/if}}

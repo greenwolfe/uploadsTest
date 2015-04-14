@@ -66,17 +66,5 @@ Meteor.methods({
     var column = Columns.findOne(_id);
     if (column.width > 2)
       Columns.update(_id,{$inc: {width:-1}})
-  },
-  hideColumn: function(columnID) {
-    var column = Columns.find(columnID);
-    if (!column) 
-      throw new Meteor.Error(101,'Cannot hide column, invalide columnID');
-    Columns.update(columnID,{$set: {visible:false}});
-  },
-  showColumn: function(columnID) {
-    var column = Columns.find(columnID);
-    if (!column) 
-      throw new Meteor.Error(101,'Cannot hide column, invalide columnID');
-    Columns.update(columnID,{$set: {visible:true}});
   }
 })

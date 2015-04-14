@@ -16,12 +16,6 @@ Template.wall.helpers({
   inEditedWall: function() {
     return (Session.get('editedWall') == this._id);
   },
-  yellow: function() {
-    return (this.visible) ? 'yellow' : '';
-  },
-  wallVisible: function() {
-    return (this.visible) ? 'wallVisible' : 'wallHidden';
-  },
   visibleOrEditing: function() {
     return (this.visible || (Session.get('editedWall') == this._id));
   }
@@ -35,11 +29,5 @@ Template.wall.events({
     } else {
       Session.set('editedWall',null);
     }
-  },
-  'click .wallVisible' : function(event,tmpl) {
-    Meteor.call('hideWall',tmpl.data._id);
-  },
-  'click .wallHidden' : function(event,tmpl) {
-    Meteor.call('showWall',tmpl.data._id);
   }
 })

@@ -21,17 +21,5 @@ Meteor.methods({
         Meteor.call('insertColumn',_id,1,'right');
       }
     });
-  },
-  hideWall: function(wallID) {
-    var wall = Walls.find(wallID);
-    if (!wall) 
-      throw new Meteor.Error(101,'Cannot hide wall, invalide wallID');
-    Walls.update(wallID,{$set: {visible:false}});
-  },
-  showWall: function(wallID) {
-    var wall = Walls.find(wallID);
-    if (!wall) 
-      throw new Meteor.Error(101,'Cannot hide wall, invalide wallID');
-    Walls.update(wallID,{$set: {visible:true}});
   }
 });

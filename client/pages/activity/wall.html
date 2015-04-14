@@ -10,7 +10,7 @@
           {{editColumns}}
         </button>
         {{#if inEditedWall}}
-          <a class="glyphicon glyphicon-asterisk {{yellow}} {{wallVisible}}" title="Show or Hide wall"></a>
+          {{>showHide collection='Walls' itemName='wall' item=this}}
         {{/if}}
       </div>
     </div>

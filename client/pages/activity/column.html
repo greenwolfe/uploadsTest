@@ -30,7 +30,7 @@
           </li>
         </ul>
         <div class="pull-right">
-          <a class="glyphicon glyphicon-asterisk {{yellow}} {{columnVisible}}" title="Show or Hide column"></a>
+          {{>showHide collection='Columns' itemName='column' item=this}}
         </div>
       </nav>
     {{/if}}

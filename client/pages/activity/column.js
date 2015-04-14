@@ -44,12 +44,6 @@ Template.column.helpers({
     var numColumns = Columns.find({wallID:this.wallID}).count();
     return ((numColumns >1) && (numBlocks == 0)) ? '':'disabled';
   },
-  yellow: function() {
-    return (this.visible) ? 'yellow' : '';
-  },
-  columnVisible: function() {
-    return (this.visible) ? 'columnVisible' : 'columnHidden';
-  },
   visibleOrEditing: function() {
     return (this.visible || (Session.get('editedWall') == this.wallID));
   }
@@ -106,11 +100,5 @@ Template.column.events({
   },
   'click .deleteColumn': function(event,tmpl) {
     Meteor.call('deleteColumn',tmpl.data._id);
-  },
-  'click .columnVisible' : function(event,tmpl) {
-    Meteor.call('hideColumn',tmpl.data._id);
-  },
-  'click .columnHidden' : function(event,tmpl) {
-    Meteor.call('showColumn',tmpl.data._id);
   }
 });
