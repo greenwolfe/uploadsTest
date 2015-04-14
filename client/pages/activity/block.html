@@ -3,12 +3,13 @@
     <div class="panel-heading">
       {{>xedit collection='Blocks' field='title' _id=_id type='text' enabledEmptyText='Click here to add a title.' mode='inline' enabledState=enabledState}}
       {{#if inEditedWall}} 
-        {{#if noFiles}}
-          <a class="glyphicon glyphicon-remove deleteBlock pull-right" title="Delete Block"></a>
-        {{/if}}
-        <button class="btn btn-default {{blockVisible}}" title="Show or Hide block"> 
-          <i class="glyphicon glyphicon-asterisk {{yellow}}"></i>
-        </button>
+        <div class="pull-right">
+          <a class="glyphicon glyphicon-copy" title="Copy Block to clipboard"></a>
+          <a class="glyphicon glyphicon-asterisk {{yellow}} {{blockVisible}}" title="Show or Hide block"></a>
+          {{#if noFiles}}
+            <a class="glyphicon glyphicon-remove deleteBlock" title="Delete Block"></a>
+          {{/if}}
+        </div>
       {{/if}}
     </div>
     <div class="panel-body">

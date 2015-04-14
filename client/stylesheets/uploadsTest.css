@@ -4,12 +4,15 @@ body {
 body div.container {
     margin-bottom: 25px;
 }
-a.glyphicon.glyphicon-remove {
+a.glyphicon.glyphicon-remove, a.glyphicon.glyphicon-asterisk, a.glyphicon.glyphicon-copy {
     color: black;
 }
-a.glyphicon.glyphicon-remove:hover {
+a.glyphicon.glyphicon-remove:hover, a.glyphicon.glyphicon-asterisk:hover, a.glyphicon.glyphicon-copy:hover {
     cursor: pointer;
     cursor: hand;
+}
+a.glyphicon.glyphicon-asterisk.yellow{
+    color: yellow;
 }
 .avoidwrap {
     display: inline-block;
@@ -125,67 +128,3 @@ textarea.editable.embedCode {
     font-size: small;
     padding: 0;
 }
-
-/*   eventually delete below here */
-
-#studentArea div.panel-heading {
-    background-color: #FFE376;
-}
-#studentArea div.panel-body {
-    background-color: cornsilk;
-}
-#studentArea .dropdown {
-    margin-left: 20px;
-}
-.shareAreaTitle {
-    /*display: inline-block;
-    text-align: center;*/
-    margin-left: 20px;
-}
-
-
-#groupArea div.panel-heading {
-    background-color: #76FFE3;
-}
-#groupArea div.panel-body {
-    background-color: #DCFFF8;
-    min-height: 125px;
-}
-
-#sectionArea div.panel-heading {
-    background-color: #E376FF;
-}
-#sectionArea div.panel-body {
-    background-color: #F8DCFF;
-    min-height: 125px;
-}
-
- #teacherArea {
-    margin-bottom: 10px;
-    border-radius: 5px;
-    background-color: cornsilk;
-    min-height: 125px;
-}
-
-.activityBlock {
-    margin-right: auto;
-    margin-left: auto;
-}
-.activityBlock div.panel-heading {
-    background-color: #F8F8F8 !important;
-}
-.activityBlock div.panel-body {
-    overflow: hidden;
-    background-color: #FFF !important;
-}
-.activityBlock div.panel-body img {
-    max-width: 100%;
-}
-i.glyphicon.glyphicon-asterisk {
-    font-size: large;
-}
-i.glyphicon.glyphicon-asterisk.yellow {
-    color: yellow;
-}
-
-

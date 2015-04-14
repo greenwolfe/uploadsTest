@@ -21,6 +21,9 @@ Template.wall.helpers({
   },
   wallVisible: function() {
     return (this.visible) ? 'wallVisible' : 'wallHidden';
+  },
+  visibleOrEditing: function() {
+    return (this.visible || (Session.get('editedWall') == this._id));
   }
 })
 

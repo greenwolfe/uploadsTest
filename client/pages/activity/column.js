@@ -49,6 +49,9 @@ Template.column.helpers({
   },
   columnVisible: function() {
     return (this.visible) ? 'columnVisible' : 'columnHidden';
+  },
+  visibleOrEditing: function() {
+    return (this.visible || (Session.get('editedWall') == this.wallID));
   }
 });
 

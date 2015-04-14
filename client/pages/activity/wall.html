@@ -5,18 +5,16 @@
   <div class="wall wall-{{type}} panel panel-default row">
     <div class="panel-heading text-center clearfix">
       {{title}}
-      <div class="btn-group pull-right">
-        {{#if inEditedWall}}
-          <button class="btn btn-default {{wallVisible}}" title="Show or Hide Wall"> 
-            <i class="glyphicon glyphicon-asterisk {{yellow}}"></i>
-          </button>
-        {{/if}}
+      <div class="pull-right">
         <button class="btn btn-default editColumns"> 
           {{editColumns}}
         </button>
+        {{#if inEditedWall}}
+          <a class="glyphicon glyphicon-asterisk {{yellow}} {{wallVisible}}" title="Show or Hide wall"></a>
+        {{/if}}
       </div>
     </div>
-    {{#if visible}}
+    {{#if visibleOrEditing}}
       <div class="panel-body">
         {{#each columns}}
           {{> column}}
