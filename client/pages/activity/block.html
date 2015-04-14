@@ -2,9 +2,14 @@
   <div class="block block-{{type}} panel panel-default row">
     <div class="panel-heading">
       {{>xedit collection='Blocks' field='title' _id=_id type='text' enabledEmptyText='Click here to add a title.' mode='inline' enabledState=enabledState}}
-      {{#if inEditedWall}} {{#if noFiles}}
-        <a class="glyphicon glyphicon-remove deleteBlock pull-right" title="Delete Block"></a>
-      {{/if}}{{/if}}
+      {{#if inEditedWall}} 
+        {{#if noFiles}}
+          <a class="glyphicon glyphicon-remove deleteBlock pull-right" title="Delete Block"></a>
+        {{/if}}
+        <button class="btn btn-default {{blockVisible}}" title="Show or Hide block"> 
+          <i class="glyphicon glyphicon-asterisk {{yellow}}"></i>
+        </button>
+      {{/if}}
     </div>
     <div class="panel-body">
       {{> blockType}}

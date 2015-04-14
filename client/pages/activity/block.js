@@ -29,6 +29,12 @@ Template.block.helpers({
     var noImage = !((this.type == 'image') && ('image' in this) && this.image);
     var noFiles = !((this.type == 'file') && ('files' in this) && (this.files.length > 0));
     return noImage && noFiles;
+  },
+  yellow: function() {
+    return (this.visible) ? 'yellow' : '';
+  },
+  blockVisible: function() {
+    return (this.visible) ? 'blockVisible' : 'blockHidden';
   }
 });
 
@@ -37,6 +43,12 @@ Template.block.events({
     if (confirm('Are you sure you want to delete this block?')) {
       Meteor.call('deleteBlock', this._id);
     }
+  },
+  'click .blockVisible' : function(event,tmpl) {
+    Meteor.call('hideBlock',tmpl.data._id);
+  },
+  'click .blockHidden' : function(event,tmpl) {
+    Meteor.call('showBlock',tmpl.data._id);
   }
 });
 

@@ -1,7 +1,10 @@
 //add a paste block(s) option to paste copied blocks into the column
 Template.column.helpers({
   blocks: function() {
-    return Blocks.find({columnID:this._id},{sort: {order:1}});
+    var selector = {columnID:this._id};
+    if (Session.get('editedWall') != this.wallID) //if not editing
+      selector.visible = true //show only visible blocks
+    return Blocks.find(selector,{sort: {order:1}});
   },
   sortableOpts: function() {
     return {
@@ -14,8 +17,11 @@ Template.column.helpers({
     }
   },
   empty: function() {
-    var blocks = Blocks.find({columnID:this._id},{sort: {order:1}}).fetch();
-    return (blocks.length > 0) ? '' : 'empty';
+    var selector = {columnID:this._id};
+    if (Session.get('editedWall') != this.wallID) //if not editing
+      selector.visible = true //show only visible blocks
+    var blocks = Blocks.find(selector,{sort: {order:1}}).fetch();
+    return (this.visible && (blocks.length > 0)) ? '' : 'empty';
   },
   inEditedWall: function() {
     return (Session.get('editedWall') == this.wallID);
@@ -37,6 +43,12 @@ Template.column.helpers({
     var numBlocks = Blocks.find({columnID:this._id}).count();
     var numColumns = Columns.find({wallID:this.wallID}).count();
     return ((numColumns >1) && (numBlocks == 0)) ? '':'disabled';
+  },
+  yellow: function() {
+    return (this.visible) ? 'yellow' : '';
+  },
+  columnVisible: function() {
+    return (this.visible) ? 'columnVisible' : 'columnHidden';
   }
 });
 
@@ -91,5 +103,11 @@ Template.column.events({
   },
   'click .deleteColumn': function(event,tmpl) {
     Meteor.call('deleteColumn',tmpl.data._id);
+  },
+  'click .columnVisible' : function(event,tmpl) {
+    Meteor.call('hideColumn',tmpl.data._id);
+  },
+  'click .columnHidden' : function(event,tmpl) {
+    Meteor.call('showColumn',tmpl.data._id);
   }
 });

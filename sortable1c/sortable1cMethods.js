@@ -16,7 +16,6 @@ Meteor.methods({
     var sortField = sortField || 'order';
     if (!collection) 
       throw new Meteor.Error(232,"Cannot sort collection.  Invalid collection.");
-    console.log(collection);
     var Collection = Mongo.Collection.get(collection);
     if (!Collection)
       throw new Meteor.Error(233,"Cannot sort collection.  Invalid collection.");

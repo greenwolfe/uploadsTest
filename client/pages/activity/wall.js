@@ -16,8 +16,8 @@ Template.wall.helpers({
   inEditedWall: function() {
     return (Session.get('editedWall') == this._id);
   },
-  showHideWall: function() {
-    return (this.visible) ? 'Hide' : 'Show';
+  yellow: function() {
+    return (this.visible) ? 'yellow' : '';
   },
   wallVisible: function() {
     return (this.visible) ? 'wallVisible' : 'wallHidden';

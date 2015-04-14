@@ -47,6 +47,9 @@ textarea.editable.embedCode {
 }
 
 /* walls */
+.wall div.panel-heading {
+    cursor: move;
+}
 .wall div.panel-body {
     min-height: 125px;
 }
@@ -177,6 +180,12 @@ textarea.editable.embedCode {
 }
 .activityBlock div.panel-body img {
     max-width: 100%;
+}
+i.glyphicon.glyphicon-asterisk {
+    font-size: large;
+}
+i.glyphicon.glyphicon-asterisk.yellow {
+    color: yellow;
 }
 
 

@@ -29,10 +29,15 @@
             </ul>
           </li>
         </ul>
+        <button class="btn btn-default {{columnVisible}}" title="Show or Hide Column"> 
+          <i class="glyphicon glyphicon-asterisk {{yellow}}"></i>
+        </button>
       </nav>
     {{/if}}
-    {{#sortable1c items=blocks options=sortableOpts}}
-      {{> block}}
-    {{/sortable1c}}
+    {{#if visible}}
+      {{#sortable1c items=blocks options=sortableOpts}}
+        {{> block}}
+      {{/sortable1c}}
+    {{/if}}
   </div>
 </Template>

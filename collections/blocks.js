@@ -73,5 +73,17 @@ Meteor.methods({
     if (!file) 
       throw new Meteor.Error(253,"Cannot remove file.  Invalid file.");
     Blocks.update(blockID,{ $pull: { files: { _id: fileID } } });
+  },
+  hideBlock: function(blockID) {
+    var block = Blocks.find(blockID);
+    if (!block) 
+      throw new Meteor.Error(101,'Cannot hide block, invalide blockID');
+    Blocks.update(blockID,{$set: {visible:false}});
+  },
+  showBlock: function(blockID) {
+    var block = Blocks.find(blockID);
+    if (!block) 
+      throw new Meteor.Error(101,'Cannot hide block, invalide blockID');
+    Blocks.update(blockID,{$set: {visible:true}});
   }
 });
