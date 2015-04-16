@@ -110,14 +110,14 @@ Template.imageBlock.helpers({
   }
 });
 
-Template.imageBlock.events({
+  /*****************************/
+ /**** delete Image File ******/
+/*****************************/
+
+Template.deleteImageButton.events({
   'click .deleteImageFile': function(event,tmpl) {
-    if (confirm('Are you sure you want to delete this image?')) {
-      Meteor.call('deleteFile', this.imageFile._id);
-      //check this to see if imageFile is there in this
-      //make sure deleteFile does re-ordering (not necessary for image)
-      //Meteor.call('updateBlock',{_id:this._id,image: null})
-    }
+    if (confirm('Are you sure you want to delete this image?'))
+      Meteor.call('deleteFile', this._id);
   }
 });
 

@@ -51,8 +51,10 @@
     </p> 
   {{/if}}
   {{#if inEditedWall}}
-    {{#if imageFile}}
-      <button class="btn btn-warning deleteImageFile">Delete Image</button>
+    {{#if imageFile}} 
+      {{#with imageFile}}
+        {{> deleteImageButton}}
+      {{/with}}
     {{else}}
       <p>
         Upload an image file.
@@ -63,6 +65,10 @@
   <p>
     {{>xedit collection='Blocks' field='text' _id=_id type='wysihtml5' enabledEmptyText='Click here to add a description.' enabledState=enabledState}}
   </p>
+</Template>
+
+<Template name="deleteImageButton">
+  <button class="btn btn-warning deleteImageFile">Delete Image</button>
 </Template>
 
 <Template name="fileBlock">
@@ -86,6 +92,6 @@
       {{>showHide collection='Files' itemName='file' item=this}}
       <a class="glyphicon glyphicon-remove deleteFile" title="delete file"></a>
     {{/if}}
-    <a href="/upload/{{path}}">{{name}} order={{order}}</a>
+    <a href="/upload/{{path}}">{{name}}</a>
   </p> 
 </Template>

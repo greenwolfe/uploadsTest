@@ -27,32 +27,35 @@ Template.sortable1c.onRendered(function() {
   options.sortField = options.sortField || 'order';
   _.extend(options,{
     onUpdate: function(evt) {
-      evt.stopPropagation(); //in case nested sortables
-      console.log('onUpdate');
-      console.log(evt);
-      var item = evt.item;
-      var itemData = Blaze.getData(item);
-      console.log(Blaze.getData(item.previousElementSibling));
-      console.log(itemData);
-      console.log(Blaze.getData(item.nextElementSibling))
-      if (evt.newIndex < evt.oldIndex) { //moved up
-        var orderNextItem = Blaze.getData(item.nextElementSibling)[options.sortField];
-        Meteor.call('sortItem',options.collection,itemData._id,options.sortField,options.selectField,null,orderNextItem);  
-      } else if (evt.newIndex > evt.oldIndex) { //moved down
-        var orderPrevItem = Blaze.getData(item.previousElementSibling)[options.sortField];
-        Meteor.call('sortItem',options.collection,itemData._id,options.sortField,options.selectField,orderPrevItem,null);
+      evt.stopPropagation(); //stop propagation if nested sortables
+      //evt.newIndex && evt.oldIndex not accurate in nested cases, re-creating from template data
+      var item = evt.item; //item being sorted
+      var itemData = Blaze.getData(item); 
+      var prevItem = item.previousElementSibling;
+      var prevItemData = (prevItem) ? Blaze.getData(prevItem) : null;
+      //validation:  previous item is part of same set
+      var prevOrder = (prevItemData && (options.selectField in prevItemData) && (prevItemData[options.selectField] == options.selectValue)) ? prevItemData[options.sortField] : null;
+      var nextItem = item.nextElementSibling;
+      var nextItemData = (nextItem) ? Blaze.getData(nextItem) : null;
+      //validation:  next item is part of same set
+      var nextOrder = (nextItemData && (options.selectField in nextItemData) && (nextItemData[options.selectField] == options.selectValue)) ? nextItemData[options.sortField] : null;
+      if (_.isFinite(nextOrder) && (itemData.order > nextOrder)) { //moved up
+        Meteor.call('sortItem',options.collection,itemData._id,options.sortField,options.selectField,null,nextOrder);  
+      } else if (_.isFinite(prevOrder) && (itemData.order < prevOrder)) { //moved down
+        Meteor.call('sortItem',options.collection,itemData._id,options.sortField,options.selectField,prevOrder,null);
       } else {
         //do nothing - drag and drop in same location
       }
     },
     onAdd: function(evt) {
-      evt.stopPropagation(); //in case nested sortables
+      evt.stopPropagation();
       var item = evt.item
       var itemData = Blaze.getData(item);
       var sibling = item.nextElementSibling;
-      var orderNextItem = null;
-      if (sibling) orderNextItem = Blaze.getData(sibling)[options.sortField];
-      Meteor.call('moveItem',options.collection,itemData._id,options.sortField,options.selectField,options.selectValue,orderNextItem);
+      var siblingData = (sibling) ? Blaze.getData(sibling) : null;
+      //validation:  sibling is part of same set
+      var nextOrder = (siblingData && (options.selectField in siblingData) && (siblingData[options.selectField] == options.selectValue)) ? siblingData[options.sortField] : null;
+      Meteor.call('moveItem',options.collection,itemData._id,options.sortField,options.selectField,options.selectValue,nextOrder);
     }
   });
   Sortable.create(el,options);
