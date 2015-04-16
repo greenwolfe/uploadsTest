@@ -27,8 +27,14 @@ Template.sortable1c.onRendered(function() {
   options.sortField = options.sortField || 'order';
   _.extend(options,{
     onUpdate: function(evt) {
-      var item = evt.item
-      var itemData = Blaze.getData(item); 
+      evt.stopPropagation(); //in case nested sortables
+      console.log('onUpdate');
+      console.log(evt);
+      var item = evt.item;
+      var itemData = Blaze.getData(item);
+      console.log(Blaze.getData(item.previousElementSibling));
+      console.log(itemData);
+      console.log(Blaze.getData(item.nextElementSibling))
       if (evt.newIndex < evt.oldIndex) { //moved up
         var orderNextItem = Blaze.getData(item.nextElementSibling)[options.sortField];
         Meteor.call('sortItem',options.collection,itemData._id,options.sortField,options.selectField,null,orderNextItem);  
@@ -40,6 +46,7 @@ Template.sortable1c.onRendered(function() {
       }
     },
     onAdd: function(evt) {
+      evt.stopPropagation(); //in case nested sortables
       var item = evt.item
       var itemData = Blaze.getData(item);
       var sibling = item.nextElementSibling;

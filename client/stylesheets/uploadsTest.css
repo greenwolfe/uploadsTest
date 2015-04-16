@@ -4,10 +4,10 @@ body {
 body div.container {
     margin-bottom: 25px;
 }
-a.glyphicon.glyphicon-remove, a.glyphicon.glyphicon-asterisk, a.glyphicon.glyphicon-copy {
+a.glyphicon.glyphicon-remove, a.glyphicon.glyphicon-asterisk, a.glyphicon.glyphicon-copy, a.glyphicon.glyphicon-move {
     color: black;
 }
-a.glyphicon.glyphicon-remove:hover, a.glyphicon.glyphicon-asterisk:hover, a.glyphicon.glyphicon-copy:hover {
+a.glyphicon.glyphicon-remove:hover, a.glyphicon.glyphicon-asterisk:hover, a.glyphicon.glyphicon-copy:hover, a.glyphicon.glyphicon-move:hover {
     cursor: pointer;
     cursor: hand;
 }

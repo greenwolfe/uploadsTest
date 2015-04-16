@@ -63,8 +63,7 @@ Template.column.events({
     var block = {
       columnID: tmpl.data._id,
       type: 'image',
-      title: '',
-      image: ''
+      title: ''
     }
     Meteor.call('insertBlock',block);
   },
@@ -81,8 +80,7 @@ Template.column.events({
     var block = {
       columnID: tmpl.data._id,
       type: 'file',
-      title: '',
-      files: []
+      title: ''
     }
     Meteor.call('insertBlock',block);
   },

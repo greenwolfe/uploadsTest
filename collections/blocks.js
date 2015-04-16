@@ -7,9 +7,7 @@ Blocks = new Meteor.Collection('Blocks');
   type: ['text','image','file','embed'],
   title: '  ',
   text: '  ',
-  image: fileID,
   embedCode: '  ',
-  fileIDs: ['  ','  '],
   visible: true
 }); */
 
@@ -55,23 +53,5 @@ Meteor.methods({
       throw new Meteor.Error(232,"Use moveBlockToNewColumn instead of updateBlock to move the block to a new column.");
     if (_.contains(fields,'order'))
       throw new Meteor.Error(232,"Use moveBlockWithinList instead of updateBlock to move a block to a new position in the list.");
-  },
-  blockAddFile: function(blockID,fileID) {
-    var block = Blocks.findOne(blockID);
-    if (!block)
-      throw new Meteor.Error(252,"Cannot add file.  Invalid block.");
-    var file = Files.findOne(fileID,{fields:{_id:1}});
-    if (!file) 
-      throw new Meteor.Error(253,"Cannot add file.  Invalid file.");
-    Blocks.update(blockID,{$addToSet: {files:file}});
-  },
-  blockRemoveFile: function(blockID,fileID) {
-    var block = Blocks.findOne(blockID);
-    if (!block)
-      throw new Meteor.Error(252,"Cannot remove file.  Invalid block.");
-    var file = Files.findOne(fileID,{fields:{_id:1}});
-    if (!file) 
-      throw new Meteor.Error(253,"Cannot remove file.  Invalid file.");
-    Blocks.update(blockID,{ $pull: { files: { _id: fileID } } });
   }
 });
