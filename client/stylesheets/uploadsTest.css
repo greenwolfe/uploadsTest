@@ -131,3 +131,6 @@ textarea.editable.embedCode {
     font-size: small;
     padding: 0;
 }
+.block a.copyBlock, .column a.copyBlocks, .column a.pasteBlock {
+    font-size: large;
+}
