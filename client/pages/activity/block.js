@@ -130,7 +130,7 @@ Template.imageBlock.helpers({
 
 Template.deleteImageButton.events({
   'click .deleteImageFile': function(event,tmpl) {
-    if (confirm('Are you sure you want to delete this image?'))
+    if (confirm('if this is the last link to this image, \nthe image file itself will also be deleted.  \nAre you sure you want to delete this link?'))
       Meteor.call('deleteFile', this._id);
   }
 });
@@ -179,17 +179,18 @@ Template.fileBlock.helpers({
   }
 });
 
-//add a show/hide button for individual files
+  /**********************/
+ /**** FILELINK  *******/
+/**********************/
+
 Template.fileLink.helpers({
   inEditedWall: inEditedWall
 });
 
 Template.fileLink.events({
   'click .deleteFile':function(event,template) {
-    if (confirm('Are you sure you want to delete this file?')) {
+    if (confirm('If this is the last link to this file, \nthe file itself will also be deleted.  \nAre you sure you want to delete this link?')) {
       Meteor.call('deleteFile', this._id);
-      //check this to see if imageFile is there in this
-      //make sure deleteFile does re-ordering (not necessary for image)
     }
   }
 })

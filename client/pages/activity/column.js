@@ -1,11 +1,24 @@
+  /**********************/
+ /******* HELPERS ******/
+/**********************/
+var getBlocks = function(column) {
+  var selector = {columnID:column._id};
+  if (Session.get('editedWall') != column.wallID) //if not editing
+    selector.visible = true //show only visible blocks
+  return Blocks.find(selector,{sort: {order:1}});
+}
+
 //add a paste block(s) option to paste copied blocks into the column
 Template.column.helpers({
   blocks: function() {
+    return getBlocks(this);
+  },
+  /*function() {
     var selector = {columnID:this._id};
     if (Session.get('editedWall') != this.wallID) //if not editing
       selector.visible = true //show only visible blocks
     return Blocks.find(selector,{sort: {order:1}});
-  },
+  },*/
   sortableOpts: function() {
     return {
       draggable:'.block',
@@ -47,12 +60,26 @@ Template.column.helpers({
   visibleOrEditing: function() {
     return (this.visible || (Session.get('editedWall') == this.wallID));
   },
-  clipboardEmpty: function() {
-    return !ClipboardBlocks.find().count();
+  blocksInClipboard: function() {
+    return !!ClipboardBlocks.find().count();
   }
 });
 
 Template.column.events({
+  'click .copyBlocks': function(event,tmpl) {
+    if (!event.ctrlKey) { //clear the clipboard
+      ClipboardBlocks.find().forEach(function(block) {
+        ClipboardBlocks.remove(block._id);
+      });
+    } //else do nothing ... add block to clipboard
+    getBlocks(tmpl.data).forEach(function(block) {
+      block.idFromCopiedBlock = block._id;
+      block.order = ClipboardBlocks.find().count() + 1;
+      delete block._id;
+      delete block.columnID;
+      ClipboardBlocks.insert(block);
+    });
+  },
   'click .pasteBlock': function(event,tmpl) {
     ClipboardBlocks.find({},{sort:{order:-1}}).forEach(function(block) {
       delete block._id;
