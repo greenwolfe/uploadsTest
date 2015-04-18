@@ -25,16 +25,32 @@ Meteor.methods({
     if (!('visible' in block))
       block.visible = true;
 
+    if ('idFromCopiedBlock' in block) {
+      var idFCB = block.idFromCopiedBlock;
+      delete block.idFromCopiedBlock;
+    }
+
+    //move other blocks in column down to make room
     var ids = _.pluck(Blocks.find({columnID:block.columnID},{fields: {_id: 1}}).fetch(), '_id');
     Blocks.update({_id: {$in: ids}}, {$inc: {order:1}}, {multi: true});
+    //add new block at top
     block.order = 0;
-    Blocks.insert(block);
+    var blockID = Blocks.insert(block);
+    //copy links to any associated files
+    Files.find({blockID:idFCB}).forEach(function(file) {
+      file.blockID = blockID;
+      delete file._id;
+      Files.insert(file);
+    });
   },
   deleteBlock: function(blockID) {
     block = Blocks.findOne(blockID);
     if (!block)
       throw new Meteor.Error(203,"Cannot delete block, block not found.")
-    
+    var fileCount = Files.find({blockID:blockID}).count();
+    if (fileCount > 0) return; 
+      //throw error as well?
+
     var ids = _.pluck(Blocks.find({columnID:block.columnID,order:{$gt: block.order}},{fields: {_id: 1}}).fetch(), '_id');
     Blocks.remove(blockID); 
     Blocks.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});

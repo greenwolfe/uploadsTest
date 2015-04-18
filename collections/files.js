@@ -56,12 +56,14 @@ Meteor.methods({
     var file = Files.findOne(_id);
     if (!file) 
       throw new Meteor.Error(404, 'File not found'); 
+    var fileCount = Files.find({path:file.path}).count();
 
-    //****after deleting, move any files below this one up
+    //test this code
     var ids = _.pluck(Files.find({blockID:file.blockID,order:{$gt: file.order}},{fields: {_id: 1}}).fetch(), '_id');
-    if (Meteor.isServer) 
+    if (Meteor.isServer && (fileCount <= 1)) //only delete file itself if there are no other links to it
       UploadServer.delete(file.path);
-    Files.remove(_id);
+    Files.remove(_id); //remove this link regardless
+    //after deleting, move any files below this one up
     Files.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});
   }
 })

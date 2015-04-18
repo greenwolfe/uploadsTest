@@ -20,6 +20,9 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
               Add Block
+            {{#unless clipboardEmpty}}
+              <a class="glyphicon glyphicon-paste pasteBlock" title="Paste Block(s) from clipboard"></a>
+            {{/unless}}
             </a>
             <ul class="dropdown-menu">
               <li><a href="#" class='addImageBlock'>image</a></li>
@@ -28,6 +31,7 @@
               <li><a href="#" class="addEmbedBlock">embed</a></li>
             </ul>
           </li>
+
         </ul>
         <div class="pull-right">
           {{>showHide collection='Columns' itemName='column' item=this}}

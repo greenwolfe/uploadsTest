@@ -39,6 +39,19 @@ Template.block.events({
     if (confirm('Are you sure you want to delete this block?')) {
       Meteor.call('deleteBlock', this._id);
     }
+  },
+  'click .copyBlock': function(event,tmpl) {
+    if (!event.ctrlKey) { //clear the clipboard
+      ClipboardBlocks.find().forEach(function(block) {
+        ClipboardBlocks.remove(block._id);
+      });
+    } //else do nothing ... add block to clipboard
+    var block = this;
+    block.idFromCopiedBlock = block._id;
+    block.order = ClipboardBlocks.find().count() + 1;
+    delete block._id;
+    delete block.columnID;
+    ClipboardBlocks.insert(block);
   }
 });
 
@@ -96,6 +109,7 @@ Template.imageBlock.helpers({
     return {
       finished: function(index, file, tmpl) {
         file.blockID = blockID;
+        console.log(file);
         var fileId = Meteor.call('insertFile',file);
       },
       validate: function(files) {

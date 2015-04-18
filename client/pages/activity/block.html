@@ -4,7 +4,7 @@
       {{>xedit collection='Blocks' field='title' _id=_id type='text' enabledEmptyText='Click here to add a title.' mode='inline' enabledState=enabledState}}
       {{#if inEditedWall}} 
         <div class="pull-right">
-          <a class="glyphicon glyphicon-copy" title="Copy Block to clipboard"></a>
+          <a class="glyphicon glyphicon-copy copyBlock" title="Copy Block to clipboard"></a>
           {{>showHide collection='Blocks' itemName='block' item=this}}
           {{#unless fileCount}}
             <a class="glyphicon glyphicon-remove deleteBlock" title="Delete Block"></a>

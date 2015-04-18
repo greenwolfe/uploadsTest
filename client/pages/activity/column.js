@@ -46,10 +46,21 @@ Template.column.helpers({
   },
   visibleOrEditing: function() {
     return (this.visible || (Session.get('editedWall') == this.wallID));
+  },
+  clipboardEmpty: function() {
+    return !ClipboardBlocks.find().count();
   }
 });
 
 Template.column.events({
+  'click .pasteBlock': function(event,tmpl) {
+    ClipboardBlocks.find({},{sort:{order:-1}}).forEach(function(block) {
+      delete block._id;
+      delete block.order;
+      block.columnID = tmpl.data._id;
+      Meteor.call('insertBlock',block);
+    });
+  },
   'click .addTextBlock': function(event,tmpl) {
     var block = {
       columnID: tmpl.data._id,
