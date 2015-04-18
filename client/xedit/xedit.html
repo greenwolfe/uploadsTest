@@ -1,10 +1,10 @@
 <template name="xedit">
   {{#if isEmbedCode}}
-    <textarea class='editable embedCode' data-disabled={{disabled}}>
+    <textarea class='editable embedCode'>
         {{{content}}}
     </textarea>
   {{else}}
-    <span class='editable' data-disabled={{disabled}}>
+    <span class='editable'>
         {{{content}}}
     </span>
   {{/if}}

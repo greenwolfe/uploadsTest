@@ -103,28 +103,17 @@ Template.xedit.onRendered(function() {
     e.preventDefault();
   });
 
-  //make sure this helper does not run until the template
-  //is rendered ... avoids error
-  //couldn't figure out how to get to options from simple autorun
-  //so using this dummy helper where I knew how to get access and it
-  //is already reactive.  Value passed is not used
-  Template.xedit.helpers({
-    disabled: function() { 
-      if (_.isEmpty(this)) return 'true';
-      var enabledState = this.enabledState || this.options.enabledState || 'enabled';
-      var template = Template.instance();
-      var container = null;
-      if (template) 
-        //non-fatal errror occurs on this line ... why?
-        var container = $(template.find('.editable')) || null;
-      if (container) {
-        if (enabledState == 'disabled') {
-          container.editable('disable');
-        } else {
-          container.editable('enable');
-        }
+  this.autorun(function() {
+    var template = this.templateInstance();
+    var data = template.data || {};
+    var options = template.data.options || {};
+    var enabledState = data.enabledState || options.enabledState || 'enabled';
+    if (container) {
+      if (enabledState == 'disabled') {
+        container.editable('disable');
+      } else {
+        container.editable('enable');
       }
-      return (enabledState == 'enabled') ? 'false' : 'true';
     }
   });
 });
