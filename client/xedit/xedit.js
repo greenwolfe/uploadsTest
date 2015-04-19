@@ -105,8 +105,9 @@ Template.xedit.onRendered(function() {
 
   this.autorun(function() {
     var template = this.templateInstance();
+    if (_.isEmpty(template.data)) return;
     var data = template.data || {};
-    var options = template.data.options || {};
+    var options = template.data.options || {}; 
     var enabledState = data.enabledState || options.enabledState || 'enabled';
     if (container) {
       if (enabledState == 'disabled') {

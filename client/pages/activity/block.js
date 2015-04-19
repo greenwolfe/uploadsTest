@@ -5,7 +5,13 @@
  /******* HELPERS ******/
 /**********************/
 var enabledState = function() {
-  return (Session.get('editedWall') != Template.parentData().wallID) ? 'disabled' : 'enabled';
+  var data = Template.parentData();
+  if (!data) return 'disabled';
+  var wallID = data.wallID || null;
+  if (!wallID) return 'disabled';
+  var editedWall = Session.get('editedWall');
+  if (!editedWall) return 'disabled';
+  return (editedWall == wallID) ? 'enabled' : 'disabled';
 }
 var inEditedWall = function(gen) {
   gen = gen || 1;

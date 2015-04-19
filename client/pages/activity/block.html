@@ -88,7 +88,7 @@
 <Template name="fileLink">
   <p class="file">
     {{#if inEditedWall 2}}
-      <a class="glyphicon glyphicon-move moveFile"></a>
+      <a class="glyphicon glyphicon-move moveFile" title="move file (within this list only)"></a>
       {{>showHide collection='Files' itemName='file' item=this}}
       <a class="glyphicon glyphicon-remove deleteFile" title="delete file"></a>
     {{/if}}
