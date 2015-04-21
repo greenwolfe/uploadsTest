@@ -1,4 +1,7 @@
 <Template name='block'>
+  <div class="raiseHands avoidwrap">
+      <i class="{{virtualWorkStatus}}"></i>
+  </div>
   <div class="block block-{{type}} panel panel-default row">
     <div class="panel-heading">
       {{>xedit collection='Blocks' field='title' _id=_id type='text' enabledEmptyText='Click here to add a title.' mode='inline' enabledState=enabledState}}

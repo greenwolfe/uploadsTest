@@ -139,3 +139,43 @@ textarea.editable.embedCode {
 .block p.file a.showHide {
   font-size: large;
 }
+
+/* virtual work */
+i.icon-virtual-work {
+  background: url('VirtualWork.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 72px;
+  width: 72px;
+  float: left;
+}
+i.icon-raise-virtual-hand {
+  background: url('RaiseVirtualHand.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 72px;
+  width: 72px;
+  float: left;
+}
+i.icon-virtual-help {
+  background: url('VirtualHelp.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 72px;
+  width: 72px;
+  float: left;
+}
+
+div.raiseHands {
+    overflow-y: hidden;
+    max-height: 0px;
+}
+
+i.icon-raise-virtual-hand.visible {
+    animation: mymove 2s ease; 
+}
+
+@keyframes mymove {
+    from {background-position: -72px;}
+    to {background-position: 0px;}
+}

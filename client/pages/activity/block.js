@@ -38,6 +38,9 @@ Template.block.helpers({
       selector.visible = true //show only visible blocks
     return Files.find(selector).count();
   },
+  virtualWorkStatus: function() {
+    return 'icon-raise-virtual-hand';
+  },
 });
 
 Template.block.events({
