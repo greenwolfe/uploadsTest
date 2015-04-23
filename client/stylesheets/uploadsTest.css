@@ -116,8 +116,19 @@ textarea.editable.embedCode {
     margin-right: auto;
     margin-left: auto;
 }
-.wall .column .block div.panel-heading {
+.wall .column .block div.panel-heading, .wall .column .block p.editTitle {
     background-color: #F8F8F8 !important;
+}
+.wall .column .block div.panel-heading.inEditedWall {
+    border-bottom: none;
+    margin-bottom: none;
+    padding-bottom: none;
+}
+.wall .column .block p.editTitle {
+    margin-top: -15px;
+    width: 120%;
+    margin-left: -15px;
+    padding-left: 15px;
 }
 .wall .column .block div.panel-body {
     overflow: hidden;
@@ -138,6 +149,33 @@ textarea.editable.embedCode {
 }
 .block p.file a.showHide {
   font-size: large;
+}
+
+/* summernote */
+.note-air-editor {
+    border-style: dashed;
+    border-color: DeepSkyBlue;
+    border-width: thin;
+    min-width: 200px;
+}
+.note-popover .popover {
+    max-width: 350px;
+}
+span.cancelEdits.glyphicon-remove-sign {
+    color: gray;
+    cursor: default;
+    font-size: large;
+}
+span.saveEdits.glyphicon-ok-sign {
+    color: DeepSkyBlue;
+    cursor: default;
+    font-size: large;
+}
+.wall .editInstructions {
+    font-size: x-small;
+}
+div.summernote {
+    min-width: 200px;
 }
 
 /* virtual work */

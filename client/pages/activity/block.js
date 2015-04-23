@@ -15,7 +15,7 @@ var enabledState = function() {
 }
 var inEditedWall = function(gen) {
   gen = gen || 1;
-  return (Session.get('editedWall') == Template.parentData(gen).wallID);
+  return (Session.get('editedWall') == Template.parentData(gen).wallID) ? 'inEditedWall' : '';
 }
 var validateFiles = function(files) {
   return (_.max(_.pluck(files,'size')) < 1e8);  //100MB
@@ -25,6 +25,7 @@ var validateFiles = function(files) {
   /**********************/
  /******* BLOCK** ******/
 /**********************/
+
 
 Template.block.helpers({
   blockType: function() {
@@ -65,12 +66,128 @@ Template.block.events({
 });
 
   /**********************/
+ /***** EDITTITLE ******/
+/**********************/
+Template.editTitle.onRendered(function() {
+  var block = this.data;
+  var blockTitle = $(this.find('.blockTitle'));
+  var saveText = function(event) { //make helper at top?
+    Meteor.call('updateBlock',{
+      _id:block._id,
+      title:blockTitle.code()
+    });
+    //thinking about adding a save/cancel button instead
+/*    console.log(event)
+    var popoverSelector = event.target.id.replace('note-editor-','#note-popover-')
+    //fix bug so popover menu is dismissed when focus is lost
+    popoverSelector += ' .note-air-popover';
+    $(popoverSelector).css('display','none');*/
+  }
+  this.autorun(function() { 
+    var eS = enabledState();
+    if (eS == 'enabled') {
+      blockTitle.summernote({
+        onblur: saveText,
+        airMode: true,
+        airPopover: [
+          ['color', ['color']],
+          ['fontname', ['fontname']],
+          ['fontsize', ['fontsize']],
+          ['supersub', ['superscript','subscript','hello']],
+          ['decorations', ['bold', 'italic', 'underline', 'clear']],
+          ['para', ['paragraph']],
+          ['insert', ['link']],
+          ['other', ['undo','redo']],
+          ['hide',['hide']]
+        ]
+      });
+    } else if (eS == 'disabled') {
+      blockTitle.destroy();
+    }
+  })
+})
+
+Template.editTitle.helpers({
+  enabledState: enabledState,
+  inEditedWall: inEditedWall
+});
+
+/*Template.editTitle.events({
+  'click .saveEdits': function(event,tmpl) {
+    console.log('saving edits');
+    var blockTitle = $(tmpl.find('.blockTitle'));
+    Meteor.call('updateBlock',{
+      _id:this._id,
+      title:blockTitle.code()
+    });
+  },
+  'focus .summernote': function(event) {
+    event.preventDefault(); 
+    event.stopPropagation();
+    return false;
+  }
+})*/
+
+  /**********************/
  /***** TEXTBLOCK ******/
 /**********************/
+Template.textBlock.onRendered(function() {
+  var block = this.data;
+  var blockText = $(this.find('.blockText'));
+  //var popover = $(blockText.popover());
+  var saveText = function(event) { //make helper at top?
+    Meteor.call('updateBlock',{
+      _id:block._id,
+      text:blockText.code()
+    });
+    //thinking about adding save/cancel button instead
+    /*var clickedOn = event.explicitOriginalTarget||document.activeElement;
+    console.log(clickedOn);
+    var popoverSelector = event.target.id.replace('note-editor-','#note-popover-')
+    //fix bug so popover menu is dismissed when focus is lost
+    popoverSelector += ' .note-air-popover';
+    $(popoverSelector).css('display','none');*/
+  }
+  this.autorun(function() { 
+    var eS = enabledState();
+    if (eS == 'enabled') {
+      blockText.summernote({
+        onblur: saveText,
+        airMode: true,
+        airPopover: [
+          ['color', ['color']],
+          ['fontname', ['fontname']],
+          ['fontsize', ['fontsize']],
+          ['supersub', ['superscript','subscript']],
+          ['font', ['bold', 'italic', 'strikethrough', 'underline', 'clear']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['table', ['table']],
+          ['insert', ['link', 'picture','video']],
+          ['undoredo', ['undo','redo']],
+          ['other',['codeview','fullscreen','help','hide']]
+        
+        ]
+      });
+    } else if (eS == 'disabled') {
+      blockText.destroy();
+    }
+  })
+})
 
 Template.textBlock.helpers({
-  enabledState: enabledState
+  enabledState: enabledState,
+  inEditedWall: inEditedWall
 });
+
+Template.textBlock.events({
+  'click saveEdits': function(event) {
+    var blockText = $(Template.find('.blockText'));
+    Meteor.call('updateBlock',{
+      _id:this._id,
+      text:blockText.code()
+    });
+  }
+})
 
   /**********************/
  /**** EMBEDBLOCK ******/

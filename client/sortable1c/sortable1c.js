@@ -59,4 +59,14 @@ Template.sortable1c.onRendered(function() {
     }
   });
   Sortable.create(el,options);
+  
+ /* this.autorun(function() {
+    Session.get('inEditedWall');
+    console.log(Template.instance().data.options.inEditedWall);
+    if (Template.instance().data.options.inEditedWall) {
+      Sortable.destroy(el);
+    } else {
+      Sortable.create(el,options);
+    }
+  });*/
 });

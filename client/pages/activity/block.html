@@ -3,8 +3,7 @@
       <i class="{{virtualWorkStatus}}"></i>
   </div>
   <div class="block block-{{type}} panel panel-default row">
-    <div class="panel-heading">
-      {{>xedit collection='Blocks' field='title' _id=_id type='text' enabledEmptyText='Click here to add a title.' mode='inline' enabledState=enabledState}}
+    <div class="panel-heading {{inEditedWall}}">
       {{#if inEditedWall}} 
         <div class="pull-right">
           <a class="glyphicon glyphicon-copy copyBlock" title='Copy to clipboard.  Holding "Ctrl" adds to existing list.'></a>
@@ -13,10 +12,16 @@
             <a class="glyphicon glyphicon-remove deleteBlock" title="Delete Block"></a>
           {{/unless}}
         </div>
+        <div>&nbsp;</div>
+      {{else}}
+        <div class='avoidwrap'>{{{title}}}</div>
       {{/if}}
     </div>
     <div class="panel-body">
-      {{> blockType}}
+    {{#if inEditedWall}}
+      {{> editTitle}}
+    {{/if}}
+    {{> blockType}}
     </div>
     <div class="panel-footer">
       {{#if inEditedWall}}
@@ -27,8 +32,22 @@
   </div>
 </Template>
 
+<Template name="editTitle">
+  <p class='editTitle'>
+    Edit Title 
+    <span class='editInstructions'>(select text to format)</span>
+    <!--<span class="glyphicon glyphicon-ok-sign saveEdits" title="save changes"></span>
+    <span class="glyphicon glyphicon-remove-sign cancelEdits" title="cancel"></span>--><br/>
+    <div class='summernote blockTitle selectable avoidwrap {{inEditedWall}}'>{{{title}}}</div>
+  </p>
+</Template>
+
 <Template name="textBlock">
-    {{>xedit collection='Blocks' field='text' _id=_id type='wysihtml5' enabledEmptyText='Click here to edit.' enabledState=enabledState}}
+    <!--{{>xedit collection='Blocks' field='text' _id=_id type='wysihtml5' enabledEmptyText='Click here to edit.' enabledState=enabledState}}-->
+    {{#if inEditedWall}}
+      <p>Edit Description <span class='editInstructions'>(select text to format)</span></p>
+    {{/if}}
+    <div class='summernote blockText selectable {{inEditedWall}}'>{{{text}}}</div>
 </Template>
 
 <Template name="embedBlock">
@@ -43,7 +62,7 @@
     </p>
   {{/unless}}
   <p>
-    {{>xedit collection='Blocks' field='text' _id=_id type='wysihtml5' enabledEmptyText='Click here to add a description.' enabledState=enabledState}}
+    <!--{{>xedit collection='Blocks' field='text' _id=_id type='wysihtml5' enabledEmptyText='Click here to add a description.' enabledState=enabledState}}-->
   </p>
 </Template>
 
@@ -66,7 +85,7 @@
     {{/if}}
   {{/if}}
   <p>
-    {{>xedit collection='Blocks' field='text' _id=_id type='wysihtml5' enabledEmptyText='Click here to add a description.' enabledState=enabledState}}
+    <!--{{>xedit collection='Blocks' field='text' _id=_id type='wysihtml5' enabledEmptyText='Click here to add a description.' enabledState=enabledState}}-->
   </p>
 </Template>
 
@@ -76,7 +95,7 @@
 
 <Template name="fileBlock">
   <p>
-    {{>xedit collection='Blocks' field='text' _id=_id type='wysihtml5' enabledEmptyText='Click here to add a description.' enabledState=enabledState}}
+    <!--{{>xedit collection='Blocks' field='text' _id=_id type='wysihtml5' enabledEmptyText='Click here to add a description.' enabledState=enabledState}}-->
   </p>
   {{#sortable1c items=files  options=sortableOpts}} 
     {{>fileLink}}
