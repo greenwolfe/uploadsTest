@@ -151,9 +151,9 @@ textarea.editable.embedCode {
 }
 
 /* summernote */
-.note-air-editor {
-    min-width: 200px;
-}
+/*.note-air-editor {
+    min-width: 100px;
+}*/
 .note-air-editor, .blue-outlined {
     border-style: dashed;
     border-color: DeepSkyBlue;
@@ -176,7 +176,7 @@ span.saveEdits.glyphicon-ok-sign {
     font-size: x-small;
 }
 div.summernote {
-    min-width: 200px;
+    min-width: 100px;
     min-height: 14pt;
 }
 
