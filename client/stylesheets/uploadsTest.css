@@ -116,7 +116,7 @@ textarea.editable.embedCode {
     margin-right: auto;
     margin-left: auto;
 }
-.wall .column .block div.panel-heading, .wall .column .block p.editTitle {
+.wall .column .block div.panel-heading {
     background-color: #F8F8F8 !important;
 }
 .wall .column .block div.panel-heading.inEditedWall {
@@ -124,11 +124,9 @@ textarea.editable.embedCode {
     margin-bottom: none;
     padding-bottom: none;
 }
-.wall .column .block p.editTitle {
-    margin-top: -15px;
-    width: 120%;
-    margin-left: -15px;
-    padding-left: 15px;
+.wall .column .block div.panel-heading div.blockSortableHandle {
+    min-width: 100%;
+    background-color: red;
 }
 .wall .column .block div.panel-body {
     overflow: hidden;

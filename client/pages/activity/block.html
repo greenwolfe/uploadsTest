@@ -3,24 +3,28 @@
       <i class="{{virtualWorkStatus}}"></i>
   </div>
   <div class="block block-{{type}} panel panel-default row">
-    <div class="panel-heading {{inEditedWall}}">
-      {{#if inEditedWall}} 
-        <div class="pull-right">
-          <a class="glyphicon glyphicon-copy copyBlock" title='Copy to clipboard.  Holding "Ctrl" adds to existing list.'></a>
-          {{>showHide collection='Blocks' itemName='block' item=this}}
-          {{#unless fileCount}}
-            <a class="glyphicon glyphicon-remove deleteBlock" title="Delete Block"></a>
-          {{/unless}}
-        </div>
-        <div>&nbsp;</div>
-      {{else}}
-        <div class='avoidwrap'>{{{title}}}</div>
-      {{/if}}
+    <div class="panel-heading">
+      <div class="blockSortableHandle">
+        {{#if inEditedWall}} 
+          <div class="pull-right">
+            <a class="glyphicon glyphicon-copy copyBlock" title='Copy to clipboard.  Holding "Ctrl" adds to existing list.'></a>
+            {{>showHide collection='Blocks' itemName='block' item=this}}
+            {{#unless fileCount}}
+              <a class="glyphicon glyphicon-remove deleteBlock" title="Delete Block"></a>
+            {{/unless}}
+          </div>
+          <div>&nbsp;</div>
+        {{else}}
+          <div class='avoidwrap'>{{{title}}}</div>
+        {{/if}}
+      </div>
+      <div>
+        {{#if inEditedWall}}
+          {{> editTitle}}
+        {{/if}}
+      </div>
     </div>
     <div class="panel-body">
-    {{#if inEditedWall}}
-      {{> editTitle}}
-    {{/if}}
     {{> blockType}}
     </div>
     <div class="panel-footer">
