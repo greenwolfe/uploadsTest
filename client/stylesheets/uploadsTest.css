@@ -120,14 +120,17 @@ textarea.editable.embedCode {
 .wall .column .block div.panel-heading {
     background-color: #F8F8F8 !important;
 }
-.wall .column .block div.panel-heading.inEditedWall {
+/*.wall .column .block div.panel-heading.inEditedWall {
     border-bottom: none;
     margin-bottom: none;
     padding-bottom: none;
-}
+}*/
 .wall .column .block div.panel-heading div.blockSortableHandle {
     min-width: 100%;
     cursor: move;
+}
+.wall .column .block div.panel-heading div.blockTitle {
+    width: 100%;
 }
 .wall .column .block div.panel-body {
     overflow: hidden;
@@ -162,7 +165,7 @@ textarea.editable.embedCode {
 .note-popover .popover {
     max-width: 350px;
 }
-span.cancelEdits.glyphicon-remove-sign {
+/*span.cancelEdits.glyphicon-remove-sign {
     color: gray;
     cursor: default;
     font-size: large;
@@ -174,7 +177,7 @@ span.saveEdits.glyphicon-ok-sign {
 }
 .wall .editInstructions {
     font-size: x-small;
-}
+}*/
 div.summernote {
     min-width: 100px;
     min-height: 14pt;
