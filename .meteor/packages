@@ -13,5 +13,6 @@ sacha:spin
 underscore
 wizonesolutions:underscore-string
 insecure
-natestrauser:x-editable-bootstrap
 rubaxa:sortable
+fortawesome:fontawesome
+summernote:summernote

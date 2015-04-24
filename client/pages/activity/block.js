@@ -1,7 +1,5 @@
 //make some blocks that are group or section editable?
-//add button bar with copy block ... add to an array so cold
-//copy several blocks and then paste them into another column
-  /**********************/
+ /**********************/
  /******* HELPERS ******/
 /**********************/
 var enabledState = function() {
@@ -15,7 +13,7 @@ var enabledState = function() {
 }
 var inEditedWall = function(gen) {
   gen = gen || 1;
-  return (Session.get('editedWall') == Template.parentData(gen).wallID);
+  return (Session.get('editedWall') == Template.parentData(gen).wallID) ? 'inEditedWall' : '';
 }
 var validateFiles = function(files) {
   return (_.max(_.pluck(files,'size')) < 1e8);  //100MB
@@ -25,6 +23,7 @@ var validateFiles = function(files) {
   /**********************/
  /******* BLOCK** ******/
 /**********************/
+
 
 Template.block.helpers({
   blockType: function() {
@@ -65,12 +64,143 @@ Template.block.events({
 });
 
   /**********************/
+ /***** EDITTITLE ******/
+/**********************/
+Template.editTitle.onRendered(function() {
+  var block = this.data;
+  var blockTitle = $(this.find('.blockTitle'));
+  var saveText = function(event) { //make helper at top?
+    var text = blockTitle.code();
+    Meteor.call('updateBlock',{
+      _id:block._id,
+      title:text
+    },function() { //callback to prevent summernote from appending the latest changes to the beginning of the field
+      blockTitle.code(text);
+    });
+  }
+  this.autorun(function() { 
+    var eS = enabledState();
+    if (eS == 'enabled') {
+      blockTitle.summernote({
+        onblur: saveText,
+        airMode: true,
+        airPopover: [
+          ['color', ['color']],
+          ['fontname', ['fontname']],
+          //['fontsize', ['fontsize']], //not working at the moment
+          ['supersub', ['superscript','subscript']],
+          ['decorations', ['bold', 'italic', 'underline', 'clear']],
+          ['para', ['paragraph']],
+          ['insert', ['link']],
+          //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes
+          ['hide',['hide']]
+        ]
+      });
+    } else if (eS == 'disabled') {
+      blockTitle.destroy();
+    }
+  })
+})
+
+Template.editTitle.helpers({
+  enabledState: enabledState,
+  inEditedWall: inEditedWall
+});
+//SAVE CANCEL BUTTONS ... not currently using but saving code for reference
+//cancel button never fully implemented
+/*Template.editTitle.events({
+  'click .saveEdits': function(event,tmpl) {
+    console.log('saving edits');
+    var blockTitle = $(tmpl.find('.blockTitle'));
+    Meteor.call('updateBlock',{
+      _id:this._id,
+      title:blockTitle.code()
+    });
+  }
+})*/
+
+  /**********************/
  /***** TEXTBLOCK ******/
 /**********************/
+Template.textBlock.onRendered(function() {
+  var block = this.data;
+  var blockText = $(this.find('.blockText'));
+  //var popover = $(blockText.popover());
+  var saveText = function(event) { //make helper at top?
+    var text = blockText.code();
+    Meteor.call('updateBlock',{
+      _id:block._id,
+      text:text
+    },function() { //callback to prevent summernote from appending the latest changes to the beginning of the field
+      blockText.code(text);  
+    });
+
+    //currently unused code to hide popover on blur
+    //think now that hide button is better
+    //var popoverSelector = event.target.id.replace('note-editor-','#note-popover-')
+    //fix bug so popover menu is dismissed when focus is lost
+    //popoverSelector += ' .note-air-popover';
+    //$(popoverSelector).css('display','none');*/
+
+    //ISSUE when selecting text, editor does not pop off if selecting to
+    //left and cursor continues out of the field
+    //TOTHINKON if no save button provided, expectation is that it is auto-saved
+    //can I do that every minute or so if there has been no blur event?
+    //providing a save button creates expectation that it must be clicked to save
+    //but people can easily forget to save changes and lose a bunch
+    //save on blur and then provide a revert changes button?  would have to save original
+    //value of the field
+    //TOTHINKON where to put help text
+    //Edit ____ (select text to format) ... saved on blur (how to describe to non-programmer?)
+    //TODO // make generic helper
+  }
+  this.autorun(function() { 
+    var eS = enabledState();
+    if (eS == 'enabled') {
+      blockText.summernote({
+        onblur: saveText,
+        airMode: true,
+        airPopover: [
+          ['color', ['color']],
+          ['fontname', ['fontname']],
+          //['fontsize', ['fontsize']],
+          ['supersub', ['superscript','subscript']],
+          ['font', ['bold', 'italic', 'strikethrough', 'underline', 'clear']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['table', ['table']],
+          ['insert', ['link', 'picture'/*,'video'*/]],
+          //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes
+          ['other',[/*'codeview','fullscreen',*/'help','hide']]
+          //ISSUE codeview, fullscreen, and video not working ... do they work from toolbar and just not from air mode?
+          //ISSUE no link to image to bring up larger view
+          //ISSUE ul/ol (and some others?) airPopover closes when selected
+          //ISSUE paragraph indent and outdent working, but not the center,left,right align
+          //ISSUE font size not working, grouped with paragraph issues because both are submenus?
+          //ISSUE with fontname and color, selection deselected if you return to the menu
+          //seems like clicking on some menu items in some circuistances
+          //is treated like a blur event
+        ]
+      });
+    } else if (eS == 'disabled') {
+      blockText.destroy();
+    }
+  })
+})
 
 Template.textBlock.helpers({
-  enabledState: enabledState
+  enabledState: enabledState,
+  inEditedWall: inEditedWall
 });
+
+Template.textBlock.events({
+  'click saveEdits': function(event) {
+    var blockText = $(Template.find('.blockText'));
+    Meteor.call('updateBlock',{
+      _id:this._id,
+      text:blockText.code()
+    });
+  }
+})
 
   /**********************/
  /**** EMBEDBLOCK ******/

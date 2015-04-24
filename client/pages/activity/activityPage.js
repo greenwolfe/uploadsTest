@@ -27,7 +27,7 @@ Template.activityPage.helpers({
   sortableOpts: function() {
     return {
       draggable:'.wall',
-      handle: '.panel-heading',
+      handle: '.wallSortableHandle',
       collection: 'Walls',
       selectField: 'activityID',
       selectValue: 'abc'

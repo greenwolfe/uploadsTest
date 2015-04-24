@@ -20,13 +20,15 @@ Template.column.helpers({
     return Blocks.find(selector,{sort: {order:1}});
   },*/
   sortableOpts: function() {
+    var iEW = (Session.get('editedWall') == this.wallID) ? 'inEditedWall' : '';
     return {
       draggable:'.block',
-      handle: '.panel-heading',
+      handle: '.blockSortableHandle',
       group: 'column',
       collection: 'Blocks',
       selectField: 'columnID',
-      selectValue: this._id
+      selectValue: this._id,
+      inEditedWall: iEW
     }
   },
   empty: function() {

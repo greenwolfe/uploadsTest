@@ -29,5 +29,12 @@ Template.wall.events({
     } else {
       Session.set('editedWall',null);
     }
-  }
+  },
+  /*'click .selectable, mousedown .selectable': function(event) {
+    event.target.focus();
+  },
+  'drag .selectable': function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }*/
 })

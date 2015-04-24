@@ -4,22 +4,27 @@
   wallID -->
   <div class="wall wall-{{type}} panel panel-default row">
     <div class="panel-heading text-center clearfix">
-      {{title}}
-      <div class="pull-right">
-        <button class="btn btn-default editColumns"> 
-          {{editColumns}}
-        </button>
-        {{#if inEditedWall}}
-          {{>showHide collection='Walls' itemName='wall' item=this}}
-        {{/if}}
+      <div class='wallSortableHandle'>
+        {{title}}
+        <div class="pull-right">
+          <button class="btn btn-default editColumns"> 
+            {{editColumns}}
+          </button>
+          {{#if inEditedWall}}
+            {{>showHide collection='Walls' itemName='wall' item=this}}
+          {{/if}}
+        </div>
       </div>
     </div>
-    {{#if visibleOrEditing}}
-      <div class="panel-body">
+    <div class="panel-body">
+      {{#if inEditedWall}}
+         <div class="alert alert-info" role="alert">Edit any <span class="blue-outlined">blue-outlined</span> text. Select text to reveal the formatting toolbar.  Save changes by clicking anywhere outside the blue outline. </div>
+      {{/if}}
+      {{#if visibleOrEditing}}
         {{#each columns}}
           {{> column}}
         {{/each}}
-      </div>
-    {{/if}}
+      {{/if}}
+    </div>
   </div>
 </Template>
