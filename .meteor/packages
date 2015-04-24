@@ -12,6 +12,6 @@ iron:router
 sacha:spin
 underscore
 wizonesolutions:underscore-string
-rubaxa:sortable
 insecure
 natestrauser:x-editable-bootstrap
+rubaxa:sortable
