@@ -38,19 +38,18 @@
 
 <Template name="editTitle">
   <p class='editTitle'>
-    Edit Title 
+    <!--Edit Title 
     <span class='editInstructions'>(select text to format)</span>
-    <!--<span class="glyphicon glyphicon-ok-sign saveEdits" title="save changes"></span>
+    <span class="glyphicon glyphicon-ok-sign saveEdits" title="save changes"></span>
     <span class="glyphicon glyphicon-remove-sign cancelEdits" title="cancel"></span>--><br/>
     <div class='summernote blockTitle selectable avoidwrap {{inEditedWall}}'>{{{title}}}</div>
   </p>
 </Template>
 
 <Template name="textBlock">
-    <!--{{>xedit collection='Blocks' field='text' _id=_id type='wysihtml5' enabledEmptyText='Click here to edit.' enabledState=enabledState}}-->
-    {{#if inEditedWall}}
+    <!--{{#if inEditedWall}}
       <p>Edit Description <span class='editInstructions'>(select text to format)</span></p>
-    {{/if}}
+    {{/if}}-->
     <div class='summernote blockText selectable {{inEditedWall}}'>{{{text}}}</div>
 </Template>
 

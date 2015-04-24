@@ -23,7 +23,7 @@ Template.column.helpers({
     var iEW = (Session.get('editedWall') == this.wallID) ? 'inEditedWall' : '';
     return {
       draggable:'.block',
-      handle: '.panel-heading',
+      handle: '.blockSortableHandle',
       group: 'column',
       collection: 'Blocks',
       selectField: 'columnID',

@@ -53,8 +53,9 @@ textarea.editable.embedCode {
 }
 
 /* walls */
-.wall div.panel-heading {
+.wall div.panel-heading div.wallSortableHandle {
     cursor: move;
+    min-width: 100%;
 }
 .wall div.panel-body {
     min-height: 125px;
@@ -126,7 +127,7 @@ textarea.editable.embedCode {
 }
 .wall .column .block div.panel-heading div.blockSortableHandle {
     min-width: 100%;
-    background-color: red;
+    cursor: move;
 }
 .wall .column .block div.panel-body {
     overflow: hidden;
@@ -151,10 +152,12 @@ textarea.editable.embedCode {
 
 /* summernote */
 .note-air-editor {
+    min-width: 200px;
+}
+.note-air-editor, .blue-outlined {
     border-style: dashed;
     border-color: DeepSkyBlue;
     border-width: thin;
-    min-width: 200px;
 }
 .note-popover .popover {
     max-width: 350px;
@@ -174,6 +177,7 @@ span.saveEdits.glyphicon-ok-sign {
 }
 div.summernote {
     min-width: 200px;
+    min-height: 14pt;
 }
 
 /* virtual work */

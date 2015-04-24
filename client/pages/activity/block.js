@@ -1,7 +1,5 @@
 //make some blocks that are group or section editable?
-//add button bar with copy block ... add to an array so cold
-//copy several blocks and then paste them into another column
-  /**********************/
+ /**********************/
  /******* HELPERS ******/
 /**********************/
 var enabledState = function() {
@@ -72,16 +70,13 @@ Template.editTitle.onRendered(function() {
   var block = this.data;
   var blockTitle = $(this.find('.blockTitle'));
   var saveText = function(event) { //make helper at top?
+    var text = blockTitle.code();
     Meteor.call('updateBlock',{
       _id:block._id,
-      title:blockTitle.code()
+      title:text
+    },function() { //callback to prevent summernote from appending the latest changes to the beginning of the field
+      blockTitle.code(text);
     });
-    //thinking about adding a save/cancel button instead
-/*    console.log(event)
-    var popoverSelector = event.target.id.replace('note-editor-','#note-popover-')
-    //fix bug so popover menu is dismissed when focus is lost
-    popoverSelector += ' .note-air-popover';
-    $(popoverSelector).css('display','none');*/
   }
   this.autorun(function() { 
     var eS = enabledState();
@@ -92,12 +87,12 @@ Template.editTitle.onRendered(function() {
         airPopover: [
           ['color', ['color']],
           ['fontname', ['fontname']],
-          ['fontsize', ['fontsize']],
-          ['supersub', ['superscript','subscript','hello']],
+          //['fontsize', ['fontsize']], //not working at the moment
+          ['supersub', ['superscript','subscript']],
           ['decorations', ['bold', 'italic', 'underline', 'clear']],
           ['para', ['paragraph']],
           ['insert', ['link']],
-          ['other', ['undo','redo']],
+          //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes
           ['hide',['hide']]
         ]
       });
@@ -111,7 +106,8 @@ Template.editTitle.helpers({
   enabledState: enabledState,
   inEditedWall: inEditedWall
 });
-
+//SAVE CANCEL BUTTONS ... not currently using but saving code for reference
+//cancel button never fully implemented
 /*Template.editTitle.events({
   'click .saveEdits': function(event,tmpl) {
     console.log('saving edits');
@@ -120,11 +116,6 @@ Template.editTitle.helpers({
       _id:this._id,
       title:blockTitle.code()
     });
-  },
-  'focus .summernote': function(event) {
-    event.preventDefault(); 
-    event.stopPropagation();
-    return false;
   }
 })*/
 
@@ -136,17 +127,32 @@ Template.textBlock.onRendered(function() {
   var blockText = $(this.find('.blockText'));
   //var popover = $(blockText.popover());
   var saveText = function(event) { //make helper at top?
+    var text = blockText.code();
     Meteor.call('updateBlock',{
       _id:block._id,
-      text:blockText.code()
+      text:text
+    },function() { //callback to prevent summernote from appending the latest changes to the beginning of the field
+      blockText.code(text);  
     });
-    //thinking about adding save/cancel button instead
-    /*var clickedOn = event.explicitOriginalTarget||document.activeElement;
-    console.log(clickedOn);
-    var popoverSelector = event.target.id.replace('note-editor-','#note-popover-')
+
+    //currently unused code to hide popover on blur
+    //think now that hide button is better
+    //var popoverSelector = event.target.id.replace('note-editor-','#note-popover-')
     //fix bug so popover menu is dismissed when focus is lost
-    popoverSelector += ' .note-air-popover';
-    $(popoverSelector).css('display','none');*/
+    //popoverSelector += ' .note-air-popover';
+    //$(popoverSelector).css('display','none');*/
+
+    //ISSUE when selecting text, editor does not pop off if selecting to
+    //left and cursor continues out of the field
+    //TOTHINKON if no save button provided, expectation is that it is auto-saved
+    //can I do that every minute or so if there has been no blur event?
+    //providing a save button creates expectation that it must be clicked to save
+    //but people can easily forget to save changes and lose a bunch
+    //save on blur and then provide a revert changes button?  would have to save original
+    //value of the field
+    //TOTHINKON where to put help text
+    //Edit ____ (select text to format) ... saved on blur (how to describe to non-programmer?)
+    //TODO // make generic helper
   }
   this.autorun(function() { 
     var eS = enabledState();
@@ -157,15 +163,22 @@ Template.textBlock.onRendered(function() {
         airPopover: [
           ['color', ['color']],
           ['fontname', ['fontname']],
-          ['fontsize', ['fontsize']],
+          //['fontsize', ['fontsize']],
           ['supersub', ['superscript','subscript']],
           ['font', ['bold', 'italic', 'strikethrough', 'underline', 'clear']],
           ['para', ['ul', 'ol', 'paragraph']],
           ['table', ['table']],
-          ['insert', ['link', 'picture','video']],
-          ['undoredo', ['undo','redo']],
-          ['other',['codeview','fullscreen','help','hide']]
-        
+          ['insert', ['link', 'picture'/*,'video'*/]],
+          //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes
+          ['other',[/*'codeview','fullscreen',*/'help','hide']]
+          //ISSUE codeview, fullscreen, and video not working ... do they work from toolbar and just not from air mode?
+          //ISSUE no link to image to bring up larger view
+          //ISSUE ul/ol (and some others?) airPopover closes when selected
+          //ISSUE paragraph indent and outdent working, but not the center,left,right align
+          //ISSUE font size not working, grouped with paragraph issues because both are submenus?
+          //ISSUE with fontname and color, selection deselected if you return to the menu
+          //seems like clicking on some menu items in some circuistances
+          //is treated like a blur event
         ]
       });
     } else if (eS == 'disabled') {
