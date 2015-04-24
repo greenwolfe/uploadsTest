@@ -18,6 +18,9 @@ Template.wall.helpers({
   },
   visibleOrEditing: function() {
     return (this.visible || (Session.get('editedWall') == this._id));
+  },
+  showWallHelp: function() {
+    return Session.get('showWallHelp');
   }
 })
 
@@ -30,6 +33,10 @@ Template.wall.events({
       Session.set('editedWall',null);
     }
   },
+  'click .editHelp': function(event,tmpl) {
+    var help = Session.get('showWallHelp');
+    Session.set('showWallHelp',!help);
+  }
   /*'click .selectable, mousedown .selectable': function(event) {
     event.target.focus();
   },

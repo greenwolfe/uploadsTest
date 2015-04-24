@@ -93,7 +93,7 @@ Template.editTitle.onRendered(function() {
           ['para', ['paragraph']],
           ['insert', ['link']],
           //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes
-          ['hide',['hide']]
+          ['other',['help','hide']]
         ]
       });
     } else if (eS == 'disabled') {

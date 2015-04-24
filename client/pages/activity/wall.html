@@ -11,15 +11,18 @@
             {{editColumns}}
           </button>
           {{#if inEditedWall}}
+            <button class="btn btn-default editHelp" title="help"> 
+              ?
+            </button>
             {{>showHide collection='Walls' itemName='wall' item=this}}
           {{/if}}
         </div>
       </div>
     </div>
     <div class="panel-body">
-      {{#if inEditedWall}}
-         <div class="alert alert-info" role="alert">Edit any <span class="blue-outlined">blue-outlined</span> text. Select text to reveal the formatting toolbar.  Save changes by clicking anywhere outside the blue outline. <i>Drag and drop</i> to rearrange blocks.</div>
-      {{/if}}
+      {{#if inEditedWall}} {{#if showWallHelp}}
+         <div class="alert alert-info" role="alert"><strong>EDIT</strong> any <span class="blue-outlined">blue-outlined</span> text. <strong>FORMAT:</strong> Select text to reveal the formatting toolbar.  <strong>SAVE</strong> changes by clicking anywhere outside the blue outline. Drag and drop to <strong>REARRANGE</strong> blocks.  Use the <strong>MODIFY</strong> menu to expand, shrink, add and delete columns.</div>
+      {{/if}} {{/if}}
       {{#if visibleOrEditing}}
         {{#each columns}}
           {{> column}}
