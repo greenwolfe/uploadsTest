@@ -50,7 +50,7 @@ sacha:spin@2.0.4
 session@1.1.0
 spacebars@1.0.6
 spacebars-compiler@1.0.6
-summernote:summernote@0.6.0_1
+summernote:summernote@0.6.5
 templating@1.1.1
 tomi:upload-jquery@2.1.5
 tomi:upload-server@1.2.3

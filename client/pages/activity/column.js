@@ -28,7 +28,8 @@ Template.column.helpers({
       collection: 'Blocks',
       selectField: 'columnID',
       selectValue: this._id,
-      inEditedWall: iEW
+      inEditedWall: iEW,
+      disabled: (!Session.get('editedWall')) //!= this.wallID to apply to a single wall 
     }
   },
   empty: function() {

@@ -69,25 +69,26 @@ Template.block.events({
 Template.editTitle.onRendered(function() {
   var block = this.data;
   var blockTitle = $(this.find('.blockTitle'));
-  var saveText = function(event) { //make helper at top?
-    var text = blockTitle.code();
+  var saveText = function(event) { 
+    var popoverSelector = event[0].target.id.replace('note-editor-','#note-popover-')
+    popoverSelector += ' .note-air-popover';
+    if ($(popoverSelector).is(':visible')) 
+      return;
     Meteor.call('updateBlock',{
       _id:block._id,
-      title:text
-    },function() { //callback to prevent summernote from appending the latest changes to the beginning of the field
-      blockTitle.code(text);
+      title:blockTitle.code()
     });
   }
   this.autorun(function() { 
     var eS = enabledState();
     if (eS == 'enabled') {
       blockTitle.summernote({
-        onblur: saveText,
+        onBlur: saveText,
         airMode: true,
         airPopover: [
           ['color', ['color']],
           ['fontname', ['fontname']],
-          //['fontsize', ['fontsize']], //not working at the moment
+          ['fontsize', ['fontsize']], 
           ['supersub', ['superscript','subscript']],
           ['decorations', ['bold', 'italic', 'underline', 'clear']],
           ['para', ['paragraph']],
@@ -109,12 +110,15 @@ Template.editTitle.helpers({
 //SAVE CANCEL BUTTONS ... not currently using but saving code for reference
 //cancel button never fully implemented
 /*Template.editTitle.events({
-  'click .saveEdits': function(event,tmpl) {
-    console.log('saving edits');
+   'click .saveEdits': function(event,tmpl) {
+    //console.log('saving edits');
     var blockTitle = $(tmpl.find('.blockTitle'));
+    var text = blockTitle.code();
     Meteor.call('updateBlock',{
       _id:this._id,
-      title:blockTitle.code()
+      title:text
+    },function() { //callback to prevent summernote from appending the latest changes to the beginning of the field
+      blockTitle.code(text);
     });
   }
 })*/
@@ -125,62 +129,55 @@ Template.editTitle.helpers({
 Template.textBlock.onRendered(function() {
   var block = this.data;
   var blockText = $(this.find('.blockText'));
-  //var popover = $(blockText.popover());
-  var saveText = function(event) { //make helper at top?
-    var text = blockText.code();
+  var saveText = function(event) { 
+    var popoverSelector = event[0].target.id.replace('note-editor-','#note-popover-')
+    popoverSelector += ' .note-air-popover';
+    if ($(popoverSelector).is(':visible')) 
+      return;
     Meteor.call('updateBlock',{
       _id:block._id,
-      text:text
-    },function() { //callback to prevent summernote from appending the latest changes to the beginning of the field
-      blockText.code(text);  
+      text:blockText.code()
     });
 
-    //currently unused code to hide popover on blur
-    //think now that hide button is better
-    //var popoverSelector = event.target.id.replace('note-editor-','#note-popover-')
-    //fix bug so popover menu is dismissed when focus is lost
-    //popoverSelector += ' .note-air-popover';
-    //$(popoverSelector).css('display','none');*/
-
-    //ISSUE when selecting text, editor does not pop off if selecting to
+    //ISSUE when selecting text, editor does not appear if selecting to
     //left and cursor continues out of the field
-    //TOTHINKON if no save button provided, expectation is that it is auto-saved
-    //can I do that every minute or so if there has been no blur event?
-    //providing a save button creates expectation that it must be clicked to save
-    //but people can easily forget to save changes and lose a bunch
-    //save on blur and then provide a revert changes button?  would have to save original
-    //value of the field
-    //TOTHINKON where to put help text
-    //Edit ____ (select text to format) ... saved on blur (how to describe to non-programmer?)
-    //TODO // make generic helper
+    //TODO // make generic helper    
+    var popoverSelector = event[0].target.id.replace('note-editor-','#note-popover-')
+    popoverSelector += ' .note-air-popover';
   }
+  $(document).click(function(event) { //if clicked outside any air popovers
+    if(!$(event.target).closest('.note-popover.note-air-layout').length) {
+      _.each($('.note-popover.note-air-layout'),function(popover) {
+        if ($(popover).is(':visible')) {
+          $(popover).children().hide(); //hide any open popovers
+          saveText([{target:{id:'notAnElement'}}]); //and save any changes
+        }
+      });
+    }        
+  })
   this.autorun(function() { 
     var eS = enabledState();
     if (eS == 'enabled') {
       blockText.summernote({
-        onblur: saveText,
+        onBlur: saveText,
         airMode: true,
         airPopover: [
           ['color', ['color']],
           ['fontname', ['fontname']],
-          //['fontsize', ['fontsize']],
+          ['fontsize', ['fontsize']],
           ['supersub', ['superscript','subscript']],
           ['font', ['bold', 'italic', 'strikethrough', 'underline', 'clear']],
           ['para', ['ul', 'ol', 'paragraph']],
           ['table', ['table']],
-          ['insert', ['link', 'picture'/*,'video'*/]],
-          //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes
+          ['insert', ['link', 'picture','video']],
+          //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes, and ctrl-z, ctrl-shift-z reacts more like what you would expect
           ['other',[/*'codeview','fullscreen',*/'help','hide']]
-          //ISSUE codeview, fullscreen, and video not working ... do they work from toolbar and just not from air mode?
+          //ISSUE codeview, fullscreen, not working ... do they work from toolbar and just not from air mode?
+          //ISSUE video works, but can't resize it, no context menu as for image
           //ISSUE no link to image to bring up larger view
-          //ISSUE ul/ol (and some others?) airPopover closes when selected
-          //ISSUE paragraph indent and outdent working, but not the center,left,right align
-          //ISSUE font size not working, grouped with paragraph issues because both are submenus?
-          //ISSUE with fontname and color, selection deselected if you return to the menu
-          //seems like clicking on some menu items in some circuistances
-          //is treated like a blur event
         ]
       });
+
     } else if (eS == 'disabled') {
       blockText.destroy();
     }
@@ -192,15 +189,18 @@ Template.textBlock.helpers({
   inEditedWall: inEditedWall
 });
 
-Template.textBlock.events({
-  'click saveEdits': function(event) {
-    var blockText = $(Template.find('.blockText'));
+/*Template.textBlock.events({
+  'click .saveEdits': function(event,tmpl) {
+    var blockText = $(tmpl.find('.blockText'));
+    var text = blockText.code()
     Meteor.call('updateBlock',{
       _id:this._id,
-      text:blockText.code()
+      text:text
+    },function() { //callback to prevent summernote from appending the latest changes to the beginning of the field
+      blockText.code(text);  
     });
   }
-})
+})*/
 
   /**********************/
  /**** EMBEDBLOCK ******/

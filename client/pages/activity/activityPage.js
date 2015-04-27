@@ -30,7 +30,8 @@ Template.activityPage.helpers({
       handle: '.wallSortableHandle',
       collection: 'Walls',
       selectField: 'activityID',
-      selectValue: 'abc'
+      selectValue: 'abc',
+      disabled: !Session.get('editedWall')
     }
   }
 });

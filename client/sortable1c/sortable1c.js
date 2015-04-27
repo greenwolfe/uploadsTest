@@ -58,15 +58,17 @@ Template.sortable1c.onRendered(function() {
       Meteor.call('moveItem',options.collection,itemData._id,options.sortField,options.selectField,options.selectValue,nextOrder);
     }
   });
-  Sortable.create(el,options);
+  var sortable = Sortable.create(el,options);
   
- /* this.autorun(function() {
-    Session.get('inEditedWall');
-    console.log(Template.instance().data.options.inEditedWall);
-    if (Template.instance().data.options.inEditedWall) {
-      Sortable.destroy(el);
-    } else {
-      Sortable.create(el,options);
-    }
-  });*/
+  //establish reactivity on any changes to sortable parameters
+  //accesses sortable and options from parent context, updating options with current values whenever changed
+  this.autorun(function() {
+    var newOptions = this.templateInstance().data.options;
+    _.each(newOptions, function(value, key){ 
+        if (!(key in options) || !_.isEqual(value,options[key])) {
+          sortable.option(key,value);
+          options[key] = value; 
+        }
+    })
+  });
 });

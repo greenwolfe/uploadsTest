@@ -15,7 +15,7 @@
           </div>
           <div>&nbsp;</div>
         {{else}}
-          <div class='avoidwrap'>{{{title}}}</div>
+          <div>{{{title}}}</div>
         {{/if}}
       </div>
       <div>
@@ -37,11 +37,11 @@
 </Template>
 
 <Template name="editTitle">
-  <!--<p class='editTitle'>-->
-    <!--Edit Title 
+  <!--<p class='editTitle'>
+    Edit Title 
     <span class='editInstructions'>(select text to format)</span>
     <span class="glyphicon glyphicon-ok-sign saveEdits" title="save changes"></span>
-    <span class="glyphicon glyphicon-remove-sign cancelEdits" title="cancel"></span>--><br/>
+    <span class="glyphicon glyphicon-remove-sign cancelEdits" title="cancel"></span><br/>-->
     <div class='summernote blockTitle selectable avoidwrap {{inEditedWall}}'>{{{title}}}</div>
   <!--</p>-->
 </Template>
@@ -49,6 +49,7 @@
 <Template name="textBlock">
     <!--{{#if inEditedWall}}
       <p>Edit Description <span class='editInstructions'>(select text to format)</span></p>
+      <span class="glyphicon glyphicon-ok-sign saveEdits" title="save changes"></span><br/>
     {{/if}}-->
     <div class='summernote blockText selectable {{inEditedWall}}'>{{{text}}}</div>
 </Template>
@@ -61,7 +62,7 @@
   {{/if}} {{else}}
     <p>
       Click below to edit or replace the embed code.
-      {{>xedit collection='Blocks' field='embedCode' _id=_id type='textarea' mode="inline" enabledEmptyText='Click here to paste embed code from another web site.' enabledState=enabledState}}
+      <!--{{>xedit collection='Blocks' field='embedCode' _id=_id type='textarea' mode="inline" enabledEmptyText='Click here to paste embed code from another web site.' enabledState=enabledState}}-->
     </p>
   {{/unless}}
   <p>
