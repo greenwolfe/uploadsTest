@@ -39,7 +39,7 @@ Template.block.helpers({
   },
   virtualWorkStatus: function() {
     return 'icon-raise-virtual-hand';
-  },
+  }
 });
 
 Template.block.events({
@@ -74,9 +74,12 @@ Template.editTitle.onRendered(function() {
     popoverSelector += ' .note-air-popover';
     if ($(popoverSelector).is(':visible')) 
       return;
+    var text = blockTitle.code();
     Meteor.call('updateBlock',{
       _id:block._id,
-      title:blockTitle.code()
+      title:text
+    },function() { //reset summernote's code to correct duplication of latest selection
+      blockTitle.code(text);
     });
   }
   $(document).click(function(event) { 
@@ -118,21 +121,6 @@ Template.editTitle.helpers({
   enabledState: enabledState,
   inEditedWall: inEditedWall
 });
-//SAVE CANCEL BUTTONS ... not currently using but saving code for reference
-//cancel button never fully implemented
-/*Template.editTitle.events({
-   'click .saveEdits': function(event,tmpl) {
-    //console.log('saving edits');
-    var blockTitle = $(tmpl.find('.blockTitle'));
-    var text = blockTitle.code();
-    Meteor.call('updateBlock',{
-      _id:this._id,
-      title:text
-    },function() { //callback to prevent summernote from appending the latest changes to the beginning of the field
-      blockTitle.code(text);
-    });
-  }
-})*/
 
   /**********************/
  /***** TEXTBLOCK ******/
@@ -148,20 +136,22 @@ Template.textBlock.onRendered(function() {
     popoverSelector += ' .note-air-popover';
     if ($(popoverSelector).is(':visible')) //clicking on popover menus cauases a false blur event
       return;
+    var text = blockText.code();
     Meteor.call('updateBlock',{
       _id:block._id,
-      text:blockText.code()
+      text:text
+    },function() { //reset summernote's code to correct duplication of latest selection
+      blockText.code(text); 
     });
   }
   //check for clicks outside open popover
-  //and make sure popover is closed
-  //and save is called ... second-order correction
-  //to handler in save function for false blurs on air popover menu clicks
+  //and make sure popover is closed and save is called
+  // ... second-order correction to false blur handler in save function
+  var popoverSelector = ''; //set later once summernote is initialized
   $(document).click(function(event) { 
-    var popoverSelector = blockText.attr('id').replace('note-editor-','#note-popover-');
     if(!$(event.target).closest(popoverSelector).length) { //if clicked outside this air popovers
       var popover = $(popoverSelector);
-      if (popover.is(':visible')) {
+      if (!_.isEmpty(popover) && popover.is(':visible')) {
         popover.children().hide(); //hide it
         saveText([{target:{id:'notAnElement'}}]); //and save any changes
         //passing false event to bypass false blur handler
@@ -172,7 +162,7 @@ Template.textBlock.onRendered(function() {
   //handle reactivity ... next task
   this.autorun(function() { 
     var eS = enabledState();
-    if (eS == 'enabled') {
+    if ((eS == 'enabled') && !_.isEmpty(blockText)) {
       blockText.summernote({
         onBlur: saveText,
         airMode: true,
@@ -192,7 +182,7 @@ Template.textBlock.onRendered(function() {
           //ISSUE no link to image to bring up larger view
         ]
       });
-
+      popoverSelector = blockText.attr('id').replace('note-editor-','#note-popover-');
     } else if (eS == 'disabled') {
       blockText.destroy();
     }
@@ -201,21 +191,28 @@ Template.textBlock.onRendered(function() {
 
 Template.textBlock.helpers({
   enabledState: enabledState,
-  inEditedWall: inEditedWall
-});
-
-/*Template.textBlock.events({
-  'click .saveEdits': function(event,tmpl) {
-    var blockText = $(tmpl.find('.blockText'));
-    var text = blockText.code()
-    Meteor.call('updateBlock',{
-      _id:this._id,
-      text:text
-    },function() { //callback to prevent summernote from appending the latest changes to the beginning of the field
-      blockText.code(text);  
-    });
+  inEditedWall: inEditedWall,
+  summernoteOptions: function() {
+    return {
+      airMode: true,
+      airPopover: [
+        ['color', ['color']],
+        ['fontname', ['fontname']],
+        ['fontsize', ['fontsize']],
+        ['supersub', ['superscript','subscript']],
+        ['font', ['bold', 'italic', 'strikethrough', 'underline', 'clear']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture','video']],
+        //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes, and ctrl-z, ctrl-shift-z reacts more like what you would expect
+        ['other',[/*'codeview','fullscreen',*/'help','hide']]
+        //ISSUE codeview, fullscreen, not working ... do they work from toolbar and just not from air mode?
+        //ISSUE video works, but can't resize it, no context menu as for image
+        //ISSUE no link to image to bring up larger view
+      ]
+    }
   }
-})*/
+});
 
   /**********************/
  /**** EMBEDBLOCK ******/

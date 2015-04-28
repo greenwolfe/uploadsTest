@@ -37,21 +37,12 @@
 </Template>
 
 <Template name="editTitle">
-  <!--<p class='editTitle'>
-    Edit Title 
-    <span class='editInstructions'>(select text to format)</span>
-    <span class="glyphicon glyphicon-ok-sign saveEdits" title="save changes"></span>
-    <span class="glyphicon glyphicon-remove-sign cancelEdits" title="cancel"></span><br/>-->
     <div class='summernote blockTitle selectable avoidwrap {{inEditedWall}}'>{{{title}}}</div>
-  <!--</p>-->
 </Template>
 
 <Template name="textBlock">
-    <!--{{#if inEditedWall}}
-      <p>Edit Description <span class='editInstructions'>(select text to format)</span></p>
-      <span class="glyphicon glyphicon-ok-sign saveEdits" title="save changes"></span><br/>
-    {{/if}}-->
-    <div class='summernote blockText selectable {{inEditedWall}}'>{{{text}}}</div>
+    <!--<div class='summernote blockText selectable {{inEditedWall}}'>{{{text}}}</div>-->
+    {{>summernote collection='Blocks' field='text' _id=_id enabled=inEditedWall options=summernoteOptions}}
 </Template>
 
 <Template name="embedBlock">

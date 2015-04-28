@@ -24,6 +24,8 @@ Template.sortable1c.onRendered(function() {
   var options = this.data.options || {};  //it appears handlebars automatically merges anything 
     //explicitly in the html data (excluding items) with anything in an options object passed from javascript.  
     //conflicts are resolved in favor of the explicit data
+    //NOT SURE THIS IS TRUE, as I pass in only items and options,
+    //  and I wouldn't want items to be passed into Sortable anyway
   options.sortField = options.sortField || 'order';
   _.extend(options,{
     onUpdate: function(evt) {

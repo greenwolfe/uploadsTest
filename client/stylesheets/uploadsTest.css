@@ -165,19 +165,7 @@ textarea.editable.embedCode {
 .note-popover .popover {
     max-width: 350px;
 }
-/*span.cancelEdits.glyphicon-remove-sign {
-    color: gray;
-    cursor: default;
-    font-size: large;
-}
-span.saveEdits.glyphicon-ok-sign {
-    color: DeepSkyBlue;
-    cursor: default;
-    font-size: large;
-}
-.wall .editInstructions {
-    font-size: x-small;
-}*/
+
 div.summernote {
     min-width: 100px;
     min-height: 14pt;
