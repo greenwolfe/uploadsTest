@@ -79,6 +79,17 @@ Template.editTitle.onRendered(function() {
       title:blockTitle.code()
     });
   }
+  $(document).click(function(event) { 
+    var popoverSelector = blockTitle.attr('id').replace('note-editor-','#note-popover-');
+    if(!$(event.target).closest(popoverSelector).length) { //if clicked outside this air popovers
+      var popover = $(popoverSelector);
+      if (popover.is(':visible')) {
+        popover.children().hide(); //hide it
+        saveText([{target:{id:'notAnElement'}}]); //and save any changes
+        //passing false event to bypass false blur handler
+      }
+    }        
+  });
   this.autorun(function() { 
     var eS = enabledState();
     if (eS == 'enabled') {
@@ -126,35 +137,39 @@ Template.editTitle.helpers({
   /**********************/
  /***** TEXTBLOCK ******/
 /**********************/
+//ISSUE when selecting text, editor does not appear if selecting to
+//left and cursor continues out of the field
+//TODO make generic helper 
 Template.textBlock.onRendered(function() {
   var block = this.data;
   var blockText = $(this.find('.blockText'));
-  var saveText = function(event) { 
+  var saveText = function(event) { //called on popover blur event
     var popoverSelector = event[0].target.id.replace('note-editor-','#note-popover-')
     popoverSelector += ' .note-air-popover';
-    if ($(popoverSelector).is(':visible')) 
+    if ($(popoverSelector).is(':visible')) //clicking on popover menus cauases a false blur event
       return;
     Meteor.call('updateBlock',{
       _id:block._id,
       text:blockText.code()
     });
-
-    //ISSUE when selecting text, editor does not appear if selecting to
-    //left and cursor continues out of the field
-    //TODO // make generic helper    
-    var popoverSelector = event[0].target.id.replace('note-editor-','#note-popover-')
-    popoverSelector += ' .note-air-popover';
   }
-  $(document).click(function(event) { //if clicked outside any air popovers
-    if(!$(event.target).closest('.note-popover.note-air-layout').length) {
-      _.each($('.note-popover.note-air-layout'),function(popover) {
-        if ($(popover).is(':visible')) {
-          $(popover).children().hide(); //hide any open popovers
-          saveText([{target:{id:'notAnElement'}}]); //and save any changes
-        }
-      });
+  //check for clicks outside open popover
+  //and make sure popover is closed
+  //and save is called ... second-order correction
+  //to handler in save function for false blurs on air popover menu clicks
+  $(document).click(function(event) { 
+    var popoverSelector = blockText.attr('id').replace('note-editor-','#note-popover-');
+    if(!$(event.target).closest(popoverSelector).length) { //if clicked outside this air popovers
+      var popover = $(popoverSelector);
+      if (popover.is(':visible')) {
+        popover.children().hide(); //hide it
+        saveText([{target:{id:'notAnElement'}}]); //and save any changes
+        //passing false event to bypass false blur handler
+      }
     }        
-  })
+  });
+  //initialize summernote ... there is a better way to 
+  //handle reactivity ... next task
   this.autorun(function() { 
     var eS = enabledState();
     if (eS == 'enabled') {
