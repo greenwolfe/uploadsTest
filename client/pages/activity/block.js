@@ -18,6 +18,27 @@ var inEditedWall = function(gen) {
 var validateFiles = function(files) {
   return (_.max(_.pluck(files,'size')) < 1e8);  //100MB
 }
+var summernoteOptions = function() {
+  return {
+    airMode: true,
+    airPopover: [
+      ['style',['style']],
+      ['color', ['color']],
+      ['fontname', ['fontname']],
+      ['fontsize', ['fontsize']],
+      ['supersub', ['superscript','subscript']],
+      ['font', ['bold', 'italic', 'strikethrough', 'underline', 'clear']],
+      ['para', ['ul', 'ol', 'paragraph']],
+      ['table', ['table']],
+      ['insert', ['link', 'picture','video']],
+      //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes, and ctrl-z, ctrl-shift-z reacts more like what you would expect
+      ['other',[/*'codeview','fullscreen',*/'help','hide']]
+      //ISSUE codeview, fullscreen, not working ... do they work from toolbar and just not from air mode?
+      //ISSUE video works, but can't resize it, no context menu as for image
+      //ISSUE no link to image to bring up larger view
+    ]
+  }
+}
 //to use:  genericCallbacks: {validate: validateFiles},
 
   /**********************/
@@ -30,7 +51,6 @@ Template.block.helpers({
     return Template[this.type + 'Block'];
   },
   inEditedWall: inEditedWall,
-  enabledState: enabledState,
   fileCount: function() {
     var selector = {blockID:this._id};
     if (!inEditedWall()) //if not editing
@@ -39,6 +59,22 @@ Template.block.helpers({
   },
   virtualWorkStatus: function() {
     return 'icon-raise-virtual-hand';
+  },
+  summernoteOptions: function() {
+    return {
+      airMode: true,
+      airPopover: [ //shorter set of options for title
+        ['color', ['color']],
+        ['fontname', ['fontname']],
+        ['fontsize', ['fontsize']], 
+        ['supersub', ['superscript','subscript']],
+        ['decorations', ['bold', 'italic', 'underline', 'clear']],
+        ['para', ['paragraph']],
+        ['insert', ['link']],
+        //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes
+        ['other',['help','hide']]
+      ]      
+    }
   }
 });
 
@@ -64,163 +100,27 @@ Template.block.events({
 });
 
   /**********************/
- /***** EDITTITLE ******/
-/**********************/
-Template.editTitle.onRendered(function() {
-  var block = this.data;
-  var blockTitle = $(this.find('.blockTitle'));
-  var saveText = function(event) { 
-    var popoverSelector = event[0].target.id.replace('note-editor-','#note-popover-')
-    popoverSelector += ' .note-air-popover';
-    if ($(popoverSelector).is(':visible')) 
-      return;
-    var text = blockTitle.code();
-    Meteor.call('updateBlock',{
-      _id:block._id,
-      title:text
-    },function() { //reset summernote's code to correct duplication of latest selection
-      blockTitle.code(text);
-    });
-  }
-  $(document).click(function(event) { 
-    var popoverSelector = blockTitle.attr('id').replace('note-editor-','#note-popover-');
-    if(!$(event.target).closest(popoverSelector).length) { //if clicked outside this air popovers
-      var popover = $(popoverSelector);
-      if (popover.is(':visible')) {
-        popover.children().hide(); //hide it
-        saveText([{target:{id:'notAnElement'}}]); //and save any changes
-        //passing false event to bypass false blur handler
-      }
-    }        
-  });
-  this.autorun(function() { 
-    var eS = enabledState();
-    if (eS == 'enabled') {
-      blockTitle.summernote({
-        onBlur: saveText,
-        airMode: true,
-        airPopover: [
-          ['color', ['color']],
-          ['fontname', ['fontname']],
-          ['fontsize', ['fontsize']], 
-          ['supersub', ['superscript','subscript']],
-          ['decorations', ['bold', 'italic', 'underline', 'clear']],
-          ['para', ['paragraph']],
-          ['insert', ['link']],
-          //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes
-          ['other',['help','hide']]
-        ]
-      });
-    } else if (eS == 'disabled') {
-      blockTitle.destroy();
-    }
-  })
-})
-
-Template.editTitle.helpers({
-  enabledState: enabledState,
-  inEditedWall: inEditedWall
-});
-
-  /**********************/
  /***** TEXTBLOCK ******/
 /**********************/
-//ISSUE when selecting text, editor does not appear if selecting to
-//left and cursor continues out of the field
-//TODO make generic helper 
-Template.textBlock.onRendered(function() {
-  var block = this.data;
-  var blockText = $(this.find('.blockText'));
-  var saveText = function(event) { //called on popover blur event
-    var popoverSelector = event[0].target.id.replace('note-editor-','#note-popover-')
-    popoverSelector += ' .note-air-popover';
-    if ($(popoverSelector).is(':visible')) //clicking on popover menus cauases a false blur event
-      return;
-    var text = blockText.code();
-    Meteor.call('updateBlock',{
-      _id:block._id,
-      text:text
-    },function() { //reset summernote's code to correct duplication of latest selection
-      blockText.code(text); 
-    });
-  }
-  //check for clicks outside open popover
-  //and make sure popover is closed and save is called
-  // ... second-order correction to false blur handler in save function
-  var popoverSelector = ''; //set later once summernote is initialized
-  $(document).click(function(event) { 
-    if(!$(event.target).closest(popoverSelector).length) { //if clicked outside this air popovers
-      var popover = $(popoverSelector);
-      if (!_.isEmpty(popover) && popover.is(':visible')) {
-        popover.children().hide(); //hide it
-        saveText([{target:{id:'notAnElement'}}]); //and save any changes
-        //passing false event to bypass false blur handler
-      }
-    }        
-  });
-  //initialize summernote ... there is a better way to 
-  //handle reactivity ... next task
-  this.autorun(function() { 
-    var eS = enabledState();
-    if ((eS == 'enabled') && !_.isEmpty(blockText)) {
-      blockText.summernote({
-        onBlur: saveText,
-        airMode: true,
-        airPopover: [
-          ['color', ['color']],
-          ['fontname', ['fontname']],
-          ['fontsize', ['fontsize']],
-          ['supersub', ['superscript','subscript']],
-          ['font', ['bold', 'italic', 'strikethrough', 'underline', 'clear']],
-          ['para', ['ul', 'ol', 'paragraph']],
-          ['table', ['table']],
-          ['insert', ['link', 'picture','video']],
-          //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes, and ctrl-z, ctrl-shift-z reacts more like what you would expect
-          ['other',[/*'codeview','fullscreen',*/'help','hide']]
-          //ISSUE codeview, fullscreen, not working ... do they work from toolbar and just not from air mode?
-          //ISSUE video works, but can't resize it, no context menu as for image
-          //ISSUE no link to image to bring up larger view
-        ]
-      });
-      popoverSelector = blockText.attr('id').replace('note-editor-','#note-popover-');
-    } else if (eS == 'disabled') {
-      blockText.destroy();
-    }
-  })
-})
 
 Template.textBlock.helpers({
-  enabledState: enabledState,
   inEditedWall: inEditedWall,
-  summernoteOptions: function() {
-    return {
-      airMode: true,
-      airPopover: [
-        ['color', ['color']],
-        ['fontname', ['fontname']],
-        ['fontsize', ['fontsize']],
-        ['supersub', ['superscript','subscript']],
-        ['font', ['bold', 'italic', 'strikethrough', 'underline', 'clear']],
-        ['para', ['ul', 'ol', 'paragraph']],
-        ['table', ['table']],
-        ['insert', ['link', 'picture','video']],
-        //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes, and ctrl-z, ctrl-shift-z reacts more like what you would expect
-        ['other',[/*'codeview','fullscreen',*/'help','hide']]
-        //ISSUE codeview, fullscreen, not working ... do they work from toolbar and just not from air mode?
-        //ISSUE video works, but can't resize it, no context menu as for image
-        //ISSUE no link to image to bring up larger view
-      ]
-    }
-  }
+  summernoteOptions: summernoteOptions
 });
 
   /**********************/
  /**** EMBEDBLOCK ******/
 /**********************/
-
 Template.embedBlock.helpers({
-  enabledState: enabledState,
   inEditedWall: inEditedWall,
+  summernoteOptions: summernoteOptions,
+  codeviewOptions: function() {
+    return {
+      toolbar: [
+        ['codeview',['codeview']]
+      ]     
+    }
+  },
   embedCodeWithNoScript: function() {
     if (!this.embedCode) return false;
     if (_.str.include(this.embedCode,'<script')) {

@@ -20,7 +20,7 @@
       </div>
       <div>
         {{#if inEditedWall}}
-          {{> editTitle}}
+          {{>summernote collection='Blocks' field='title' _id=_id enabled=inEditedWall options=summernoteOptions}}
         {{/if}}
       </div>
     </div>
@@ -36,28 +36,21 @@
   </div>
 </Template>
 
-<Template name="editTitle">
-    <div class='summernote blockTitle selectable avoidwrap {{inEditedWall}}'>{{{title}}}</div>
-</Template>
-
 <Template name="textBlock">
-    <!--<div class='summernote blockText selectable {{inEditedWall}}'>{{{text}}}</div>-->
-    {{>summernote collection='Blocks' field='text' _id=_id enabled=inEditedWall options=summernoteOptions}}
+  {{>summernote collection='Blocks' field='text' _id=_id enabled=inEditedWall options=summernoteOptions}}
 </Template>
 
 <Template name="embedBlock">
-  {{#unless inEditedWall}} {{#if embedCodeWithNoScript}}
-    <div class="embed-responsive embed-responsive-4by3">
-      {{{embedCodeWithNoScript}}}
-    </div>
-  {{/if}} {{else}}
-    <p>
-      Click below to edit or replace the embed code.
-      <!--{{>xedit collection='Blocks' field='embedCode' _id=_id type='textarea' mode="inline" enabledEmptyText='Click here to paste embed code from another web site.' enabledState=enabledState}}-->
-    </p>
-  {{/unless}}
+  {{#if inEditedWall}}
+    Click codeview, &lt;/&gt;, to paste/edit embed code.
+  {{/if}}
+    {{>summernote collection='Blocks' field='embedCode' _id=_id enabled=inEditedWall options=codeviewOptions}}
+  
+  {{#if inEditedWall}}
+    Add/edit a description.
+  {{/if}}
   <p>
-    <!--{{>xedit collection='Blocks' field='text' _id=_id type='wysihtml5' enabledEmptyText='Click here to add a description.' enabledState=enabledState}}-->
+    {{>summernote collection='Blocks' field='text' _id=_id enabled=inEditedWall options=summernoteOptions}}
   </p>
 </Template>
 
