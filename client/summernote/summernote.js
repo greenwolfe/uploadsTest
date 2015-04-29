@@ -43,14 +43,16 @@ Template.summernote.onRendered(function() {
       var selector = elementID.replace('note-editor-',s);
       _.each($(selector).children(),function(c) {
         if ($(c).is(':visible')) {
-          console.log(selector + ' ' + c.id + ' is visible');
           popoverVisible = true
-          return;
+          return false;
         }
       })
     });
     if (popoverVisible) return;
-    console.log('popover not visible, so going ahead'); 
+    //popover not visible so go ahead and save
+    //if the popover is visible when a click event occurs 
+    //outside of the element and all associated popovers and dialogs,
+    //this function is called with a false even that passes through
     var item = {
       _id: data._id
     }
@@ -68,18 +70,23 @@ Template.summernote.onRendered(function() {
   $(document).click(function(event) { 
     var elementID = element.attr('id') || '';
     if ($(event.target).parent().attr('id') == elementID) return; //clicked in edited element
-    var popoverVisible = false;
+    var popoverVisible = false; //check if this popover is visible
+    var clickedIn = false;  //check if click was inside the popover or related menus or dialogs
     ['#note-popover-','#note-dialog-'].forEach(function(s) {
       var selector = elementID.replace('note-editor-',s);
+      if($(event.target).closest(selector).length) {
+        clickedIn = true;
+        return false;
+      }
       _.each($(selector).children(),function(c) {
         if ($(c).is(':visible')) {
-          console.log(selector + ' ' + c.id + ' is visible');
           popoverVisible = true
-          return;
+          return false;
         }
       })
     });
-    if (!popoverVisible) return;    
+    if (!popoverVisible) return; //click outside of element will be caught with normal blur event
+    if (clickedIn) return; //clicked one of the popover's menus, buttons or dialogs ... don't save
 
     var popoverSelector = elementID.replace('note-editor-','#note-popover-'); 
     popover = $(popoverSelector); //getting container for link, image, air
@@ -88,25 +95,15 @@ Template.summernote.onRendered(function() {
                                              //passing false event to bypass false blur handler     
   });
 
-  //initialize summernote ... does summernote have an enable/disable option?
-  //an enable/disable method would mean we could  initialize
-  //this once and deal with enable/disable with the reactive handler
-  //for all options
+  //summernote has no enable/disable method, so we create and 
+  //destroy based on the reactive variable enabled
   this.autorun(function() { //make reactive only to enabled?
     var newData = this.templateInstance().data;
     var newOptions = this.templateInstance().data.options;
-    //console.log(newData);
-    //console.log(newOptions);
     if (newData.enabled) { //check if summernote is enabled?
-      //console.log('re-initializing summernote');
-      //console.log('');
       element.summernote(options);
     } else {
-      //console.log('destroying summernote');
-      //console.log(element);
       element.destroy();
-      //console.log(element);
-      //console.log('');
     }
     //add handler to reactively change other options
     //as I did for sortable?
