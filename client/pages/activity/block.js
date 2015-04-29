@@ -21,12 +21,13 @@ var summernoteOptions = function() {
       ['font', ['bold', 'italic', 'strikethrough', 'underline', 'clear']],
       ['para', ['ul', 'ol', 'paragraph']],
       ['table', ['table']],
-      ['insert', ['link', 'picture','video']],
+      ['insert', ['link'/*, 'picture','video'*/]],
       //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes, and ctrl-z, ctrl-shift-z reacts more like what you would expect
       ['other',[/*'codeview','fullscreen',*/'help','hide']]
       //ISSUE codeview, fullscreen, not working ... do they work from toolbar and just not from air mode?
       //ISSUE video works, but can't resize it, no context menu as for image
       //ISSUE no link to image to bring up larger view
+      //leaving out image and video for now, can use image and video blocks until this is better
     ]
   }
 }
@@ -58,11 +59,12 @@ Template.block.helpers({
     return {
       airMode: true,
       airPopover: [ //shorter set of options for title
+        ['style',['style']],
         ['color', ['color']],
         ['fontname', ['fontname']],
         ['fontsize', ['fontsize']], 
         ['supersub', ['superscript','subscript']],
-        ['decorations', ['bold', 'italic', 'underline', 'clear']],
+        ['font', ['bold', 'italic', 'underline', 'clear']],
         ['para', ['paragraph']],
         ['insert', ['link']],
         //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes
