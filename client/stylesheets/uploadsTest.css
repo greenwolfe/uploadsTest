@@ -172,6 +172,9 @@ div.summernote {
     min-width: 100px;
     min-height: 14pt;
 }
+div.note-editor textarea.note-codable {
+    min-height: 72pt;
+}
 
 /* virtual work */
 i.icon-virtual-work {
