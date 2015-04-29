@@ -127,6 +127,8 @@ textarea.editable.embedCode {
 }*/
 .wall .column .block div.panel-heading div.blockSortableHandle {
     min-width: 100%;
+}
+.wall .column .block div.panel-heading div.blockSortableHandle.editing {
     cursor: move;
 }
 .wall .column .block div.panel-heading div.blockTitle {

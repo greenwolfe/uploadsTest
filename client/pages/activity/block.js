@@ -2,15 +2,6 @@
  /**********************/
  /******* HELPERS ******/
 /**********************/
-var enabledState = function() {
-  var data = Template.parentData();
-  if (!data) return 'disabled';
-  var wallID = data.wallID || null;
-  if (!wallID) return 'disabled';
-  var editedWall = Session.get('editedWall');
-  if (!editedWall) return 'disabled';
-  return (editedWall == wallID) ? 'enabled' : 'disabled';
-}
 var inEditedWall = function(gen) {
   gen = gen || 1;
   return (Session.get('editedWall') == Template.parentData(gen).wallID) ? 'inEditedWall' : '';
@@ -51,6 +42,9 @@ Template.block.helpers({
     return Template[this.type + 'Block'];
   },
   inEditedWall: inEditedWall,
+  editing: function() {
+    return Session.get('editedWall') ? 'editing' : ''; //returns 'editing' if ANY wall on the page is being edited
+  },
   fileCount: function() {
     var selector = {blockID:this._id};
     if (!inEditedWall()) //if not editing
@@ -154,7 +148,7 @@ Template.imageBlock.helpers({
     return Files.findOne(selector,{sort: {order:1}});
   },
   inEditedWall: inEditedWall,
-  enabledState: enabledState,
+  summernoteOptions: summernoteOptions,
   processUpload: function() {
     var blockID = this._id
     return {
@@ -190,19 +184,9 @@ Template.deleteImageButton.events({
  /**** FILEBLOCK *******/
 /**********************/
 
-/* Make the list sortable??? */
-/* to do that, change the organization
-instead of an array of fileIds in the block,
-have a blockID and order field with each file
-then use sortable1c with the list of files
-no need for add file and remove file methods in collections/blocks.js,
-but files will need an add and remove operation that adjusts the list
-same with images?
-*/
-
 Template.fileBlock.helpers({
   inEditedWall: inEditedWall,
-  enabledState: enabledState,
+  summernoteOptions: summernoteOptions,
   files: function() {
     var selector = {blockID:this._id};
     if (!inEditedWall()) //if not editing

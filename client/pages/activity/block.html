@@ -4,7 +4,7 @@
   </div>
   <div class="block block-{{type}} panel panel-default row">
     <div class="panel-heading">
-      <div class="blockSortableHandle">
+      <div class="blockSortableHandle {{editing}}">
         {{#if inEditedWall}} 
           <div class="pull-right">
             <a class="glyphicon glyphicon-copy copyBlock" title='Copy to clipboard.  Holding "Ctrl" adds to existing list.'></a>
@@ -73,7 +73,7 @@
     {{/if}}
   {{/if}}
   <p>
-    <!--{{>xedit collection='Blocks' field='text' _id=_id type='wysihtml5' enabledEmptyText='Click here to add a description.' enabledState=enabledState}}-->
+    {{>summernote collection='Blocks' field='text' _id=_id enabled=inEditedWall options=summernoteOptions}}
   </p>
 </Template>
 
@@ -83,7 +83,7 @@
 
 <Template name="fileBlock">
   <p>
-    <!--{{>xedit collection='Blocks' field='text' _id=_id type='wysihtml5' enabledEmptyText='Click here to add a description.' enabledState=enabledState}}-->
+    {{>summernote collection='Blocks' field='text' _id=_id enabled=inEditedWall options=summernoteOptions}}
   </p>
   {{#sortable1c items=files  options=sortableOpts}} 
     {{>fileLink}}
