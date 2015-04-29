@@ -69,20 +69,17 @@ Template.summernote.onRendered(function() {
   // ... second-order correction to false blur handler in save function
   $(document).click(function(event) { 
     var elementID = element.attr('id') || '';
-    if ($(event.target).parent().attr('id') == elementID) return; //clicked in edited element
+    if (!elementID) return; //summernote editor disabled?
+    if ($(event.target).closest('#'+elementID).length) return; //clicked in edited element
     var popoverVisible = false; //check if this popover is visible
     var clickedIn = false;  //check if click was inside the popover or related menus or dialogs
     ['#note-popover-','#note-dialog-'].forEach(function(s) {
       var selector = elementID.replace('note-editor-',s);
-      if($(event.target).closest(selector).length) {
+      if($(event.target).closest(selector).length) 
         clickedIn = true;
-        return false;
-      }
       _.each($(selector).children(),function(c) {
-        if ($(c).is(':visible')) {
+        if ($(c).is(':visible')) 
           popoverVisible = true
-          return false;
-        }
       })
     });
     if (!popoverVisible) return; //click outside of element will be caught with normal blur event
