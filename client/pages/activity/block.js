@@ -55,6 +55,9 @@ Template.block.helpers({
   virtualWorkStatus: function() {
     return 'icon-raise-virtual-hand';
   },
+  raiseHand: function () {
+    return this.raiseHand || '';
+  },
   summernoteOptions: function() {
     return {
       airMode: true,
@@ -92,6 +95,13 @@ Template.block.events({
     delete block._id;
     delete block.columnID;
     ClipboardBlocks.insert(block);
+  },
+  'click .buttonRaiseVirtualHand': function() {
+    var block = {
+      _id: this._id,
+      raiseHand: (this.raiseHand) ? '' : 'visible'
+    }
+    Meteor.call('updateBlock',block);
   }
 });
 

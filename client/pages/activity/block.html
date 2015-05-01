@@ -1,5 +1,5 @@
 <Template name='block'>
-  <div class="raiseHands avoidwrap">
+  <div class="raiseHands avoidwrap {{raiseHand}}">
       <i class="{{virtualWorkStatus}}"></i>
   </div>
   <div class="block block-{{type}} panel panel-default row">
@@ -12,10 +12,11 @@
             {{#unless fileCount}}
               <a class="glyphicon glyphicon-remove deleteBlock" title="Delete Block"></a>
             {{/unless}}
+            <i class="icon-raise-virtual-hand-small buttonRaiseVirtualHand"></i>
           </div>
           <div>&nbsp;</div>
         {{else}}
-          <div>{{{title}}}</div>
+          <div class="buttonRaiseVirtualHand">{{{title}}}</div>
         {{/if}}
       </div>
       <div>

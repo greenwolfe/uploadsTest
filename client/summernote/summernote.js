@@ -4,6 +4,7 @@
 
 //ISSUE when selecting text, editor does not appear if selecting to
 //left and cursor continues out of the field
+//TODO make reactive to changes in parameters (and callbacks?)
 
 Template.summernote.helpers({
   content: function() {
@@ -52,7 +53,7 @@ Template.summernote.onRendered(function() {
     //popover not visible so go ahead and save
     //if the popover is visible when a click event occurs 
     //outside of the element and all associated popovers and dialogs,
-    //this function is called with a false even that passes through
+    //this function is called again with a false event that passes through
     var item = {
       _id: data._id
     }
@@ -82,12 +83,14 @@ Template.summernote.onRendered(function() {
           popoverVisible = true
       })
     });
-    if (!popoverVisible) return; //click outside of element will be caught with normal blur event
+    if (!popoverVisible) return; //when popover not visible, click outside of element will be caught with normal blur event
     if (clickedIn) return; //clicked one of the popover's menus, buttons or dialogs ... don't save
-
+    //At this point, we've established that the user clicked 
+    //outside all associated elements and popovers (while the popover was visible)
+    
     var popoverSelector = elementID.replace('note-editor-','#note-popover-'); 
-    popover = $(popoverSelector); //getting container for link, image, air
-    popover.children().hide(); //clicked outside all associated elements and popovers ... hide it
+    popover = $(popoverSelector); //container for all popover elements - link, image, air
+    popover.children().hide(); // hide it
     saveText([{target:{id:'notAnElement'}}]); //and save any changes
                                              //passing false event to bypass false blur handler     
   });
@@ -97,7 +100,7 @@ Template.summernote.onRendered(function() {
   this.autorun(function() { //make reactive only to enabled?
     var newData = this.templateInstance().data;
     var newOptions = this.templateInstance().data.options;
-    if (newData.enabled) { //check if summernote is enabled?
+    if (newData.enabled) { //check if summernote is already enabled?
       element.summernote(options);
     } else {
       element.destroy();

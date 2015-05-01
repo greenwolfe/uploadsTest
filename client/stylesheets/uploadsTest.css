@@ -120,11 +120,6 @@ textarea.editable.embedCode {
 .wall .column .block div.panel-heading {
     background-color: #F8F8F8 !important;
 }
-/*.wall .column .block div.panel-heading.inEditedWall {
-    border-bottom: none;
-    margin-bottom: none;
-    padding-bottom: none;
-}*/
 .wall .column .block div.panel-heading div.blockSortableHandle {
     min-width: 100%;
 }
@@ -201,17 +196,35 @@ i.icon-virtual-help {
   width: 72px;
   float: left;
 }
-
+.buttonRaiseVirtualHand {
+  cursor: url('cursorRaiseVirtualHand.png'), auto;
+}
+.wall .column .block div.panel-heading div.blockSortableHandle.editing div.pull-right {
+  margin-top: -16px; /* compensates for use of image below */
+}
+i.icon-raise-virtual-hand-small {
+  background: url('cursorRaiseVirtualHand.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 32px;
+  width: 32px;  
+  display: inline-block;
+  overflow-y: hidden;
+}
 div.raiseHands {
-    overflow-y: hidden;
-    max-height: 0px;
+  overflow-y: hidden;
+  max-height: 0px;
+  animation:  hide 2s ease-out;
 }
-
-i.icon-raise-virtual-hand.visible {
-    animation: mymove 2s ease; 
+@keyframes hide {
+  from {max-height: 72px;}
+  to {max-height: 0px;}
 }
-
-@keyframes mymove {
-    from {background-position: -72px;}
-    to {background-position: 0px;}
+div.raiseHands.visible {
+  max-height: 72px;
+  animation: reveal 2s ease; 
+}
+@keyframes reveal {
+  from {max-height: 0px;}
+  to {max-height: 72px;}
 }
