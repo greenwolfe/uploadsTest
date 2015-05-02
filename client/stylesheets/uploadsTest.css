@@ -211,20 +211,20 @@ i.icon-raise-virtual-hand-small {
   display: inline-block;
   overflow-y: hidden;
 }
+i.transparentBox {
+  background: url('transparentBox.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 32px;
+  width: 32px;  
+  display: inline-block;
+  overflow-y: hidden;
+}
 div.raiseHands {
   overflow-y: hidden;
   max-height: 0px;
-  animation:  hide 2s ease-out;
-}
-@keyframes hide {
-  from {max-height: 72px;}
-  to {max-height: 0px;}
+  transition: max-height 2s ease-in;
 }
 div.raiseHands.visible {
   max-height: 72px;
-  animation: reveal 2s ease; 
-}
-@keyframes reveal {
-  from {max-height: 0px;}
-  to {max-height: 72px;}
 }

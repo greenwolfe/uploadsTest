@@ -16,7 +16,11 @@
           </div>
           <div>&nbsp;</div>
         {{else}}
-          <div class="buttonRaiseVirtualHand">{{{title}}}</div>
+          <div class="pull-right">
+            <i class="transparentBox buttonRaiseVirtualHand"></i>
+          </div>
+          <div>{{{title}}}</div>
+          <!--is there a better way to get the raise hand and drag functions to work together, especially on those walls that aren't currently being edited themselves, but whose blocks are draggable because another wall is being edited-->
         {{/if}}
       </div>
       <div>
