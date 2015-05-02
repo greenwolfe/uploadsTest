@@ -4,7 +4,7 @@ Blocks = new Meteor.Collection('Blocks');
   _id: '...',
   columnID: '...',
   order: 2,
-  type: ['text','image','file','embed'],
+  type: ['workSubmit',text','image','file','embed'],
   title: '  ',
   text: '  ',
   embedCode: '  ',
@@ -19,7 +19,7 @@ Meteor.methods({
     if (!column)
       throw new Meteor.Error(202, "Cannot add block, not a valid column");
 
-    var validTypes = ['text','image','file','embed'];
+    var validTypes = ['workSubmit','text','image','file','embed'];
     if (!('type' in block) || !_.contains(validTypes,block.type))
       throw new Meteor.Error(203,"Cannot add block, invalid type.")
     if (!('visible' in block))

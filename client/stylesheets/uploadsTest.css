@@ -17,6 +17,9 @@ a.glyphicon.glyphicon-asterisk.yellow{
 .avoidwrap {
     display: inline-block;
 }
+.fullwidth {
+    width: 100%;
+}
 .navbar-nav a { /* center navbar elements */
  line-height: 50px;
 }

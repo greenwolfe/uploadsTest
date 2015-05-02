@@ -240,4 +240,104 @@ Template.fileLink.events({
       Meteor.call('deleteFile', this._id);
     }
   }
+});
+
+  /******************************/
+ /**** WORK SUBMIT BLOCK *******/
+/******************************/
+/*** needs a student ID - as all blocks do ***/
+/*** disable ability for student to copy/paste or move to another wall ***/
+
+Template.workSubmitBlock.helpers({
+  inEditedWall: inEditedWall,
+  summernoteOptions: summernoteOptions,
+  studentFiles: function() {
+    var selector = {blockID:this._id};
+    selector.studentOrGroupID = 'thisStudentOrGroup';
+    selector.type = 'submittedWork';
+    if (!inEditedWall()) //if not editing
+      selector.visible = true //show only visible blocks
+    return Files.find(selector,{sort: {order:1}});
+  },
+  teacherFiles: function() {
+    var selector = {blockID:this._id};
+    selector.studentOrGroupID = 'thisStudentOrGroup';
+    selector.type = 'teacherResponse';
+    if (!inEditedWall()) //if not editing
+      selector.visible = true //show only visible blocks
+    return Files.find(selector,{sort: {order:1}});
+  },
+  processStudentUpload: function() {
+    var blockID = this._id;
+    var studentOrGroupID = 'thisStudentOrGroup';
+    var type = 'submittedWork';
+    return {
+      //make this a standard function at the top?
+      finished: function(index, file, tmpl) {
+        file.blockID = blockID;
+        file.studentOrGroupID = studentOrGroupID;
+        file.type = type;
+        var fileId = Meteor.call('insertFile',file);
+      },
+      validate: validateFiles
+    }
+  },
+  processTeacherUpload: function() {
+    var blockID = this._id;
+    var studentOrGroupID = 'thisStudentOrGroup';
+    var type = 'teacherResponse';
+    return {
+      finished: function(index, file, tmpl) {
+        file.blockID = blockID;
+        file.studentOrGroupID = studentOrGroupID;
+        file.type = type;
+        var fileId = Meteor.call('insertFile',file);
+      },
+      validate: validateFiles
+    }
+  }/*,
+  //Right now, sortable cannot handle a more complicated
+  //selector involving two fields
+  sortableOpts: function() {
+    return {
+      draggable:'.file',
+      handle: '.moveFile',
+      collection: 'Files',
+      selectField: 'blockID',
+      selectValue: this._id
+    }
+  }*/
+});
+
+  /******************************/
+ /**** WORK SUBMIT LINK  *******/
+/******************************/
+
+Template.workSubmitLink.helpers({
+  inEditedWall: inEditedWall
+});
+
+//make this a standard helper at the top?
+Template.workSubmitLink.events({
+  'click .deleteFile':function(event,template) {
+    if (confirm('If this is the last link to this file, \nthe file itself will also be deleted.  \nAre you sure you want to delete this link?')) {
+      Meteor.call('deleteFile', this._id);
+    }
+  }
+});
+
+  /***********************************/
+ /**** TEACHER RESPONSE LINK  *******/
+/***********************************/
+
+Template.teacherResponseLink.helpers({
+  inEditedWall: inEditedWall
+});
+
+Template.teacherResponseLink.events({
+  'click .deleteFile':function(event,template) {
+    if (confirm('If this is the last link to this file, \nthe file itself will also be deleted.  \nAre you sure you want to delete this link?')) {
+      Meteor.call('deleteFile', this._id);
+    }
+  }
 })

@@ -13,12 +13,6 @@ Template.column.helpers({
   blocks: function() {
     return getBlocks(this);
   },
-  /*function() {
-    var selector = {columnID:this._id};
-    if (Session.get('editedWall') != this.wallID) //if not editing
-      selector.visible = true //show only visible blocks
-    return Blocks.find(selector,{sort: {order:1}});
-  },*/
   sortableOpts: function() {
     var iEW = (Session.get('editedWall') == this.wallID) ? 'inEditedWall' : '';
     return {
@@ -121,6 +115,14 @@ Template.column.events({
     var block = {
       columnID: tmpl.data._id,
       type: 'file',
+      title: ''
+    }
+    Meteor.call('insertBlock',block);
+  },
+  'click .addWorkSubmitBlock': function(event,tmpl) {
+    var block = {
+      columnID: tmpl.data._id,
+      type: 'workSubmit',
       title: ''
     }
     Meteor.call('insertBlock',block);
