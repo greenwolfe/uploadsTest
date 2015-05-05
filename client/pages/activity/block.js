@@ -7,6 +7,7 @@ var inEditedWall = function(gen) {
   return (Session.get('editedWall') == Template.parentData(gen).wallID) ? 'inEditedWall' : '';
 }
 var validateFiles = function(files) {
+  console.log(files);
   return (_.max(_.pluck(files,'size')) < 1e8);  //100MB
 }
 var summernoteOptions = function() {
@@ -21,7 +22,7 @@ var summernoteOptions = function() {
       ['font', ['bold', 'italic', 'strikethrough', 'underline', 'clear']],
       ['para', ['ul', 'ol', 'paragraph']],
       ['table', ['table']],
-      ['insert', ['link'/*, 'picture','video'*/]],
+      ['insert', ['link', 'picture'/*,'video'*/]],
       //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes, and ctrl-z, ctrl-shift-z reacts more like what you would expect
       ['other',[/*'codeview','fullscreen',*/'help','hide']]
       //ISSUE codeview, fullscreen, not working ... do they work from toolbar and just not from air mode?
@@ -123,7 +124,8 @@ Template.embedBlock.helpers({
   codeviewOptions: function() {
     return {
       toolbar: [
-        ['codeview',['codeview']]
+        ['codeview',['codeview',]]/*,
+        ['iframeTemplate',[]]*/
       ]     
     }
   },
@@ -147,50 +149,6 @@ Template.embedBlock.onRendered(function() {
     //$(el).prepend(this.data.embedCode);
   }
 });*/
-
-  /**********************/
- /**** IMAGEBLOCK ******/
-/**********************/
-
-Template.imageBlock.helpers({
-  imageFile: function() {
-    var selector = {blockID:this._id};
-    if (!inEditedWall()) //if not editing
-      selector.visible = true //show only visible blocks
-    return Files.findOne(selector,{sort: {order:1}});
-  },
-  inEditedWall: inEditedWall,
-  summernoteOptions: summernoteOptions,
-  processUpload: function() {
-    var blockID = this._id
-    return {
-      finished: function(index, file, tmpl) {
-        file.blockID = blockID;
-        console.log(file);
-        var fileId = Meteor.call('insertFile',file);
-      },
-      validate: function(files) {
-        var valid = true;
-        files.forEach(function(file) {
-          if ((file.size > 1e8) || (file.type.indexOf('image') < 0))
-            valid = false;
-        });
-        return valid;
-      }
-    }
-  }
-});
-
-  /*****************************/
- /**** delete Image File ******/
-/*****************************/
-
-Template.deleteImageButton.events({
-  'click .deleteImageFile': function(event,tmpl) {
-    if (confirm('if this is the last link to this image, \nthe image file itself will also be deleted.  \nAre you sure you want to delete this link?'))
-      Meteor.call('deleteFile', this._id);
-  }
-});
 
   /**********************/
  /**** FILEBLOCK *******/
@@ -254,7 +212,7 @@ Template.workSubmitBlock.helpers({
   studentFiles: function() {
     var selector = {blockID:this._id};
     selector.studentOrGroupID = 'thisStudentOrGroup';
-    selector.type = 'submittedWork';
+    selector.purpose = 'submittedWork';
     if (!inEditedWall()) //if not editing
       selector.visible = true //show only visible blocks
     return Files.find(selector,{sort: {order:1}});
@@ -262,7 +220,7 @@ Template.workSubmitBlock.helpers({
   teacherFiles: function() {
     var selector = {blockID:this._id};
     selector.studentOrGroupID = 'thisStudentOrGroup';
-    selector.type = 'teacherResponse';
+    selector.purpose = 'teacherResponse';
     if (!inEditedWall()) //if not editing
       selector.visible = true //show only visible blocks
     return Files.find(selector,{sort: {order:1}});
@@ -270,14 +228,19 @@ Template.workSubmitBlock.helpers({
   processStudentUpload: function() {
     var blockID = this._id;
     var studentOrGroupID = 'thisStudentOrGroup';
-    var type = 'submittedWork';
+    var purpose = 'submittedWork';
     return {
       //make this a standard function at the top?
       finished: function(index, file, tmpl) {
         file.blockID = blockID;
         file.studentOrGroupID = studentOrGroupID;
-        file.type = type;
+        file.purpose = purpose;
         var fileId = Meteor.call('insertFile',file);
+        var block = {
+         _id: blockID,
+          raiseHand: 'visible'
+        }
+        Meteor.call('updateBlock',block);
       },
       validate: validateFiles
     }
@@ -285,12 +248,12 @@ Template.workSubmitBlock.helpers({
   processTeacherUpload: function() {
     var blockID = this._id;
     var studentOrGroupID = 'thisStudentOrGroup';
-    var type = 'teacherResponse';
+    var purpose = 'teacherResponse';
     return {
       finished: function(index, file, tmpl) {
         file.blockID = blockID;
         file.studentOrGroupID = studentOrGroupID;
-        file.type = type;
+        file.purpose = purpose;
         var fileId = Meteor.call('insertFile',file);
       },
       validate: validateFiles
@@ -323,7 +286,15 @@ Template.workSubmitLink.events({
     if (confirm('If this is the last link to this file, \nthe file itself will also be deleted.  \nAre you sure you want to delete this link?')) {
       Meteor.call('deleteFile', this._id);
     }
-  }
+  }/*,
+  'click .checkoutFile': function(event,template) {
+    var checkedOutFile = {
+      fileId: this._id,
+      blockId: this.blockID,
+      teacherID: 'thisTeacher'
+    }
+    Meteor.call('checkoutFile',checkedOutFile);
+  }*/
 });
 
   /***********************************/

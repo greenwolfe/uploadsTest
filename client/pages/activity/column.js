@@ -94,14 +94,6 @@ Template.column.events({
     }
     Meteor.call('insertBlock',block);
   },
-  'click .addImageBlock': function(event,tmpl) {
-    var block = {
-      columnID: tmpl.data._id,
-      type: 'image',
-      title: ''
-    }
-    Meteor.call('insertBlock',block);
-  },
   'click .addEmbedBlock': function(event,tmpl) {
     var block = {
       columnID: tmpl.data._id,

@@ -8,31 +8,8 @@ Files.insert({
   error: null, 
   path: "/MotionDetector.jpeg", 
   url: "http://localhost:3000/upload/MotionDetector.jpeg", 
-  activityID: 1, 
-  userID: 2, 
-  group: Array[0]
-  section: null
+  blockID: 'abc123...'
 });
-Must also have: 
-  share: teacher, student, group, section
-  position: {x:0, y:3} /* x: column number 0,1,2, ...
-                       /* y: position in column (by rank, adjusted by drag and drop alogrithm)
-*/
-/*
-activityPageLayout
-  _id: ...
-  activityID: ...
-  share:
-  shareID:  sectionID, studentID, 'teacher', [groupIDs] /* group must match exactly?
-     /*user gets stuff lost if changes group or section ... ???  have to think this through
-  no columns:  1,2,3 ... would have to change on every file if changed?
-  size: [4,4,4]  (all that's needed?)
-*/
-
-/*
-  each share gets a header with columns laid out, 
-  can shrink a column, 
-  add into empty space, or expand into empty space
 */
 
 Meteor.methods({

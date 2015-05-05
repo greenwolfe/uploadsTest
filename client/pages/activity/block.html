@@ -59,33 +59,6 @@
   </p>
 </Template>
 
-<Template name="imageBlock">
-  {{#if imageFile}} 
-    <p>
-      <a href="/upload/{{imageFile.path}}"><img src="/upload/{{imageFile.path}}"></a>
-    </p> 
-  {{/if}}
-  {{#if inEditedWall}}
-    {{#if imageFile}} 
-      {{#with imageFile}}
-        {{> deleteImageButton}}
-      {{/with}}
-    {{else}}
-      <p>
-        Upload an image file.
-        {{>upload_bootstrap fileTypes='image/*' callbacks=processUpload}}
-      </p> 
-    {{/if}}
-  {{/if}}
-  <p>
-    {{>summernote collection='Blocks' field='text' _id=_id enabled=inEditedWall options=summernoteOptions}}
-  </p>
-</Template>
-
-<Template name="deleteImageButton">
-  <button class="btn btn-warning deleteImageFile">Delete Image</button>
-</Template>
-
 <Template name="fileBlock">
   <p>
     {{>summernote collection='Blocks' field='text' _id=_id enabled=inEditedWall options=summernoteOptions}}
@@ -112,7 +85,12 @@
 </Template>
 
 <Template name="workSubmitBlock">
- <p class="bg-success">
+  {{#if inEditedWall}}
+      <p>
+        Submit one or more distinct files here, as the assignment requires.  <i>Use a new work submission block to submit a new draft or revision of the same file or files.</i>
+      </p>
+    {{/if}}
+  <p class="bg-success">
     Student Name (date)
     <p>
       {{#if inEditedWall}}
@@ -129,7 +107,6 @@
     <!--{{/sortable1c}}-->
     {{#if inEditedWall}}
       <p>
-        Submit one or more distinct files here, as the assignment requires.  <i>Use a new work submission block to submit a new draft or revision of the same file or files.</i>
         {{>upload_bootstrap callbacks=processStudentUpload}}
       </p> 
     {{/if}}
@@ -144,14 +121,12 @@
       {{>summernote collection='Blocks' field='teacherText' _id=_id enabled=inEditedWall options=summernoteOptions}}
     </p>
     <!--{{#sortable1c items=teacherFiles  options=sortableOpts}} -->
-      {{#if inEditedWall}}
-        Return a file to the student.
-      {{/if}}
     {{#each teacherFiles}}
       {{>teacherResponseLink}}
     {{/each}}
     <!--{{/sortable1c}}-->
     {{#if inEditedWall}}
+      Return a file to the student.
       <p>
         {{>upload_bootstrap callbacks=processTeacherUpload}}
       </p> 
@@ -166,10 +141,11 @@
       {{>showHide collection='Files' itemName='file' item=this}}
       <!--if is teacher-->
       <a class="glyphicon glyphicon-remove deleteFile" title="delete file (only available for teacher)"></a>
-      <!--checkout for review button, ghost appears in teacher files with button to return?-->
+      <!--<i class="fa fa-download checkoutFile" title="download and checkout file for automatic return (only available for teacher)"></i>
+      checkout for review button, ghost appears in teacher files with button to return?-->
       <!-- /if -->
     {{/if}}
-    <a href="/upload/{{path}}">{{name}}</a> 
+    <a href="/upload/{{path}}" title="download file (for teacher - without checking out)">{{name}}</a> 
   </p> 
 </Template>
 
