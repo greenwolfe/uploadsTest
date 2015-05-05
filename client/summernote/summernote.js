@@ -8,14 +8,14 @@
 
 Template.summernote.helpers({
   content: function() {
-    if (_.isEmpty(this)) return '';
+    if (_.isEmpty(this)) return '</br>';
     var collection = this.collection || this.options.collection;
     var Collection = Mongo.Collection.get(collection);
     var field = this.field || this.options.field;
     var fields = {};
     fields[field] = 1;
     var _id = this._id || this.options._id;
-     return Collection.findOne(_id,{field:fields})[field] || '';
+     return Collection.findOne(_id,{field:fields})[field] || '</br>';
   }
 });
 
