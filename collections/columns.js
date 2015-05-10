@@ -4,6 +4,7 @@ Columns = new Meteor.Collection('Columns');
 Columns.insert({ 
   _id: "Su9iW3Rw4bzarrX5j", 
   wallID: "abc", 
+  activityID, "  ", //interited from wall.activityID
   width: 3,
   order: 0,
   visible:true
@@ -12,14 +13,17 @@ Columns.insert({
 
 Meteor.methods({
   insertColumn: function(wallID,order,side) {
-    var wall = Walls.find(wallID);
+    var wall = Walls.findOne(wallID);
     if (!wall)
       throw new Meteor.Error(240,"Cannot add column, invalid wall.");
+    console.log('inserting column');
+    console.log(wall);
     var widths = _.pluck(Columns.find({wallID:wallID},{fields:{width:1}}).fetch(),'width');
     var totalWidth = widths.reduce(function(a, b){return a+b;},0)
     if (totalWidth == 0) { //first column in wall
       Columns.insert({
         wallID:wallID,
+        activityID: wall.activityID,
         width:4,
         order: 0,
         visible: true
@@ -39,6 +43,7 @@ Meteor.methods({
     Columns.update({_id: {$in: ids}}, {$inc: {order:1}}, {multi: true});
     Columns.insert({
       wallID:wallID,
+      activityID: wall.activityID,
       width:width,
       order: order,
       visible: true

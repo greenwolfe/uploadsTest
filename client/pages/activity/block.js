@@ -25,10 +25,9 @@ var summernoteOptions = function() {
       ['insert', ['link', 'picture'/*,'video'*/]],
       //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes, and ctrl-z, ctrl-shift-z reacts more like what you would expect
       ['other',[/*'codeview','fullscreen',*/'help','hide']]
-      //ISSUE codeview, fullscreen, not working ... do they work from toolbar and just not from air mode?
+      //ISSUE codeview, fullscreen, not working ... does it work from toolbar and just not from air mode?
       //ISSUE video works, but can't resize it, no context menu as for image
-      //ISSUE no link to image to bring up larger view
-      //leaving out image and video for now, can use image and video blocks until this is better
+      //leaving out video for now, can use video blocks until this is better
     ]
   }
 }
@@ -121,21 +120,14 @@ Template.textBlock.helpers({
 Template.embedBlock.helpers({
   inEditedWall: inEditedWall,
   summernoteOptions: summernoteOptions,
-  codeviewOptions: function() {
-    return {
-      toolbar: [
-        ['codeview',['codeview',]]/*,
-        ['iframeTemplate',[]]*/
-      ]     
-    }
+  //if I encounter anyone inserting a title or text
+  //before the iframe, I can add a third component
+  //here
+  embedCodei: function() {
+    return _.strLeft(this.embedCode, '</iframe>') + '</iframe>';
   },
-  embedCodeWithNoScript: function() {
-    if (!this.embedCode) return false;
-    if (_.str.include(this.embedCode,'<script')) {
-      return 'This embed code contains javascript and has been blocked because some embedded javascript makes the site hang up.  If you are trying to aggregate and poste rss, atom or twitter feeds, use the feed block.';
-    } else {
-      return this.embedCode;
-    }
+  includedDescription: function() {
+    return _.strRight(this.embedCode, '</iframe>') 
   }
 });
 
@@ -149,6 +141,30 @@ Template.embedBlock.onRendered(function() {
     //$(el).prepend(this.data.embedCode);
   }
 });*/
+
+  /**********************/
+ /**** CODEMIRROR ******/
+/**********************/
+
+Template.codemirror.onRendered(function() {
+  var data = this.data || {};
+  editor = CodeMirror.fromTextArea(this.find(".codemirror"), {
+    lineNumbers: false,
+    lineWrapping: true,
+    theme: 'monokai',
+    mode: "htmlmixed", 
+  });
+  editor.on("blur", function(codemirror) {
+    var embedCode = codemirror.getValue();
+    if (_.str.include(embedCode,'<script')) {
+      codemirror.setValue('This embed code contains javascript and has been blocked because some embedded javascript makes \n the site hang up. If you are trying to aggregate and post rss, atom or twitter feeds, use the feed block.');
+      return;
+    }
+    Meteor.call('updateBlock',{_id:data._id,
+                               embedCode:embedCode
+                              });
+  })
+})
 
   /**********************/
  /**** FILEBLOCK *******/

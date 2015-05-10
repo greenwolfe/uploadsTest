@@ -5,6 +5,39 @@
 //ISSUE when selecting text, editor does not appear if selecting to
 //left and cursor continues out of the field
 //TODO make reactive to changes in parameters (and callbacks?)
+//can't figure out how to set this from summernote documentation
+
+/*to use insert the template, specifying collection, field, and an _id of a particular member of the collection
+
+<Template name="myTemplate">
+  {{>summernote collection='MyCollection' field='myField' _id=_id enabled=inEditedWall options=summernoteOptions}}
+</Template>
+
+specify summernote options by passing them via a template helper
+
+var summernoteOptions = function() {
+  return {
+    airMode: true,
+    airPopover: [
+      ['style',['style']],
+      ['color', ['color']],
+      ['fontname', ['fontname']],
+      ['fontsize', ['fontsize']],
+      ['supersub', ['superscript','subscript']],
+      ['font', ['bold', 'italic', 'strikethrough', 'underline', 'clear']],
+      ['para', ['ul', 'ol', 'paragraph']],
+      ['table', ['table']],
+      ['insert', ['link', 'picture']],
+      ['other',['help','hide']]
+    ]
+  }
+}
+Template.myTemplate.helpers({
+  summernoteOptions: summernoteOptions
+});
+
+onBlur event, the myField field of the MyCollection element with _id = _id is updated 
+*/
 
 Template.summernote.helpers({
   content: function() {
@@ -15,7 +48,7 @@ Template.summernote.helpers({
     var fields = {};
     fields[field] = 1;
     var _id = this._id || this.options._id;
-     return Collection.findOne(_id,{field:fields})[field] || '</br>';
+    return Collection.findOne(_id,{field:fields})[field] || '</br>';
   }
 });
 
@@ -31,11 +64,12 @@ Template.summernote.onRendered(function() {
     options[key] = data[key];
   });
   data = {};
-  ['collection','field','_id','enabled'].forEach(function(key){
+  ['collection','field','_id','enabled','onBeforeSave'].forEach(function(key){
     data[key] = options[key]; //data for meteor update
     delete options[key]; //leaves only the options to pass to summernote
   })
 
+  var optionsonBlur = options.onBlur || null;  //callback passed in from user
   var method = 'update' + _.rtrim(data.collection,'s'); //if collection = Posts, method=updatePost
   var saveText = function(event) { //called on popover blur event
     var elementID = event[0].target.id;
@@ -62,6 +96,8 @@ Template.summernote.onRendered(function() {
     Meteor.call(method,item,function() {
       element.code(text); //reset summernote's code to correct duplication of latest selection
     });
+    //callback passed in from user
+    if (optionsonBlur) optionsonBlur(event);
   }
   options.onBlur = saveText;
 
@@ -95,22 +131,55 @@ Template.summernote.onRendered(function() {
                                              //passing false event to bypass false blur handler     
   });
 
+  if (data.enabled) 
+    element.summernote(options);
+
+  var codeview = element.next('.note-editor').find('textarea.note-codable');
+  var codeviewButton = element.next('.note-editor').find('button[data-name="codeview"]')
+  if (codeview)
+    codeview.blur(function(event) {
+      console.log('codeview blurred');
+      console.log(event);
+      console.log(element.code())
+      console.log(_.str.include(element.code(),'<script'))
+      if (_.str.include(element.code(),'<script')) {
+        //console.log('resetting codeview html');
+        //codeview.html('This embed code contains javascript and has been blocked because some embedded javascript makes the site hang up.  If you are trying to aggregate and poste rss, atom or twitter feeds, use the feed block.');
+        console.log('resetting element.code');
+        element.code('This embed code contains javascript and has been blocked because some embedded javascript makes the site hang up.  If you are trying to aggregate and post rss, atom or twitter feeds, use the feed block.');
+        //console.log(element.code())
+        //saveText([{target:{id:'notAnElement'}}]);
+        console.log('dismissing code view');
+        if ($(codeview).is(':visible'))
+          codeviewButton.click();       
+      } 
+    });
+
+
+  
+
   //summernote has no enable/disable method, so we create and 
   //destroy based on the reactive variable enabled
-  this.autorun(function() { //make reactive only to enabled?
+  this.autorun(function() { 
     var newData = this.templateInstance().data;
     var newOptions = this.templateInstance().data.options;
-    if (newData.enabled) { //check if summernote is already enabled?
+    if (newData.enabled && !data.enabled) { 
       element.summernote(options);
-    } else {
+    } else if (!newData.enabled && data.enabled) {
       element.destroy();
     }
-    //add handler to reactively change other options
-    //as I did for sortable?
+    data.enabled = newData.enabled; //keep this up to date
+
+    //add handler to reactively change other options or callbacks
+    //Can't find anything in the summernote documentation
+    // that says how to change any parameters after 
+    //the editor is initialized. May not be possible
+    /*_.each(newOptions, function(value, key){ 
+        if (!(key in options) || !_.isEqual(value,options[key])) {
+          element.summernote().Setoption(key,value); //how to do this?
+          options[key] = value; //keep this up to date
+        } 
+    })*/
   })
 
 });
-
-
-
-

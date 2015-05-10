@@ -23,7 +23,10 @@ Template.column.helpers({
       selectField: 'columnID',
       selectValue: this._id,
       inEditedWall: iEW, //am I still using this, or does disabled take care of it?
-      disabled: (!Session.get('editedWall')) //!= this.wallID to apply to a single wall 
+      disabled: (!Session.get('editedWall')), //!= this.wallID to apply to a single wall 
+      onAdd: function(evt) {
+        Meteor.call('denormalizeBlock',evt.data._id);
+      }
     }
   },
   empty: function() {

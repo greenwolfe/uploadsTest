@@ -3,7 +3,7 @@ Meteor.startup(function () {
     Meteor.call('insertWall',{
       activityID: 'abc',
       type: 'teacher',
-      owner: 'teacher',
+      owner: 'teacher', //probably no need for wall's owner?
       visible: true,
       order: 0
     });

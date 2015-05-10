@@ -8,7 +8,10 @@ Files.insert({
   error: null, 
   path: "/MotionDetector.jpeg", 
   url: "http://localhost:3000/upload/MotionDetector.jpeg", 
-  blockID: 'abc123...'
+  blockID: 'abc123...',
+  columnID: '     ',
+  wallID: '     ',
+  activityID: '      '
 });
 */
 
@@ -21,6 +24,9 @@ Meteor.methods({
       throw new Meteor.Error(402, "Cannot add file, not a valid block");
     if (!('visible' in file))
       file.visible = true;
+    file.columnID = block.columnID;
+    file.wallID = block.wallID; 
+    file.activityID = block.activityID;
 
     //add at end of existing file list
     var last = Files.findOne({blockID:file.blockID},{sort:{order:-1}});
@@ -42,5 +48,15 @@ Meteor.methods({
     Files.remove(_id); //remove this link regardless
     //after deleting, move any files below this one up
     Files.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});
+  },
+  //untested, as currently cannot drag a file to another block
+  denormalizeFile: function(fileID) {
+    file = Files.findOne(fileID);
+    if (!file)
+      throw new Meteor.Error(203,"Cannot denormalize file, file not found.")
+    var block = Blocks.findOne(file.blockID);
+    Files.update(file._id,{$set:{columnID:block.columnID}});
+    Files.update(file._id,{$set:{wallID:block.wallID}});
+    Files.update(file._id,{$set:{activityID:block.activityID}});
   }
 })

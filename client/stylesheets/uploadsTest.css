@@ -25,9 +25,8 @@ a.glyphicon.glyphicon-asterisk.yellow{
  line-height: 50px;
 }
 
-textarea.editable.embedCode {
-    display: block;
-    width: 100%;
+.embed-responsive p, .embed-responsive a {
+    float: right;
 }
 
 .jqDropZone {

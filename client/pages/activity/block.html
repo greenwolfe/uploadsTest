@@ -47,15 +47,27 @@
 
 <Template name="embedBlock">
   {{#if inEditedWall}}
-    Click codeview, &lt;/&gt;, to paste/edit embed code.
+    Paste/edit embed code.
+    {{>codemirror }}
+  {{else}}
+    <div class="embed-responsive embed-responsive-4by3">
+      {{{embedCodei}}}
+    </div>
+    <div>
+      {{{includedDescription}}}
+    </div>
   {{/if}}
-    {{>summernote collection='Blocks' field='embedCode' _id=_id enabled=inEditedWall options=codeviewOptions}}
-  
   {{#if inEditedWall}}
     Add/edit a description.
   {{/if}}
   <p>
     {{>summernote collection='Blocks' field='text' _id=_id enabled=inEditedWall options=summernoteOptions}}
+  </p>
+</Template>
+
+<Template name="codemirror">
+  <p>
+    <textarea class="codemirror">{{embedCode}}</textarea>
   </p>
 </Template>
 
