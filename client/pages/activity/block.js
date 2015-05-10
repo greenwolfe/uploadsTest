@@ -166,6 +166,17 @@ Template.codemirror.onRendered(function() {
   })
 })
 
+Template.codemirror.events({
+  'click .codeexample': function(event,tmpl) {
+    var embedCode = '<iframe src="http://www.caryacademy.org" width="500" height="212"></iframe> <!--replace www.caryacademy.org with your own url if the web page or web app does not provide its own embed code -->' + tmpl.data.embedCode;
+    Meteor.call('updateBlock',{_id:tmpl.data._id,
+                               embedCode:embedCode
+                             });
+    var editor = tmpl.find('.CodeMirror').CodeMirror;
+    editor.setValue(embedCode);
+  }
+});
+
   /**********************/
  /**** FILEBLOCK *******/
 /**********************/
