@@ -16,8 +16,6 @@ Meteor.methods({
     var wall = Walls.findOne(wallID);
     if (!wall)
       throw new Meteor.Error(240,"Cannot add column, invalid wall.");
-    console.log('inserting column');
-    console.log(wall);
     var widths = _.pluck(Columns.find({wallID:wallID},{fields:{width:1}}).fetch(),'width');
     var totalWidth = widths.reduce(function(a, b){return a+b;},0)
     if (totalWidth == 0) { //first column in wall

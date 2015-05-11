@@ -1,7 +1,6 @@
-inEditedWall = function(wallID) {
+inEditedWall = function() {
   //returns truthy value 'inEditedWall' if object is in a wall currently being edited
-  wallID = wallID || this.wallID;
-  return (Session.get('editedWall') == wallID) ? 'inEditedWall' : '';
+  return (Session.get('editedWall') == this.wallID) ? 'inEditedWall' : '';
 }
 
 editing = function() {

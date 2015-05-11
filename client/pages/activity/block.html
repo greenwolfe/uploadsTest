@@ -19,13 +19,13 @@
           <div class="pull-right">
             <i class="transparentBox buttonRaiseVirtualHand"></i>
           </div>
-          <div>{{{title}}}</div>
+          <div class="blockTitle">{{{title}}}</div>
           <!--is there a better way to get the raise hand and drag functions to work together, especially on those walls that aren't currently being edited themselves, but whose blocks are draggable because another wall is being edited-->
         {{/if}}
       </div>
       <div>
         {{#if inEditedWall}}
-          {{>summernote collection='Blocks' field='title' _id=_id enabled=inEditedWall options=summernoteOptions}}
+          {{>summernote collection='Blocks' field='title' _id=_id enabled=inEditedWall options=summernoteTitleOptions}}
         {{/if}}
       </div>
     </div>
@@ -51,10 +51,10 @@
     {{>codemirror }}
   {{else}}
     <div class="embed-responsive embed-responsive-4by3">
-      {{{embedCodei}}}
+      {{{embedCodeIframe}}} <!-- just the iframe -->
     </div>
     <div>
-      {{{includedDescription}}}
+      {{{embedCodeAfterIframe}}}
     </div>
   {{/if}}
   {{#if inEditedWall}}
@@ -66,8 +66,8 @@
 </Template>
 
 <Template name="codemirror">
+  <i class="codeexample fa fa-question-circle" title="insert simple example"></i>
   <p>
-    <button class="btn btn-sm codeexample" title="insert simple example"><i class="fa fa-code"></i></button>
     <textarea class="codemirror">{{embedCode}}</textarea>
   </p>
 </Template>
@@ -88,7 +88,7 @@
 
 <Template name="fileLink">
   <p class="file">
-    {{#if inEditedWall 2}}
+    {{#if inEditedWall}}
       <a class="glyphicon glyphicon-move moveFile" title="move file (within this list only)"></a>
       {{>showHide collection='Files' itemName='file' item=this}}
       <a class="glyphicon glyphicon-remove deleteFile" title="delete file"></a>
@@ -149,7 +149,7 @@
 
 <Template name="workSubmitLink">
   <p class="file">
-    {{#if inEditedWall 2}}
+    {{#if inEditedWall}}
       <!-- <a class="glyphicon glyphicon-move moveFile" title="move file (within this list only)"></a>-->
       {{>showHide collection='Files' itemName='file' item=this}}
       <!--if is teacher-->
@@ -164,7 +164,7 @@
 
 <Template name="teacherResponseLink">
   <p class="file">
-    {{#if inEditedWall 2}} <!-- and if is teacher-->
+    {{#if inEditedWall}} <!-- and if is teacher-->
       <!--<a class="glyphicon glyphicon-move moveFile" title="move file (within this list only)"></a>-->
       {{>showHide collection='Files' itemName='file' item=this}}
       <a class="glyphicon glyphicon-remove deleteFile" title="delete file"></a>

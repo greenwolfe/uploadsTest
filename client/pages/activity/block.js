@@ -1,37 +1,15 @@
-//make some blocks that are group or section editable?
  /**********************/
  /******* HELPERS ******/
 /**********************/
-var inEditedWall = function(gen) {
-  gen = gen || 1;
-  return (Session.get('editedWall') == Template.parentData(gen).wallID) ? 'inEditedWall' : '';
-}
 var validateFiles = function(files) {
   console.log(files);
   return (_.max(_.pluck(files,'size')) < 1e8);  //100MB
 }
-var summernoteOptions = function() {
-  return {
-    airMode: true,
-    airPopover: [
-      ['style',['style']],
-      ['color', ['color']],
-      ['fontname', ['fontname']],
-      ['fontsize', ['fontsize']],
-      ['supersub', ['superscript','subscript']],
-      ['font', ['bold', 'italic', 'strikethrough', 'underline', 'clear']],
-      ['para', ['ul', 'ol', 'paragraph']],
-      ['table', ['table']],
-      ['insert', ['link', 'picture'/*,'video'*/]],
-      //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes, and ctrl-z, ctrl-shift-z reacts more like what you would expect
-      ['other',[/*'codeview','fullscreen',*/'help','hide']]
-      //ISSUE codeview, fullscreen, not working ... does it work from toolbar and just not from air mode?
-      //ISSUE video works, but can't resize it, no context menu as for image
-      //leaving out video for now, can use video blocks until this is better
-    ]
+var deleteFile = function(event,template) {
+  if (confirm('If this is the last link to this file, \nthe file itself will also be deleted.  \nAre you sure you want to delete this link?')) {
+    Meteor.call('deleteFile', this._id);
   }
 }
-//to use:  genericCallbacks: {validate: validateFiles},
 
   /**********************/
  /******* BLOCK** ******/
@@ -42,13 +20,9 @@ Template.block.helpers({
   blockType: function() {
     return Template[this.type + 'Block'];
   },
-  inEditedWall: inEditedWall,
-  editing: function() {
-    return Session.get('editedWall') ? 'editing' : ''; //returns 'editing' if ANY wall on the page is being edited
-  },
   fileCount: function() {
     var selector = {blockID:this._id};
-    if (!inEditedWall()) //if not editing
+    if (!inEditedWall(this.wallID)) //if not editing
       selector.visible = true //show only visible blocks
     return Files.find(selector).count();
   },
@@ -57,23 +31,6 @@ Template.block.helpers({
   },
   raiseHand: function () {
     return this.raiseHand || '';
-  },
-  summernoteOptions: function() {
-    return {
-      airMode: true,
-      airPopover: [ //shorter set of options for title
-        ['style',['style']],
-        ['color', ['color']],
-        ['fontname', ['fontname']],
-        ['fontsize', ['fontsize']], 
-        ['supersub', ['superscript','subscript']],
-        ['font', ['bold', 'italic', 'underline', 'clear']],
-        ['para', ['paragraph']],
-        ['insert', ['link']],
-        //['undoredo', ['undo','redo']], //leaving out for now ... not clear what is undone ... not a large queue of past changes
-        ['other',['help','hide']]
-      ]      
-    }
   }
 });
 
@@ -109,24 +66,17 @@ Template.block.events({
  /***** TEXTBLOCK ******/
 /**********************/
 
-Template.textBlock.helpers({
-  inEditedWall: inEditedWall,
-  summernoteOptions: summernoteOptions
-});
 
   /**********************/
  /**** EMBEDBLOCK ******/
 /**********************/
 Template.embedBlock.helpers({
-  inEditedWall: inEditedWall,
-  summernoteOptions: summernoteOptions,
   //if I encounter anyone inserting a title or text
-  //before the iframe, I can add a third component
-  //here
-  embedCodei: function() {
+  //before the iframe, I can add a beforeIframe component
+  embedCodeIframe: function() { //returns just the iframe
     return _.strLeft(this.embedCode, '</iframe>') + '</iframe>';
   },
-  includedDescription: function() {
+  embedCodeAfterIframe: function() { //includes an html after the iframe
     return _.strRight(this.embedCode, '</iframe>') 
   }
 });
@@ -182,11 +132,9 @@ Template.codemirror.events({
 /**********************/
 
 Template.fileBlock.helpers({
-  inEditedWall: inEditedWall,
-  summernoteOptions: summernoteOptions,
   files: function() {
     var selector = {blockID:this._id};
-    if (!inEditedWall()) //if not editing
+    if (!inEditedWall(this.wallID)) //if not editing
       selector.visible = true //show only visible blocks
     return Files.find(selector,{sort: {order:1}});
   },
@@ -215,16 +163,8 @@ Template.fileBlock.helpers({
  /**** FILELINK  *******/
 /**********************/
 
-Template.fileLink.helpers({
-  inEditedWall: inEditedWall
-});
-
 Template.fileLink.events({
-  'click .deleteFile':function(event,template) {
-    if (confirm('If this is the last link to this file, \nthe file itself will also be deleted.  \nAre you sure you want to delete this link?')) {
-      Meteor.call('deleteFile', this._id);
-    }
-  }
+  'click .deleteFile': deleteFile 
 });
 
   /******************************/
@@ -234,13 +174,11 @@ Template.fileLink.events({
 /*** disable ability for student to copy/paste or move to another wall ***/
 
 Template.workSubmitBlock.helpers({
-  inEditedWall: inEditedWall,
-  summernoteOptions: summernoteOptions,
   studentFiles: function() {
     var selector = {blockID:this._id};
     selector.studentOrGroupID = 'thisStudentOrGroup';
     selector.purpose = 'submittedWork';
-    if (!inEditedWall()) //if not editing
+    if (!inEditedWall(this.wallID)) //if not editing
       selector.visible = true //show only visible blocks
     return Files.find(selector,{sort: {order:1}});
   },
@@ -248,7 +186,7 @@ Template.workSubmitBlock.helpers({
     var selector = {blockID:this._id};
     selector.studentOrGroupID = 'thisStudentOrGroup';
     selector.purpose = 'teacherResponse';
-    if (!inEditedWall()) //if not editing
+    if (!inEditedWall(this.wallID)) //if not editing
       selector.visible = true //show only visible blocks
     return Files.find(selector,{sort: {order:1}});
   },
@@ -303,39 +241,15 @@ Template.workSubmitBlock.helpers({
  /**** WORK SUBMIT LINK  *******/
 /******************************/
 
-Template.workSubmitLink.helpers({
-  inEditedWall: inEditedWall
-});
-
 //make this a standard helper at the top?
 Template.workSubmitLink.events({
-  'click .deleteFile':function(event,template) {
-    if (confirm('If this is the last link to this file, \nthe file itself will also be deleted.  \nAre you sure you want to delete this link?')) {
-      Meteor.call('deleteFile', this._id);
-    }
-  }/*,
-  'click .checkoutFile': function(event,template) {
-    var checkedOutFile = {
-      fileId: this._id,
-      blockId: this.blockID,
-      teacherID: 'thisTeacher'
-    }
-    Meteor.call('checkoutFile',checkedOutFile);
-  }*/
+  'click .deleteFile': deleteFile 
 });
 
   /***********************************/
  /**** TEACHER RESPONSE LINK  *******/
 /***********************************/
 
-Template.teacherResponseLink.helpers({
-  inEditedWall: inEditedWall
-});
-
 Template.teacherResponseLink.events({
-  'click .deleteFile':function(event,template) {
-    if (confirm('If this is the last link to this file, \nthe file itself will also be deleted.  \nAre you sure you want to delete this link?')) {
-      Meteor.call('deleteFile', this._id);
-    }
-  }
+  'click .deleteFile': deleteFile 
 })

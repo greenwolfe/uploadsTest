@@ -130,7 +130,8 @@ a.glyphicon.glyphicon-asterisk.yellow{
     cursor: move;
 }
 .wall .column .block div.panel-heading div.blockTitle {
-    width: 100%;
+    min-width: 100px;
+    min-height: 14pt;
 }
 .wall .column .block div.panel-body {
     overflow: hidden;
@@ -148,6 +149,10 @@ a.glyphicon.glyphicon-asterisk.yellow{
 .column a.pasteBlock,
 .wall a.showHide { /*covers column and block*/
     font-size: x-large;
+}
+.block i.fa-question-circle {
+    font-size: large;
+    cursor: pointer;
 }
 .block p.file a.showHide {
   font-size: large;

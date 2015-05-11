@@ -11,16 +11,13 @@ Template.wall.helpers({
     return Columns.find({wallID:this._id},{sort: {order:1}});
   },
   editColumns: function() {
-    return (Session.get('editedWall') == this._id) ? 'Done' : 'Edit Wall';
-  },
-  inEditedWall: function() {
-    return (Session.get('editedWall') == this._id);
+    return (inEditedWall(this._id)) ? 'Done' : 'Edit Wall';
   },
   visibleOrEditing: function() {
-    return (this.visible || (Session.get('editedWall') == this._id));
+    return (this.visible || inEditedWall(this._id));
   },
   showWallHelp: function() {
-    return Session.get('showWallHelp');
+    return (inEditedWall(this._id) && Session.get('showWallHelp'));
   }
 })
 
@@ -37,11 +34,4 @@ Template.wall.events({
     var help = Session.get('showWallHelp');
     Session.set('showWallHelp',!help);
   }
-  /*'click .selectable, mousedown .selectable': function(event) {
-    event.target.focus();
-  },
-  'drag .selectable': function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-  }*/
 })

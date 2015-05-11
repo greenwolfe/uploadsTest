@@ -7,7 +7,7 @@
           <button class="btn btn-default editColumns"> 
             {{editColumns}}
           </button>
-          {{#if inEditedWall}}
+          {{#if inEditedWall _id}}
             <button class="btn btn-default editHelp" title="help"> 
               ?
             </button>
@@ -17,9 +17,9 @@
       </div>
     </div>
     <div class="panel-body">
-      {{#if inEditedWall}} {{#if showWallHelp}}
+      {{#if showWallHelp}}
          <div class="alert alert-info" role="alert"><strong>EDIT: </strong> Edit any <span class="blue-outlined">blue-outlined text.</span>  Just click inside the blue outline and start typing.<br/> <strong>FORMAT:</strong> Select text to reveal the formatting toolbar. <br/> <strong>SAVE: </strong> Click anywhere outside the blue outline to save changes. <br/> <strong>REARRANGE BLOCKS: </strong> Drag and drop to rearrange blocks.  You can drag a block to another column or even another wall. <br/> <strong>MODIFY COLUMNS: </strong>Use the modify menu to expand, shrink, add and delete columns.</div>
-      {{/if}} {{/if}}
+      {{/if}}
       {{#if visibleOrEditing}}
         {{#each columns}}
           {{> column}}
