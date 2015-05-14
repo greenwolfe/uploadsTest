@@ -17,19 +17,26 @@ Blocks = new Meteor.Collection('Blocks');
 
 Meteor.methods({
   insertBlock: function(block) {
-    if (!('columnID' in block)) 
-      throw new Meteor.Error(201, "Cannot add block, you did not specify a column to put it in.");
+    check(block,{
+      columnID: String,
+      wallID: Match.Optional(String),  //could be included from pasted block, will be overwritten with denormalized values anyway
+      activityID: Match.Optional(String), //same as above
+      type: Match.OneOf('workSubmit','text','file','embed'), 
+      idFromCopiedBlock: Match.Optional(String),
+      visible: Match.Optional(Boolean),
+      title: Match.Optional(String),
+      text: Match.Optional(String),
+      embedCode: Match.Optional(String),
+      raiseHand: Match.Optional(Match.OneOf('visible','')) //could be included from copied block
+    });
+    block.visible = block.visible || true; //might be pasting hidden block
+    block.order = 0;  //always insert at top of column
+
     var column = Columns.findOne(block.columnID)
     if (!column)
       throw new Meteor.Error(202, "Cannot add block, not a valid column");
     block.wallID = column.wallID; //denormalize block
     block.activityID = column.activityID;
-
-    var validTypes = ['workSubmit','text','file','embed'];
-    if (!('type' in block) || !_.contains(validTypes,block.type))
-      throw new Meteor.Error(203,"Cannot add block, invalid type.")
-    if (!('visible' in block))
-      block.visible = true;
 
     if ('idFromCopiedBlock' in block) {
       var idFCB = block.idFromCopiedBlock;
@@ -40,16 +47,18 @@ Meteor.methods({
     var ids = _.pluck(Blocks.find({columnID:block.columnID},{fields: {_id: 1}}).fetch(), '_id');
     Blocks.update({_id: {$in: ids}}, {$inc: {order:1}}, {multi: true});
     //add new block at top
-    block.order = 0;
-    var blockID = Blocks.insert(block);
-    //copy links to any associated files
-    Files.find({blockID:idFCB}).forEach(function(file) {
-      file.blockID = blockID;
-      delete file._id;
-      Files.insert(file);
+    Blocks.insert(block, function(error,blockID) {
+      //copy links to any associated files
+      Files.find({blockID:idFCB}).forEach(function(file) {
+        file.blockID = blockID;
+        delete file._id;
+        Meteor.call('insertFile',file);
+      });      
     });
+
   },
   deleteBlock: function(blockID) {
+    check(blockID,String);
     block = Blocks.findOne(blockID);
     if (!block)
       throw new Meteor.Error(203,"Cannot delete block, block not found.")
@@ -62,21 +71,36 @@ Meteor.methods({
     Blocks.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});
   },
   updateBlock: function(block) {
-    var fields = Object.keys(block);
+    check(block,{
+      _id: String,
+      columnID: Match.Optional(String), //excluded below
+      wallID: Match.Optional(String), //excluded below
+      activityID: Match.Optional(String), //excluded below
+      type: Match.Optional(String), //excluded below
+      order: Match.Optional(Match.Integer), //excluded below
+      visible: Match.Optional(Boolean),
+      title: Match.Optional(String),
+      text: Match.Optional(String),
+      embedCode: Match.Optional(String),
+      raiseHand: Match.Optional(Match.OneOf('visible',''))
+    });
+
+    var keys = Object.keys(block);
+    var fields = _.without(keys,'_id','order','type','columnID','wallID','activityID');
     fields.forEach(function(field) {
       var set = {};
-      var excludedFields = ['_id','order','columnID','wallID','activityID'];
-      if (!_.contains(excludedFields,field)) {
-        set[field] = block[field];
-        Blocks.update(block._id,{$set: set});
-      }
+      set[field] = block[field];
+      Blocks.update(block._id,{$set: set});
     });
-    if (_.contains(fields,'columnID')) 
+    if (_.intersection(keys,['columnID','wallID','activityID']).length > 0) 
       throw new Meteor.Error(232,"Use moveItem (from sortable1c method) instead of updateBlock to move the block to a new column.");
-    if (_.contains(fields,'order'))
+    if (_.contains(keys,'order'))
       throw new Meteor.Error(232,"Use sortItem (from sortable1c method) instead of updateBlock to move a block to a new position in the list.");
+    if (_.contains(keys,'type'))
+      throw new Meteor.Error(232,"Cannot change the type of a block.");
   },
   denormalizeBlock: function(blockID) {
+    check(blockID,String);
     block = Blocks.findOne(blockID);
     if (!block)
       throw new Meteor.Error(203,"Cannot denormalize block, block not found.")

@@ -1,29 +1,27 @@
 Files = new Meteor.Collection('Files');
-/*
-Files.insert({ 
-  _id: "Su9iW3Rw4bzarrX5j", 
-  name: "MotionDetector.jpeg", 
-  size: 4720, 
-  type: "image/jpeg", 
-  error: null, 
-  path: "/MotionDetector.jpeg", 
-  url: "http://localhost:3000/upload/MotionDetector.jpeg", 
-  blockID: 'abc123...',
-  columnID: '     ',
-  wallID: '     ',
-  activityID: '      '
-});
-*/
 
 Meteor.methods({
   'insertFile': function(file) {
-    if (!('blockID' in file)) 
-      throw new Meteor.Error(401, "Cannot add file, you did not specify a block to put it in.");
+    check(file,{
+      blockID: String,
+      columnID: Match.Optional(String),  //could be included from pasted block, will be overwritten with denormalized values anyway
+      wallID: Match.Optional(String), //same as above
+      activityID: Match.Optional(String), //same as above
+      order: Match.Optional(Match.Integer),
+      name: String,
+      size: Match.Optional(Match.Integer),
+      type: Match.Optional(String),
+      error: Match.Optional(Match.Any), //not sure what this can be
+      path: String,
+      url: Match.Optional(String),
+      visible: Match.Optional(Boolean)
+    });
+    file.visible = file.visible || true; //might be pasting block with hidden file
+
+
     var block = Blocks.findOne(file.blockID)
     if (!block)
       throw new Meteor.Error(402, "Cannot add file, not a valid block");
-    if (!('visible' in file))
-      file.visible = true;
     file.columnID = block.columnID;
     file.wallID = block.wallID; 
     file.activityID = block.activityID;
@@ -34,6 +32,7 @@ Meteor.methods({
     return Files.insert(file);
   },
   'deleteFile': function(_id) {
+    check(_id,String);
     if (!_.isString(_id))
       throw new Meteor.Error(000,'cannot delete file, id not valid.');
     var file = Files.findOne(_id);
@@ -49,8 +48,8 @@ Meteor.methods({
     //after deleting, move any files below this one up
     Files.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});
   },
-  //untested, as currently cannot drag a file to another block
   denormalizeFile: function(fileID) {
+    check(fileID,String);
     file = Files.findOne(fileID);
     if (!file)
       throw new Meteor.Error(203,"Cannot denormalize file, file not found.")

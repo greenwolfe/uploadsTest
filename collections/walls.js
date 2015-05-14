@@ -1,24 +1,18 @@
 Walls = new Meteor.Collection('Walls');
 
-/*
-Walls.insert({ 
-  _id: "Su9iW3Rw4bzarrX5j", 
-  activityID: "abc", 
-  type: ['teacher','student','group','section']
-  owner: [studentID,[groupIDs],sectionID,'teacher'],
-            //maybe no need for this?  
-            //any teacher can post to teacher wall
-            //when teacher posts to student or group or section well,
-            //viewAs menu has selected them, so clear who it is posted to
-            //blocks will have an owner, not walls or columns
-  order: 0,
-  visible: true
-});
-*/
-
 Meteor.methods({
   insertWall: function(wall) {
-    //validate activityID, type
+    check(wall,{
+      activityID: String,
+      type: Match.OneOf('teacher','student','group','section'),
+      visible: Boolean,
+      order: Match.Integer
+    });
+    
+    var activity = Activities.findOne(wall.activityID);
+    if (!activity)
+      throw new Meteor.Error(240,"Cannot add wall, invalid activityID.");
+
     Walls.insert(wall , function( error, _id) { 
       if ( error ) console.log ( error ); //info about what went wrong
       if ( _id ) {

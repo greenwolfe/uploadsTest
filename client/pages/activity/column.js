@@ -14,7 +14,7 @@ Template.column.helpers({
     return getBlocks(this);
   },
   sortableOpts: function() {
-  return {
+    return {
       draggable:'.block',
       handle: '.blockSortableHandle',
       group: 'column',
@@ -127,7 +127,7 @@ Template.column.events({
     Meteor.call('insertColumn',tmpl.data.wallID,tmpl.data.order,'left');
   },
   'click .addRight': function(event,tmpl) {
-    Meteor.call('insertColumn',tmpl.data.wallID,tmpl.data.order,'right');
+    Meteor.call('insertColumn',tmpl.data.wallID,tmpl.data.order,'right'); 
   },
   'click .deleteColumn': function(event,tmpl) {
     Meteor.call('deleteColumn',tmpl.data._id);

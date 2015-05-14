@@ -46,7 +46,7 @@ Template.block.events({
         ClipboardBlocks.remove(block._id);
       });
     } //else do nothing ... add block to clipboard
-    var block = this;
+    var block = Blocks.findOne(this._id);
     block.idFromCopiedBlock = block._id;
     block.order = ClipboardBlocks.find().count() + 1;
     delete block._id;
@@ -148,6 +148,12 @@ Template.fileBlock.helpers({
       validate: validateFiles
     }
   },
+  formData: function() {
+    var formData = this;
+    formData.user = 'username';
+    formData.purpose = 'fileBlock';
+    return formData;
+  },
   sortableOpts: function() {
     return {
       draggable:'.file',
@@ -223,6 +229,18 @@ Template.workSubmitBlock.helpers({
       },
       validate: validateFiles
     }
+  },
+  studentFormData: function() {
+    var formData = this;
+    formData.user = 'username';
+    formData.purpose = 'studentSubmission';
+    return formData;
+  },
+  teacherFormData: function() {
+    var formData = this; //work out system, would be nice to store this together with student submission
+    formData.user = 'username';
+    formData.purpose = 'teacherResponse';
+    return formData;
   }/*,
   //Right now, sortable cannot handle a more complicated
   //selector involving two fields

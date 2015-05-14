@@ -81,7 +81,7 @@
   {{/sortable1c}}
   {{#if inEditedWall}}
     <p>
-      {{>upload_bootstrap callbacks=processUpload}}
+      {{>upload_bootstrap formData=formData callbacks=processUpload}}
     </p> 
   {{/if}}
 </Template>
@@ -120,7 +120,7 @@
     <!--{{/sortable1c}}-->
     {{#if inEditedWall}}
       <p>
-        {{>upload_bootstrap callbacks=processStudentUpload}}
+        {{>upload_bootstrap formData=studentFormData callbacks=processStudentUpload}}
       </p> 
     {{/if}}
   </p>
@@ -141,7 +141,7 @@
     {{#if inEditedWall}}
       Return a file to the student.
       <p>
-        {{>upload_bootstrap callbacks=processTeacherUpload}}
+        {{>upload_bootstrap formData=teacherFormData callbacks=processTeacherUpload}}
       </p> 
     {{/if}} 
   </p>

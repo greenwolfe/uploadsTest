@@ -1,18 +1,10 @@
 Columns = new Meteor.Collection('Columns');
 
-/*
-Columns.insert({ 
-  _id: "Su9iW3Rw4bzarrX5j", 
-  wallID: "abc", 
-  activityID, "  ", //interited from wall.activityID
-  width: 3,
-  order: 0,
-  visible:true
-});
-*/
-
 Meteor.methods({
   insertColumn: function(wallID,order,side) {
+    check(wallID,String);
+    check(order,Match.Integer);
+    check(side,Match.OneOf('right','left'));
     var wall = Walls.findOne(wallID);
     if (!wall)
       throw new Meteor.Error(240,"Cannot add column, invalid wall.");
@@ -48,6 +40,7 @@ Meteor.methods({
     });
   },
   deleteColumn: function(_id) {
+    check(_id,String);
     var column = Columns.findOne(_id);
     if (!column)
       throw new Meteor.Error(240,"Cannot delete column, invalid column ID.");
@@ -61,14 +54,20 @@ Meteor.methods({
     Columns.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});    
   },
   expandColumn: function(_id) {
+    check(_id,String);
     var column = Columns.findOne(_id);
+    if (!column)
+      throw new Meteor.Error(240,"Cannot expand column, invalid column ID.");
     var widths = _.pluck(Columns.find({wallID:column.wallID},{fields:{width:1}}).fetch(),'width');
     var totalWidth = widths.reduce(function(a, b){return a+b;})
     if (totalWidth < 12) 
       Columns.update(_id,{$inc: {width:1}})
   },
   shrinkColumn: function(_id) {
+    check(_id,String);
     var column = Columns.findOne(_id);
+    if (!column)
+      throw new Meteor.Error(240,"Cannot shrink column, invalid column ID.");
     if (column.width > 2)
       Columns.update(_id,{$inc: {width:-1}})
   }
