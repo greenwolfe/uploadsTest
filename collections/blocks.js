@@ -26,6 +26,8 @@ Meteor.methods({
       visible: Match.Optional(Boolean),
       title: Match.Optional(String),
       text: Match.Optional(String),
+      studentText: Match.Optional(String),
+      teacherText: Match.Optional(String),
       embedCode: Match.Optional(String),
       raiseHand: Match.Optional(Match.OneOf('visible','')) //could be included from copied block
     });
@@ -81,6 +83,8 @@ Meteor.methods({
       visible: Match.Optional(Boolean),
       title: Match.Optional(String),
       text: Match.Optional(String),
+      studentText: Match.Optional(String),
+      teacherText: Match.Optional(String),
       embedCode: Match.Optional(String),
       raiseHand: Match.Optional(Match.OneOf('visible',''))
     });

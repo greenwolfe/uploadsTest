@@ -138,8 +138,10 @@ Template.fileBlock.helpers({
       selector.visible = true //show only visible blocks
     return Files.find(selector,{sort: {order:1}});
   },
-  processUpload: function() {
+  processUpload: function() { //passed to insertFile method to create object referring to file
     var blockID = this._id
+    var studentOrGroupID = 'username';
+    var purpose = 'fileBlock';
     return {
       finished: function(index, file, tmpl) {
         file.blockID = blockID;
@@ -148,7 +150,7 @@ Template.fileBlock.helpers({
       validate: validateFiles
     }
   },
-  formData: function() {
+  formData: function() { //passed to uploads to create file path
     var formData = this;
     formData.user = 'username';
     formData.purpose = 'fileBlock';

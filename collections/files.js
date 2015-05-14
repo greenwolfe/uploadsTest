@@ -8,6 +8,8 @@ Meteor.methods({
       wallID: Match.Optional(String), //same as above
       activityID: Match.Optional(String), //same as above
       order: Match.Optional(Match.Integer),
+      studentOrGroupID: Match.Optional(String),
+      purpose: Match.OneOf('fileBlock','submittedWork','teacherResponse'),
       name: String,
       size: Match.Optional(Match.Integer),
       type: Match.Optional(String),
