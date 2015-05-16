@@ -11,6 +11,6 @@ Meteor.methods({
     if (!item)
       throw new Meteor.Error(330,"Cannot show/hide item, invalid id.");
 
-    Collection.update(_id,{$set: {visible:show}});
+    return Collection.update(_id,{$set: {visible:show}});
   }
 });

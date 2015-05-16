@@ -23,7 +23,7 @@ Template.column.helpers({
       selectValue: this._id,
       disabled: (!Session.get('editedWall')), //!= this.wallID to apply to a single wall 
       onAdd: function(evt) {
-        Meteor.call('denormalizeBlock',evt.data._id);
+        Meteor.call('denormalizeBlock',evt.data._id,alertOnError);
       }
     }
   },
@@ -80,7 +80,7 @@ Template.column.events({
       delete block._id;
       delete block.order;
       block.columnID = tmpl.data._id;
-      Meteor.call('insertBlock',block);
+      Meteor.call('insertBlock',block,alertOnError);
     });
   },
   'click .addTextBlock': function(event,tmpl) {
@@ -90,7 +90,7 @@ Template.column.events({
       title: '',
       text: ''
     }
-    Meteor.call('insertBlock',block);
+    Meteor.call('insertBlock',block,alertOnError);
   },
   'click .addEmbedBlock': function(event,tmpl) {
     var block = {
@@ -99,7 +99,7 @@ Template.column.events({
       title: '',
       embedCode: ''
     }
-    Meteor.call('insertBlock',block);
+    Meteor.call('insertBlock',block,alertOnError);
   },
   'click .addFileBlock': function(event,tmpl) {
     var block = {
@@ -107,7 +107,7 @@ Template.column.events({
       type: 'file',
       title: ''
     }
-    Meteor.call('insertBlock',block);
+    Meteor.call('insertBlock',block,alertOnError);
   },
   'click .addWorkSubmitBlock': function(event,tmpl) {
     var block = {
@@ -115,21 +115,21 @@ Template.column.events({
       type: 'workSubmit',
       title: ''
     }
-    Meteor.call('insertBlock',block);
+    Meteor.call('insertBlock',block,alertOnError);
   },
   'click .shrinkColumn': function(event,tmpl) {
-    Meteor.call('shrinkColumn',tmpl.data._id);
+    Meteor.call('shrinkColumn',tmpl.data._id,alertOnError);
   },
   'click .expandColumn': function(event,tmpl) {
-    Meteor.call('expandColumn',tmpl.data._id);
+    Meteor.call('expandColumn',tmpl.data._id,alertOnError);
   },
   'click .addLeft': function(event,tmpl) {
-    Meteor.call('insertColumn',tmpl.data.wallID,tmpl.data.order,'left');
+    Meteor.call('insertColumn',tmpl.data.wallID,tmpl.data.order,'left',alertOnError);
   },
   'click .addRight': function(event,tmpl) {
-    Meteor.call('insertColumn',tmpl.data.wallID,tmpl.data.order,'right'); 
+    Meteor.call('insertColumn',tmpl.data.wallID,tmpl.data.order,'right',alertOnError); 
   },
   'click .deleteColumn': function(event,tmpl) {
-    Meteor.call('deleteColumn',tmpl.data._id);
+    Meteor.call('deleteColumn',tmpl.data._id,alertOnError);
   }
 });

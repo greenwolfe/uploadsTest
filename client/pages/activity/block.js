@@ -2,12 +2,11 @@
  /******* HELPERS ******/
 /**********************/
 var validateFiles = function(files) {
-  console.log(files);
   return (_.max(_.pluck(files,'size')) < 1e8);  //100MB
 }
 var deleteFile = function(event,template) {
   if (confirm('If this is the last link to this file, \nthe file itself will also be deleted.  \nAre you sure you want to delete this link?')) {
-    Meteor.call('deleteFile', this._id);
+    Meteor.call('deleteFile', this._id,alertOnError);
   }
 }
 
@@ -37,7 +36,7 @@ Template.block.helpers({
 Template.block.events({
   'click .deleteBlock':function() {
     if (confirm('Are you sure you want to delete this block?')) {
-      Meteor.call('deleteBlock', this._id);
+      Meteor.call('deleteBlock', this._id,alertOnError);
     }
   },
   'click .copyBlock': function(event,tmpl) {
@@ -58,7 +57,7 @@ Template.block.events({
       _id: this._id,
       raiseHand: (this.raiseHand) ? '' : 'visible'
     }
-    Meteor.call('updateBlock',block);
+    Meteor.call('updateBlock',block,alertOnError);
   }
 });
 
@@ -112,7 +111,8 @@ Template.codemirror.onRendered(function() {
     }
     Meteor.call('updateBlock',{_id:data._id,
                                embedCode:embedCode
-                              });
+                              },
+                              alertOnError);
   })
 })
 
@@ -121,7 +121,8 @@ Template.codemirror.events({
     var embedCode = '<iframe src="http://www.caryacademy.org" width="500" height="212"></iframe> <!--replace www.caryacademy.org with your own url if the web page or web app does not provide its own embed code -->' + tmpl.data.embedCode;
     Meteor.call('updateBlock',{_id:tmpl.data._id,
                                embedCode:embedCode
-                             });
+                             },
+                             alertOnError);
     var editor = tmpl.find('.CodeMirror').CodeMirror;
     editor.setValue(embedCode);
   }
@@ -140,13 +141,13 @@ Template.fileBlock.helpers({
   },
   processUpload: function() { //passed to insertFile method to create object referring to file
     var blockID = this._id
-    var studentOrGroupID = 'username';
+    var studentOrGroupID = theUserID;
     var purpose = 'fileBlock';
     return {
       finished: function(index, file, tmpl) {
         file.blockID = blockID;
         file.purpose='fileBlock';
-        var fileId = Meteor.call('insertFile',file);
+        var fileId = Meteor.call('insertFile',file,alertOnError);
       },
       validate: validateFiles
     }
@@ -185,7 +186,7 @@ Template.fileLink.events({
 Template.workSubmitBlock.helpers({
   studentFiles: function() {
     var selector = {blockID:this._id};
-    selector.studentOrGroupID = 'thisStudentOrGroup';
+    selector.studentOrGroupID = theUserID;
     selector.purpose = 'submittedWork';
     if (!inEditedWall(this.wallID)) //if not editing
       selector.visible = true //show only visible blocks
@@ -193,7 +194,7 @@ Template.workSubmitBlock.helpers({
   },
   teacherFiles: function() {
     var selector = {blockID:this._id};
-    selector.studentOrGroupID = 'thisStudentOrGroup';
+    selector.studentOrGroupID = theUserID;
     selector.purpose = 'teacherResponse';
     if (!inEditedWall(this.wallID)) //if not editing
       selector.visible = true //show only visible blocks
@@ -201,32 +202,32 @@ Template.workSubmitBlock.helpers({
   },
   processStudentUpload: function() {
     var blockID = this._id;
-    var studentOrGroupID = 'thisStudentOrGroup';
+    var studentOrGroupID = theUserID;
     return {
       //make this a standard function at the top?
       finished: function(index, file, tmpl) {
         file.blockID = blockID;
         file.studentOrGroupID = studentOrGroupID;
         file.purpose = 'submittedWork';
-        var fileId = Meteor.call('insertFile',file);
+        var fileId = Meteor.call('insertFile',file,alertOnError);
         var block = {
          _id: blockID,
           raiseHand: 'visible'
         }
-        Meteor.call('updateBlock',block);
+        Meteor.call('updateBlock',block,alertOnError);
       },
       validate: validateFiles
     }
   },
   processTeacherUpload: function() {
     var blockID = this._id;
-    var studentOrGroupID = 'thisStudentOrGroup';
+    var studentOrGroupID = theUserID;
     return {
       finished: function(index, file, tmpl) {
         file.blockID = blockID;
         file.studentOrGroupID = studentOrGroupID;
         file.purpose = 'teacherResponse';
-        var fileId = Meteor.call('insertFile',file);
+        var fileId = Meteor.call('insertFile',file,alertOnError);
       },
       validate: validateFiles
     }

@@ -44,14 +44,14 @@ Meteor.methods({
       updateOperator[sortField] = -1;
       Collection.update({_id: {$in: ids}}, {$inc: updateOperator}, {multi: true});
       updateOperator[sortField] = orderPrevItem;
-      Collection.update({_id:itemID},{$set: updateOperator});
+      return Collection.update({_id:itemID},{$set: updateOperator});
     } else if (orderNextItem != null) {  // Element moved up, so increase intervening order fields and place moved block in cleared space.
       selector[sortField] = {$gte: orderNextItem, $lt: startOrder};
       ids = _.pluck(Collection.find(selector,{fields: {_id: 1}}).fetch(), '_id');
       updateOperator[sortField] = 1;
       Collection.update({_id: {$in: ids}}, {$inc: updateOperator}, {multi: true});
       updateOperator[sortField] = orderNextItem;
-      Collection.update({_id:itemID},{$set: updateOperator});
+      return Collection.update({_id:itemID},{$set: updateOperator});
     } 
   },
   moveItem: function(collection,itemID,sortField,selectField,selectValue,orderNextItem) {
@@ -60,7 +60,7 @@ Meteor.methods({
     check(sortField,Match.Optional(String));
     check(selectField,String);
     check(selectValue,Match.Any);
-    check(orderNextItem,Match.Integer);
+    check(orderNextItem,Match.Optional(Match.OneOf(Match.Integer,null)));
 
     var sortField = sortField || 'order';
     var Collection = Mongo.Collection.get(collection);
@@ -105,6 +105,6 @@ Meteor.methods({
     Collection.update(item._id,{$set: updateOperator});   
     updateOperator = {};
     updateOperator[sortField] = orderNextItem;   
-    Collection.update({_id:item._id},{$set: updateOperator});
+    return Collection.update({_id:item._id},{$set: updateOperator});
   }
 });

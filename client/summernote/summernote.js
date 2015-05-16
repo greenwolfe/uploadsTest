@@ -93,8 +93,12 @@ Template.summernote.onRendered(function() {
     }
     var text = element.code();
     item[data.field] = text;
-    Meteor.call(method,item,function() {
-      element.code(text); //reset summernote's code to correct duplication of latest selection
+    Meteor.call(method,item,function(error,result) {
+      if (error) {
+        alert(error.reason);
+      } else {
+        element.code(text); //reset summernote's code to correct duplication of latest selection
+      }
     });
     //callback passed in from user
     if (optionsonBlur) optionsonBlur(event);

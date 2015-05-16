@@ -9,9 +9,9 @@ Template.showHide.helpers({
 
 Template.showHide.events({
   'click .Itemvisible' : function(event,tmpl) {
-    Meteor.call('show',tmpl.data.collection,tmpl.data.item._id,false);
+    Meteor.call('show',tmpl.data.collection,tmpl.data.item._id,false,alertOnError);
   },
   'click .Itemhidden' : function(event,tmpl) {
-    Meteor.call('show',tmpl.data.collection,tmpl.data.item._id,true);
+    Meteor.call('show',tmpl.data.collection,tmpl.data.item._id,true,alertOnError);
   }
 });

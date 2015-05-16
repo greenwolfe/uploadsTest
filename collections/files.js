@@ -47,6 +47,7 @@ Meteor.methods({
     Files.remove(_id); //remove this link regardless
     //after deleting, move any files below this one up
     Files.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});
+    return _id;
   },
   denormalizeFile: function(fileID) {
     check(fileID,Match.idString);
@@ -57,5 +58,6 @@ Meteor.methods({
     Files.update(file._id,{$set:{columnID:block.columnID}});
     Files.update(file._id,{$set:{wallID:block.wallID}});
     Files.update(file._id,{$set:{activityID:block.activityID}});
+    return fileID;
   }
 })

@@ -16,7 +16,7 @@ groups (that you are in) and check them off.
 /*Meteor.startup(function() {
   Uploader.finished = function(index, file, tmpl) {
     _.extend(file,tmpl.data.formData);
-    Meteor.call('insertFile',file);
+    Meteor.call('insertFile',file,alertOnError);
   }
 });*/
 

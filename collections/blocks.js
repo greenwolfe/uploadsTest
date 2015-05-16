@@ -34,7 +34,7 @@ Meteor.methods({
     var ids = _.pluck(Blocks.find({columnID:block.columnID},{fields: {_id: 1}}).fetch(), '_id');
     Blocks.update({_id: {$in: ids}}, {$inc: {order:1}}, {multi: true});
     //add new block at top
-    Blocks.insert(block, function(error,blockID) {
+    return Blocks.insert(block, function(error,blockID) {
       //copy links to any associated files
       Files.find({blockID:idFCB}).forEach(function(file) {
         file.blockID = blockID;
@@ -42,7 +42,6 @@ Meteor.methods({
         Meteor.call('insertFile',file);
       });      
     });
-
   },
   deleteBlock: function(blockID) {
     check(blockID,Match.idString);
@@ -56,6 +55,7 @@ Meteor.methods({
     var ids = _.pluck(Blocks.find({columnID:block.columnID,order:{$gt: block.order}},{fields: {_id: 1}}).fetch(), '_id');
     Blocks.remove(blockID); 
     Blocks.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});
+    return blockID; 
   },
   updateBlock: function(block) {
     check(block,{
@@ -87,6 +87,7 @@ Meteor.methods({
       throw new Meteor.Error('use-sortItem',"Use sortItem (from sortable1c method) instead of updateBlock to move a block to a new position in the list.");
     if (_.contains(keys,'type'))
       throw new Meteor.Error('blockTypeFixed',"Cannot change the type of a block.");
+    return block._id; 
   },
   denormalizeBlock: function(blockID) {
     check(blockID,Match.idString);
@@ -99,5 +100,6 @@ Meteor.methods({
     Files.find({blockID:block._id}).forEach(function(file) { 
       Meteor.call('denormalizeFile',file._id);
     });  
+    return blockID;
   }
 });

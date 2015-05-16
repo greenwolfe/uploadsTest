@@ -12,14 +12,13 @@ Meteor.methods({
     var widths = _.pluck(Columns.find({wallID:wallID},{fields:{width:1}}).fetch(),'width');
     var totalWidth = widths.reduce(function(a, b){return a+b;},0)
     if (totalWidth == 0) { //first column in wall
-      Columns.insert({
+      return Columns.insert({
         wallID:wallID,
         activityID: wall.activityID,
         width:4,
         order: 0,
         visible: true
       });
-      return;
     }
     var width = Math.min(12-totalWidth,4);
     if (width < 2) return; // not enough space to add a column
@@ -32,7 +31,7 @@ Meteor.methods({
       ids = _.pluck(Columns.find({wallID:wallID,order:{$gte: order}},{fields: {_id: 1}}).fetch(), '_id');
     } 
     Columns.update({_id: {$in: ids}}, {$inc: {order:1}}, {multi: true});
-    Columns.insert({
+    return columnID = Columns.insert({
       wallID:wallID,
       activityID: wall.activityID,
       width:width,
@@ -53,6 +52,7 @@ Meteor.methods({
     var ids = _.pluck(Columns.find({wallID:column.wallID,order:{$gt: column.order}},{fields: {_id: 1}}).fetch(), '_id');
     Columns.remove(_id);
     Columns.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});    
+    return _id;
   },
   expandColumn: function(_id) {
     check(_id,Match.idString);
@@ -63,6 +63,7 @@ Meteor.methods({
     var totalWidth = widths.reduce(function(a, b){return a+b;})
     if (totalWidth < 12) 
       Columns.update(_id,{$inc: {width:1}})
+    return _id;
   },
   shrinkColumn: function(_id) {
     check(_id,Match.idString);
@@ -71,5 +72,6 @@ Meteor.methods({
       throw new Meteor.Error('column-not-found',"Cannot shrink column, invalid column ID.");
     if (column.width > 2)
       Columns.update(_id,{$inc: {width:-1}})
+    return _id;
   }
 })

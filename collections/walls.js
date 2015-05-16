@@ -16,7 +16,7 @@ Meteor.methods({
     if (wall.activityID != theActivityID)
       throw new Meteor.Error('activity-not-found',"Cannot add wall, invalid activityID.");
 
-    Walls.insert(wall , function( error, _id) { 
+    return Walls.insert(wall , function( error, _id) { 
       if ( error ) console.log ( error ); //info about what went wrong
       if ( _id ) {
         Meteor.call('insertColumn',_id,-1,'right');
