@@ -1,28 +1,13 @@
 Blocks = new Meteor.Collection('Blocks');
 
-/* Blocks.insert({
-  _id: '...',
-  columnID: '...',
-  wallID: column.wallID, 
-  activityID: column.activityID, //inherited from wall.activityID
-  order: 2,
-  type: ['workSubmit',text','file','embed'],
-  title: '  ',
-  text: '  ',
-  embedCode: '  ',
-  studentText: '   ',
-  teacherText: '   ',
-  visible: true
-}); */
-
 Meteor.methods({
   insertBlock: function(block) {
     check(block,{
-      columnID: String,
-      wallID: Match.Optional(String),  //could be included from pasted block, will be overwritten with denormalized values anyway
-      activityID: Match.Optional(String), //same as above
+      columnID: Match.idString,
+      wallID: Match.Optional(Match.idString),  //could be included from pasted block, will be overwritten with denormalized values anyway
+      activityID: Match.Optional(Match.idString), //same as above
       type: Match.OneOf('workSubmit','text','file','embed'), 
-      idFromCopiedBlock: Match.Optional(String),
+      idFromCopiedBlock: Match.Optional(Match.idString),
       visible: Match.Optional(Boolean),
       title: Match.Optional(String),
       text: Match.Optional(String),
@@ -36,7 +21,7 @@ Meteor.methods({
 
     var column = Columns.findOne(block.columnID)
     if (!column)
-      throw new Meteor.Error(202, "Cannot add block, not a valid column");
+      throw new Meteor.Error('column-not-found', "Cannot add block, not a valid column");
     block.wallID = column.wallID; //denormalize block
     block.activityID = column.activityID;
 
@@ -60,10 +45,10 @@ Meteor.methods({
 
   },
   deleteBlock: function(blockID) {
-    check(blockID,String);
+    check(blockID,Match.idString);
     block = Blocks.findOne(blockID);
     if (!block)
-      throw new Meteor.Error(203,"Cannot delete block, block not found.")
+      throw new Meteor.Error('block-not-found',"Cannot delete block, block not found.")
     var fileCount = Files.find({blockID:blockID}).count();
     if (fileCount > 0) return; 
       //throw error as well?
@@ -74,10 +59,10 @@ Meteor.methods({
   },
   updateBlock: function(block) {
     check(block,{
-      _id: String,
-      columnID: Match.Optional(String), //excluded below
-      wallID: Match.Optional(String), //excluded below
-      activityID: Match.Optional(String), //excluded below
+      _id: Match.idString,
+      columnID: Match.Optional(Match.idString), //excluded below
+      wallID: Match.Optional(Match.idString), //excluded below
+      activityID: Match.Optional(Match.idString), //excluded below
       type: Match.Optional(String), //excluded below
       order: Match.Optional(Match.Integer), //excluded below
       visible: Match.Optional(Boolean),
@@ -97,17 +82,17 @@ Meteor.methods({
       Blocks.update(block._id,{$set: set});
     });
     if (_.intersection(keys,['columnID','wallID','activityID']).length > 0) 
-      throw new Meteor.Error(232,"Use moveItem (from sortable1c method) instead of updateBlock to move the block to a new column.");
+      throw new Meteor.Error('use-moveItem',"Use moveItem (from sortable1c method) instead of updateBlock to move the block to a new column.");
     if (_.contains(keys,'order'))
-      throw new Meteor.Error(232,"Use sortItem (from sortable1c method) instead of updateBlock to move a block to a new position in the list.");
+      throw new Meteor.Error('use-sortItem',"Use sortItem (from sortable1c method) instead of updateBlock to move a block to a new position in the list.");
     if (_.contains(keys,'type'))
-      throw new Meteor.Error(232,"Cannot change the type of a block.");
+      throw new Meteor.Error('blockTypeFixed',"Cannot change the type of a block.");
   },
   denormalizeBlock: function(blockID) {
-    check(blockID,String);
+    check(blockID,Match.idString);
     block = Blocks.findOne(blockID);
     if (!block)
-      throw new Meteor.Error(203,"Cannot denormalize block, block not found.")
+      throw new Meteor.Error('block-not-found',"Cannot denormalize block, block not found.")
     var column = Columns.findOne(block.columnID);
     Blocks.update(block._id,{$set:{wallID:column.wallID}});
     Blocks.update(block._id,{$set:{activityID:column.activityID}});

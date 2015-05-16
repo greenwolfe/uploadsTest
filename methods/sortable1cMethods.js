@@ -13,9 +13,14 @@ to do:
 
 Meteor.methods({
   sortItem: function(collection,itemID,sortField,selectField,orderPrevItem,orderNextItem) {
+    check(collection,String);
+    check(itemID,Match.idString);
+    check(sortField,Match.Optional(String));
+    check(selectField,String);
+    check(orderPrevItem,Match.Optional(Match.OneOf(Match.Integer,null)));
+    check(orderNextItem,Match.Optional(Match.OneOf(Match.Integer,null)));
+
     var sortField = sortField || 'order';
-    if (!collection) 
-      throw new Meteor.Error(232,"Cannot sort collection.  Invalid collection.");
     var Collection = Mongo.Collection.get(collection);
     if (!Collection)
       throw new Meteor.Error(233,"Cannot sort collection.  Invalid collection.");
@@ -50,18 +55,23 @@ Meteor.methods({
     } 
   },
   moveItem: function(collection,itemID,sortField,selectField,selectValue,orderNextItem) {
+    check(collection,String);
+    check(itemID,Match.idString);
+    check(sortField,Match.Optional(String));
+    check(selectField,String);
+    check(selectValue,Match.Any);
+    check(orderNextItem,Match.Integer);
+
     var sortField = sortField || 'order';
-    if (!collection) 
-      throw new Meteor.Error(232,"Cannot sort collection.  Invalid collection.");
     var Collection = Mongo.Collection.get(collection);
     if (!Collection)
       throw new Meteor.Error(233,"Cannot sort collection.  Invalid collection.");
     var item = Collection.findOne(itemID);
     if (!item)
       throw new Meteor.Error(230,"Cannot sort collection, invalid item.");
-    var startOrder = item[sortField];
     if (!(sortField in item))
       throw new Meteor.Error(237,"Cannot sort collection, no order field present.");
+    var startOrder = item[sortField];
     if (!(selectField in item))
       throw new Meteor.Error(236,"Cannot sort collection, item does not have selection field.");
     var oldSelectValue = item[selectField];

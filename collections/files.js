@@ -3,12 +3,12 @@ Files = new Meteor.Collection('Files');
 Meteor.methods({
   'insertFile': function(file) {
     check(file,{
-      blockID: String,
-      columnID: Match.Optional(String),  //could be included from pasted block, will be overwritten with denormalized values anyway
-      wallID: Match.Optional(String), //same as above
-      activityID: Match.Optional(String), //same as above
+      blockID: Match.idString,
+      columnID: Match.Optional(Match.idString),  //could be included from pasted block, will be overwritten with denormalized values anyway
+      wallID: Match.Optional(Match.idString), //same as above
+      activityID: Match.Optional(Match.idString), //same as above
       order: Match.Optional(Match.Integer),
-      studentOrGroupID: Match.Optional(String),
+      studentOrGroupID: Match.Optional(Match.idString),
       purpose: Match.OneOf('fileBlock','submittedWork','teacherResponse'),
       name: String,
       size: Match.Optional(Match.Integer),
@@ -23,7 +23,7 @@ Meteor.methods({
 
     var block = Blocks.findOne(file.blockID)
     if (!block)
-      throw new Meteor.Error(402, "Cannot add file, not a valid block");
+      throw new Meteor.Error('block-not-found', "Cannot add file, not a valid block");
     file.columnID = block.columnID;
     file.wallID = block.wallID; 
     file.activityID = block.activityID;
@@ -34,12 +34,10 @@ Meteor.methods({
     return Files.insert(file);
   },
   'deleteFile': function(_id) {
-    check(_id,String);
-    if (!_.isString(_id))
-      throw new Meteor.Error(000,'cannot delete file, id not valid.');
+    check(_id,Match.idString);
     var file = Files.findOne(_id);
     if (!file) 
-      throw new Meteor.Error(404, 'File not found'); 
+      throw new Meteor.Error('file-not-found', 'File not found'); 
     var fileCount = Files.find({path:file.path}).count();
 
     //test this code
@@ -51,10 +49,10 @@ Meteor.methods({
     Files.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});
   },
   denormalizeFile: function(fileID) {
-    check(fileID,String);
+    check(fileID,Match.idString);
     file = Files.findOne(fileID);
     if (!file)
-      throw new Meteor.Error(203,"Cannot denormalize file, file not found.")
+      throw new Meteor.Error('file-not-found',"Cannot denormalize file, file not found.")
     var block = Blocks.findOne(file.blockID);
     Files.update(file._id,{$set:{columnID:block.columnID}});
     Files.update(file._id,{$set:{wallID:block.wallID}});

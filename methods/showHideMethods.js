@@ -1,7 +1,7 @@
 Meteor.methods({
   show: function(collection,_id,show) {
     check(collection,String);
-    check(_id,String);
+    check(_id,Match.idString);
     check(show,Boolean);
 
     var Collection = Mongo.Collection.get(collection);

@@ -145,6 +145,7 @@ Template.fileBlock.helpers({
     return {
       finished: function(index, file, tmpl) {
         file.blockID = blockID;
+        file.purpose='fileBlock';
         var fileId = Meteor.call('insertFile',file);
       },
       validate: validateFiles
@@ -201,13 +202,12 @@ Template.workSubmitBlock.helpers({
   processStudentUpload: function() {
     var blockID = this._id;
     var studentOrGroupID = 'thisStudentOrGroup';
-    var purpose = 'submittedWork';
     return {
       //make this a standard function at the top?
       finished: function(index, file, tmpl) {
         file.blockID = blockID;
         file.studentOrGroupID = studentOrGroupID;
-        file.purpose = purpose;
+        file.purpose = 'submittedWork';
         var fileId = Meteor.call('insertFile',file);
         var block = {
          _id: blockID,
@@ -221,12 +221,11 @@ Template.workSubmitBlock.helpers({
   processTeacherUpload: function() {
     var blockID = this._id;
     var studentOrGroupID = 'thisStudentOrGroup';
-    var purpose = 'teacherResponse';
     return {
       finished: function(index, file, tmpl) {
         file.blockID = blockID;
         file.studentOrGroupID = studentOrGroupID;
-        file.purpose = purpose;
+        file.purpose = 'teacherResponse';
         var fileId = Meteor.call('insertFile',file);
       },
       validate: validateFiles
@@ -235,7 +234,7 @@ Template.workSubmitBlock.helpers({
   studentFormData: function() {
     var formData = this;
     formData.user = 'username';
-    formData.purpose = 'studentSubmission';
+    formData.purpose = 'submittedWork';
     return formData;
   },
   teacherFormData: function() {

@@ -2,12 +2,13 @@ Columns = new Meteor.Collection('Columns');
 
 Meteor.methods({
   insertColumn: function(wallID,order,side) {
-    check(wallID,String);
+    check(wallID,Match.idString);
     check(order,Match.Integer);
     check(side,Match.OneOf('right','left'));
+    
     var wall = Walls.findOne(wallID);
     if (!wall)
-      throw new Meteor.Error(240,"Cannot add column, invalid wall.");
+      throw new Meteor.Error('wall-not-found',"Cannot add column, invalid wall.");
     var widths = _.pluck(Columns.find({wallID:wallID},{fields:{width:1}}).fetch(),'width');
     var totalWidth = widths.reduce(function(a, b){return a+b;},0)
     if (totalWidth == 0) { //first column in wall
@@ -40,10 +41,10 @@ Meteor.methods({
     });
   },
   deleteColumn: function(_id) {
-    check(_id,String);
+    check(_id,Match.idString);
     var column = Columns.findOne(_id);
     if (!column)
-      throw new Meteor.Error(240,"Cannot delete column, invalid column ID.");
+      throw new Meteor.Error('column-not-found',"Cannot delete column, invalid column ID.");
     var numBlocks = Blocks.find({columnID:column._id}).count();
     var numColumns = Columns.find({wallID:column.wallID}).count();
     if ((numBlocks > 0) || (numColumns == 1)) return;
@@ -54,20 +55,20 @@ Meteor.methods({
     Columns.update({_id: {$in: ids}}, {$inc: {order:-1}}, {multi: true});    
   },
   expandColumn: function(_id) {
-    check(_id,String);
+    check(_id,Match.idString);
     var column = Columns.findOne(_id);
     if (!column)
-      throw new Meteor.Error(240,"Cannot expand column, invalid column ID.");
+      throw new Meteor.Error('column-not-found',"Cannot expand column, invalid column ID.");
     var widths = _.pluck(Columns.find({wallID:column.wallID},{fields:{width:1}}).fetch(),'width');
     var totalWidth = widths.reduce(function(a, b){return a+b;})
     if (totalWidth < 12) 
       Columns.update(_id,{$inc: {width:1}})
   },
   shrinkColumn: function(_id) {
-    check(_id,String);
+    check(_id,Match.idString);
     var column = Columns.findOne(_id);
     if (!column)
-      throw new Meteor.Error(240,"Cannot shrink column, invalid column ID.");
+      throw new Meteor.Error('column-not-found',"Cannot shrink column, invalid column ID.");
     if (column.width > 2)
       Columns.update(_id,{$inc: {width:-1}})
   }

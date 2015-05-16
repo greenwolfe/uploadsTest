@@ -22,7 +22,7 @@ groups (that you are in) and check them off.
 
 Template.activityPage.helpers({
   walls: function() {
-    return walls = Walls.find({activityID:'abc'},{sort: {order:1}});
+    return walls = Walls.find({activityID:theActivityID},{sort: {order:1}});
   },
   sortableOpts: function() {
     return {
@@ -30,7 +30,7 @@ Template.activityPage.helpers({
       handle: '.wallSortableHandle',
       collection: 'Walls',
       selectField: 'activityID',
-      selectValue: 'abc',
+      selectValue: theActivityID,
       disabled: !Session.get('editedWall')
     }
   }
