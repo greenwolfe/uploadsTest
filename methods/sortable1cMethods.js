@@ -54,12 +54,13 @@ Meteor.methods({
       return Collection.update({_id:itemID},{$set: updateOperator});
     } 
   },
-  moveItem: function(collection,itemID,sortField,selectField,selectValue,orderNextItem) {
+  moveItem: function(collection,itemID,sortField,selectField,selectValue,orderPrevItem,orderNextItem) {
     check(collection,String);
     check(itemID,Match.idString);
     check(sortField,Match.Optional(String));
     check(selectField,String);
     check(selectValue,Match.Any);
+    check(orderPrevItem,Match.Optional(Match.OneOf(Match.Integer,null)));
     check(orderNextItem,Match.Optional(Match.OneOf(Match.Integer,null)));
 
     var sortField = sortField || 'order';
@@ -75,6 +76,31 @@ Meteor.methods({
     if (!(selectField in item))
       throw new Meteor.Error(236,"Cannot sort collection, item does not have selection field.");
     var oldSelectValue = item[selectField];
+
+    if (oldSelectValue == selectValue) { //detected false move, item is in a collection split betwen multiple columns
+      if (!_.isFinite(orderNextItem) || !(orderNextItem >= 0)){ //could be end of whole list, or just end of a sublist in one column
+
+        if (startOrder > orderPrevItem) { //is end of sublist, and was moved back -  set up to sort back
+          orderNextItem = orderPrevItem + 1;
+          orderPrevItem = null;
+        } //else OK, moved to forwards to end of one sublist
+      } else if (!_.isFinite(orderPrevItem) || !(orderPrevItem >= 0)) { //could be beginning of whole list, or just beginning of a sublist in one column
+        if (startOrder < orderNextItem) { //is beginning of sublist, and was moved forwards - set up to sort forwards
+          orderPrevItem = orderNextItem - 1;
+          orderNextItem = null;
+        }  //else OK, moved backwards to end of one sublist
+      } else { //has both a valid prevItem and nextItem, sorted to middle of some sublist
+        if (startOrder > orderNextItem) { //moved back, signal to sort by setting orderPrevItem to null
+          orderPrevItem = null; 
+        } else if (startOrder < orderPrevItem) {  //moved up, signal to sort by setting orderNextItem to null
+          orderNextItem = null;
+        } else { //do nothing, drag and drop in same location
+          return;
+        }
+      }
+      Meteor.call('sortItem',collection,itemID,sortField,selectField,orderPrevItem,orderNextItem);
+      return itemID;
+    }
     
     var selector = {};
     var ids = [];

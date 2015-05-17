@@ -56,11 +56,20 @@ Template.sortable1c.onRendered(function() {
     evt.stopPropagation();
     var item = evt.item
     var itemData = Blaze.getData(item);
-    var sibling = item.nextElementSibling;
-    var siblingData = (sibling) ? Blaze.getData(sibling) : null;
-    //validation:  sibling is part of same set
-    var nextOrder = (siblingData && (options.selectField in siblingData) && (siblingData[options.selectField] == options.selectValue)) ? siblingData[options.sortField] : null;
-    Meteor.call('moveItem',options.collection,itemData._id,options.sortField,options.selectField,options.selectValue,nextOrder,alertOnError);
+
+    var prevItem = item.previousElementSibling;
+    var prevItemData = (prevItem) ? Blaze.getData(prevItem) : null;
+    //validation:  previous item is part of same set
+    var prevOrder = (prevItemData && (options.selectField in prevItemData) && (prevItemData[options.selectField] == options.selectValue)) ? prevItemData[options.sortField] : null;
+    var nextItem = item.nextElementSibling;
+    var nextItemData = (nextItem) ? Blaze.getData(nextItem) : null;
+    //validation:  next item is part of same set
+    var nextOrder = (nextItemData && (options.selectField in nextItemData) && (nextItemData[options.selectField] == options.selectValue)) ? nextItemData[options.sortField] : null;
+
+    //a true move only uses nextItem and places item at end of list if there is no next Item
+    //passing prevItem to handle the case of a single list split between multiple columns
+    //this allows detection and proper handling (with regular sort rather than move) of moves to beginning or end of one sublist
+    Meteor.call('moveItem',options.collection,itemData._id,options.sortField,options.selectField,options.selectValue,prevOrder,nextOrder,alertOnError);
     evt.data = itemData;
     if (optionsonAdd) optionsonAdd(evt);
   };
